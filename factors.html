@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Drives Each Formula — Factors, Variables & Parameters</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.55; }
+    .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+    .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+    .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+    .topnav a.current { background:#2a64c4; color:#fff; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#11203a 0%,#1f5a8a 100%); color:#fff; padding:34px 40px 28px; }
+    .hero h1 { font-size:28px; margin-bottom:7px; }
+    .hero p { opacity:.93; font-size:14.5px; max-width:920px; }
+    .wrap { max-width:1180px; margin:0 auto; padding:24px 26px 80px; }
+
+    .legend { display:flex; flex-wrap:wrap; gap:14px; background:#fff; border-radius:12px; padding:16px 20px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-bottom:20px; font-size:13.5px; }
+    .legend div { flex:1; min-width:230px; }
+    .badge { display:inline-block; font-size:11px; font-weight:800; padding:2px 9px; border-radius:20px; margin-right:6px; }
+    .b-factor { background:#e4eefb; color:#1d4e8a; } .b-var { background:#fdf0d8; color:#a4720f; } .b-param { background:#e3f3ea; color:#0a5c3c; }
+
+    .card { background:#fff; border-radius:12px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-bottom:22px; overflow:hidden; }
+    .card .head { padding:18px 22px 8px; }
+    .card .head h2 { font-size:20px; color:#11203a; }
+    .card .head .eq { font-family:Consolas,monospace; background:#0f1b30; color:#dCEAFb; padding:8px 12px; border-radius:8px; display:inline-block; margin-top:8px; font-size:13px; }
+    .card .head .one { font-size:13.5px; color:#5a6678; margin-top:8px; }
+    .tag10 { border-top:5px solid #d99a16; } .tag11 { border-top:5px solid #0d7a4f; }
+
+    table { width:100%; border-collapse:collapse; font-size:13.5px; }
+    thead th { background:#11203a; color:#fff; text-align:left; padding:10px 14px; font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; }
+    td { padding:10px 14px; border-bottom:1px solid #eef1f6; vertical-align:top; }
+    tbody tr:hover { background:#f6f9fd; }
+    .nm { font-weight:700; color:#11203a; }
+    .eff { white-space:nowrap; font-weight:700; }
+    .up { color:#c4413a; } .dn { color:#0d7a4f; } .dep { color:#a4720f; }
+    .ctrl { font-size:12px; font-weight:700; }
+    .c-mkt { color:#1d4e8a; } .c-fixed { color:#6b7688; } .c-dial { color:#0a5c3c; }
+
+    .cmp { width:100%; border-collapse:collapse; font-size:14px; }
+    .cmp th { background:#11203a; color:#fff; padding:11px 14px; text-align:left; }
+    .cmp td { padding:11px 14px; border-bottom:1px solid #eef1f6; }
+    .cmp td.q { font-weight:700; color:#11203a; width:34%; }
+    .cmp .v10 { color:#a4720f; font-weight:700; } .cmp .v11 { color:#0a5c3c; font-weight:700; }
+
+    .takeaway { background:#11203a; color:#fff; border-radius:12px; padding:20px 24px; margin-top:8px; }
+    .takeaway b { color:#9fe7c0; }
+    h3.section { font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:#6b7688; margin:22px 0 10px; font-weight:800; }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="compare.html">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html">Strategy Briefing</a>
+    <a href="analytics.html">Market Analytics</a>
+    <a href="vendors.html">Vendor Detail</a>
+    <a href="formulas.html">How It Works</a>
+    <a href="factors.html" class="current">Factors &amp; Inputs</a>
+    <span class="spacer"></span>
+</div>
+
+<div class="hero">
+    <h1>What Drives Each Formula — Factors, Variables &amp; Parameters</h1>
+    <p>A reference of every input behind Formula 1.0 and Formula 1.1: the outside forces (factors), the inputs that change
+    per calculation (variables), and the settings we choose (parameters) — with how each one pushes the price up or down.</p>
+</div>
+
+<div class="wrap">
+
+    <div class="legend">
+        <div><span class="badge b-factor">FACTOR</span> An outside force we don't control (inflation, competitors, the buyer's rules).</div>
+        <div><span class="badge b-var">VARIABLE</span> An input that changes for each calculation (role, region, a competitor's rate).</div>
+        <div><span class="badge b-param">PARAMETER</span> A setting we choose and can tune (markup, target rank, cost assumptions).</div>
+    </div>
+    <p style="font-size:12.5px;color:#6b7688;margin:-8px 0 18px;">Effect column: <span class="up">↑</span> raises our price · <span class="dn">↓</span> lowers it · <span class="dep">↕</span> depends. Control: <span class="c-mkt">market</span> / <span class="c-fixed">fixed</span> / <span class="c-dial">we tune</span>.</p>
+
+    <!-- FORMULA 1.0 -->
+    <div class="card tag10">
+        <div class="head">
+            <h2>🧮 Formula 1.0 — Baseline (cost-plus "recipe")</h2>
+            <div class="eq">Bill = Wage × (1 + Markup/100)   ·   Wage = Historical&nbsp;2021&nbsp;rate × CPI&nbsp;multipliers</div>
+            <div class="one">Price is built from <b>our own costs</b> escalated by inflation. It does <b>not</b> look at competitors.</div>
+        </div>
+        <table>
+            <thead><tr><th>Input</th><th>Type</th><th>What it is</th><th>Effect</th><th>Control</th></tr></thead>
+            <tbody>
+                <tr><td class="nm">CPI-U inflation</td><td><span class="badge b-factor">Factor</span></td><td>U.S. City Average CPI-U (series CUUR0000SA0); drives the annual escalation.</td><td class="eff up">↑ higher inflation → higher price</td><td class="ctrl c-mkt">market</td></tr>
+                <tr><td class="nm">Labor market wages</td><td><span class="badge b-factor">Factor</span></td><td>Prevailing IT wages (BLS/OES) that underlie the estimated wage.</td><td class="eff up">↑ rising wages → higher price</td><td class="ctrl c-mkt">market</td></tr>
+                <tr><td class="nm">Regional labor cost</td><td><span class="badge b-factor">Factor</span></td><td>R1 statewide vs R2 Mid-Hudson vs R3 NYC metro cost differences.</td><td class="eff dep">↕ pricier regions → higher</td><td class="ctrl c-mkt">market</td></tr>
+                <tr><td class="nm">Job title (×31)</td><td><span class="badge b-var">Variable</span></td><td>Which of the 31 roles is being priced.</td><td class="eff dep">↕ varies by role</td><td class="ctrl c-fixed">given</td></tr>
+                <tr><td class="nm">Skill level</td><td><span class="badge b-var">Variable</span></td><td>Junior → Mid → Senior → Expert.</td><td class="eff up">↑ higher skill → higher price</td><td class="ctrl c-fixed">given</td></tr>
+                <tr><td class="nm">Region</td><td><span class="badge b-var">Variable</span></td><td>R1 / R2 / R3 for this calculation.</td><td class="eff dep">↕</td><td class="ctrl c-fixed">given</td></tr>
+                <tr><td class="nm">Historical 2021 base rate</td><td><span class="badge b-var">Variable</span></td><td>The anchor rate the escalation is applied to.</td><td class="eff up">↑ higher anchor → higher price</td><td class="ctrl c-fixed">given</td></tr>
+                <tr><td class="nm">Hourly wage (HWR)</td><td><span class="badge b-var">Variable</span></td><td>What we plan to pay the consultant.</td><td class="eff up">↑ higher wage → higher bill</td><td class="ctrl c-dial">we set</td></tr>
+                <tr><td class="nm">Markup % (M)</td><td><span class="badge b-param">Parameter</span></td><td>Grosses the wage up to the bill rate (covers costs + profit). Assumed ~30%.</td><td class="eff up">↑ higher markup → higher price</td><td class="ctrl c-dial">we tune</td></tr>
+                <tr><td class="nm">CPI multipliers</td><td><span class="badge b-param">Parameter</span></td><td>De-escalate 2025→2021 = 0.8417 · bid-year 2025→2026 = 1.0381 · 2026→2029 = 1.0716.</td><td class="eff up">↑ larger multiplier → higher</td><td class="ctrl c-fixed">from data</td></tr>
+                <tr><td class="nm">Cost-build %s</td><td><span class="badge b-param">Parameter</span></td><td>Payroll 13.5% · insurance 3.5% · overhead+G&amp;A 10.5% (of wage) · OGS fee 0.75% (of bill). Affect <b>margin</b>, not the listed price.</td><td class="eff dn">↓ higher costs → lower profit</td><td class="ctrl c-dial">we tune</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FORMULA 1.1 -->
+    <div class="card tag11">
+        <div class="head">
+            <h2>📍 Formula 1.1 — Rank Positioning ("line-up")</h2>
+            <div class="eq">Pick price so we are #TargetRank cheapest:  c(18) &lt; OurPrice &lt; c(19)  →  rank 19 of 33</div>
+            <div class="one">Price is set by <b>where competitors sit</b>. Our own costs only decide the resulting margin, not the price.</div>
+        </div>
+        <table>
+            <thead><tr><th>Input</th><th>Type</th><th>What it is</th><th>Effect</th><th>Control</th></tr></thead>
+            <tbody>
+                <tr><td class="nm">Competitor bill rates</td><td><span class="badge b-factor">Factor</span></td><td>The full field of rival prices for this exact role — <b>the main driver</b>.</td><td class="eff dep">↕ field shifts → our price shifts</td><td class="ctrl c-mkt">market</td></tr>
+                <tr><td class="nm">MSP price filter</td><td><span class="badge b-factor">Factor</span></td><td>Buyer forwards only the cheapest ~50% on busy roles — the reason rank matters.</td><td class="eff dep">↕ sets the “safe” rank</td><td class="ctrl c-mkt">rule</td></tr>
+                <tr><td class="nm">Currency of competitor rates</td><td><span class="badge b-factor">Factor</span></td><td>Many incumbents' rates are pre-2025 / un-escalated, making the field look cheaper.</td><td class="eff dn">↓ stale field → lower our price</td><td class="ctrl c-mkt">market</td></tr>
+                <tr><td class="nm">Number of bidders (field size)</td><td><span class="badge b-var">Variable</span></td><td>How many vendors price this role (≈33 incl. us).</td><td class="eff dep">↕ changes what rank 19 means</td><td class="ctrl c-mkt">market</td></tr>
+                <tr><td class="nm">The 18th &amp; 19th cheapest prices</td><td><span class="badge b-var">Variable</span></td><td>The two competitor prices our rate is placed between.</td><td class="eff up">↑ they rise → our price rises</td><td class="ctrl c-mkt">market</td></tr>
+                <tr><td class="nm">Region</td><td><span class="badge b-var">Variable</span></td><td>Each region has a different competitor field (computed separately).</td><td class="eff dep">↕</td><td class="ctrl c-fixed">given</td></tr>
+                <tr><td class="nm">Boundary tie</td><td><span class="badge b-var">Variable</span></td><td>If 18th = 19th price, exact #19 is impossible → nearest (more competitive) rank used (16 of 372 roles).</td><td class="eff dn">↓ lands us at #18</td><td class="ctrl c-fixed">auto</td></tr>
+                <tr><td class="nm">Target rank</td><td><span class="badge b-param">Parameter</span></td><td>The spot we aim for (default 19 of 33). <b>The master dial.</b></td><td class="eff up">↑ higher rank # → higher price</td><td class="ctrl c-dial">we tune</td></tr>
+                <tr><td class="nm">Rounding + nudge rule</td><td><span class="badge b-param">Parameter</span></td><td>Round to whole cents, nudge so exactly 18 competitors sit below us with no tie.</td><td class="eff dep">↕ tiny ±1¢ effect</td><td class="ctrl c-fixed">method</td></tr>
+                <tr><td class="nm">Markup % &amp; cost-build %s</td><td><span class="badge b-param">Parameter</span></td><td>Don't set the price here — they decide the <b>margin</b> at the market-set price (same components as 1.0).</td><td class="eff dep">↕ set wage &amp; profit</td><td class="ctrl c-dial">we tune</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="section">Side by side — what actually moves each formula</h3>
+    <div class="card">
+        <table class="cmp">
+            <thead><tr><th>Question</th><th>Formula 1.0 (Baseline)</th><th>Formula 1.1 (Rank)</th></tr></thead>
+            <tbody>
+                <tr><td class="q">What sets the price?</td><td class="v10">Our costs + CPI inflation</td><td class="v11">Competitors' prices + our target rank</td></tr>
+                <tr><td class="q">Does it react to competitors?</td><td class="v10">No — ignores the field</td><td class="v11">Yes — it's built from the field</td></tr>
+                <tr><td class="q">Does it react to our costs?</td><td class="v10">Yes — directly drives the price</td><td class="v11">Only the margin, not the price</td></tr>
+                <tr><td class="q">The one main dial</td><td class="v10">Markup %</td><td class="v11">Target rank (#19)</td></tr>
+                <tr><td class="q">What sets the profit margin?</td><td class="v10">Markup vs. cost build</td><td class="v11">Markup vs. cost build (same)</td></tr>
+                <tr><td class="q">Biggest risk</td><td class="v10">Pricing above the buyer's cut-off</td><td class="v11">Stale competitor data; #19 may be too high for busy roles</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="takeaway">
+        <b>In one line:</b> Formula 1.0 is driven mostly by <b>inflation and our own costs</b> (main dial = markup);
+        Formula 1.1 is driven mostly by <b>the competitor field</b> (main dial = target rank). For both, the
+        <b>markup and cost-build percentages</b> decide profit margin — try them live in the Bid Builder.
+    </div>
+</div>
+</body>
+</html>
