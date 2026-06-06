@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBITS Vendor Detail — Closures & Contracts</title>
+<script src="vendor_detail.js"></script>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.5; }
+    .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+    .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+    .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+    .topnav a.current { background:#2a64c4; color:#fff; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#11203a 0%,#1f5a8a 100%); color:#fff; padding:30px 40px 26px; }
+    .hero h1 { font-size:27px; margin-bottom:6px; }
+    .hero p { opacity:.92; font-size:14.5px; max-width:920px; }
+    .wrap { max-width:1240px; margin:0 auto; padding:24px 26px 70px; }
+
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:18px; }
+    .kpi { background:#fff; border-radius:12px; padding:18px 20px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-top:4px solid #0d7a4f; }
+    .kpi .n { font-size:26px; font-weight:800; color:#11203a; } .kpi .l { font-size:12.5px; color:#5a6678; margin-top:5px; }
+    .kpi.blue{border-top-color:#2a64c4;} .kpi.amber{border-top-color:#d99a16;} .kpi.purple{border-top-color:#7048c4;}
+
+    .card { background:#fff; border-radius:12px; box-shadow:0 3px 14px rgba(0,0,0,.06); overflow:hidden; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:16px 20px; border-bottom:1px solid #eef1f6; }
+    .toolbar input { padding:10px 12px; border:1px solid #cfd8e6; border-radius:8px; font-size:14px; min-width:240px; }
+    .toolbar .grow { flex:1; }
+    .btn { padding:9px 15px; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; }
+    .btn-primary{background:#2a64c4;color:#fff;} .btn-primary:hover{background:#214f9e;}
+    .hint { font-size:12.5px; color:#6b7688; }
+
+    .tablewrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; }
+    thead { background:#11203a; color:#fff; }
+    th { padding:12px 14px; text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; cursor:pointer; white-space:nowrap; user-select:none; }
+    th.num,td.num { text-align:right; }
+    th:hover { background:#1c3052; } th .arr{opacity:.5;font-size:10px;} th.sorted .arr{opacity:1;}
+    td { padding:11px 14px; border-bottom:1px solid #eef1f6; }
+    tbody tr.vrow { cursor:pointer; } tbody tr.vrow:hover { background:#f6f9fd; }
+    .vname { font-weight:700; color:#11203a; }
+    .twist { display:inline-block; width:14px; color:#2a64c4; font-weight:800; }
+    .yr { color:#33415c; } .tot { font-weight:800; color:#11203a; } .dol { color:#0a5c3c; font-weight:700; }
+    .trend-up{color:#0d7a4f;font-weight:800;} .trend-dn{color:#c4413a;font-weight:800;} .trend-fl{color:#9aa3b2;font-weight:800;}
+    .spark { display:inline-flex; align-items:flex-end; gap:3px; height:22px; vertical-align:middle; margin-left:8px;}
+    .spark i { width:7px; background:#9fb8e6; border-radius:2px 2px 0 0; display:inline-block; }
+
+    /* drill-down */
+    .detail td { background:#f7f9fc; padding:0; }
+    .detail .inner { padding:14px 18px 18px; }
+    .detail h4 { font-size:13px; color:#11203a; margin-bottom:8px; }
+    .ctable { width:100%; border-collapse:collapse; font-size:12.5px; background:#fff; border:1px solid #e6ecf5; border-radius:8px; overflow:hidden; }
+    .ctable th { background:#33415c; color:#fff; cursor:default; }
+    .ctable th:hover{background:#33415c;}
+    .ctable td { padding:8px 12px; border-bottom:1px solid #eef1f6; }
+    .yrtag { display:inline-block; padding:2px 8px; border-radius:10px; font-weight:800; font-size:11px; color:#fff; }
+    .y23{background:#7048c4;} .y24{background:#d99a16;} .y25{background:#0d7a4f;}
+    .note { font-size:12px; color:#8a94a6; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="compare.html">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html">Strategy Briefing</a>
+    <a href="analytics.html">Market Analytics</a>
+    <a href="vendors.html" class="current">Vendor Detail</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.7;">NYS OGS HBITS · Jan 2023 – Dec 2025</span>
+</div>
+
+<div class="hero">
+    <h1>Vendor Detail — Closures &amp; Contracts</h1>
+    <p>Every awarded vendor, year by year, with placement counts and contract dollars — click any vendor to see its
+    individual contracts (agency, amount, term). Sourced from the per-year HBITS closure workbooks.</p>
+</div>
+
+<div class="wrap">
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+        <div class="toolbar">
+            <input type="text" id="search" placeholder="Search a vendor…" oninput="render()" autocomplete="off">
+            <span class="hint">Click a row to expand its contracts ▾</span>
+            <span class="grow"></span>
+            <button class="btn btn-primary" onclick="exportVendors()">⤓ Vendor summary (CSV)</button>
+            <button class="btn btn-primary" onclick="exportContracts()">⤓ All contracts (CSV)</button>
+        </div>
+        <div class="tablewrap">
+            <table>
+                <thead><tr>
+                    <th data-c="name" onclick="sortBy('name')">Vendor <span class="arr"></span></th>
+                    <th class="num" data-c="c2023" onclick="sortBy('c2023')">2023 <span class="arr"></span></th>
+                    <th class="num" data-c="c2024" onclick="sortBy('c2024')">2024 <span class="arr"></span></th>
+                    <th class="num" data-c="c2025" onclick="sortBy('c2025')">2025 <span class="arr"></span></th>
+                    <th class="num" data-c="total" onclick="sortBy('total')">Total placements <span class="arr"></span></th>
+                    <th class="num" data-c="dtotal" onclick="sortBy('dtotal')">Total award $ <span class="arr"></span></th>
+                    <th data-c="trend" onclick="sortBy('trend')">Momentum <span class="arr"></span></th>
+                </tr></thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+    </div>
+    <p class="note" id="note"></p>
+</div>
+
+<script>
+    let D, rows=[], sort={c:'total',dir:'desc'}, expanded=null;
+    function money(n){ n=+n||0; if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B'; if(n>=1e6)return '$'+(n/1e6).toFixed(1)+'M'; if(n>=1e3)return '$'+Math.round(n/1e3)+'K'; return '$'+Math.round(n); }
+    function num(n){ return (+n||0).toLocaleString(); }
+
+    function init(){
+        D = window.VENDOR_DETAIL;
+        if(!D){ document.getElementById('note').textContent='Could not load vendor_detail.js — serve this folder over a local web server.'; return; }
+        const t=D.totals, top=D.vendors[0];
+        const card=(n,l,cls='')=>`<div class="kpi ${cls}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+        document.getElementById('kpis').innerHTML =
+            card(D.vendors.length,'Awarded vendors')+card(num(t.closures),'Total placements (3 yrs)','blue')
+            +card(money(t.dollars),'Total award value','amber')+card(top.name.split(' (')[0],'Market leader','purple');
+        render();
+    }
+
+    function trendVal(v){ return (v.c2025||0)-(v.c2023||0); }
+    function sortBy(c){ if(sort.c===c){sort.dir=sort.dir==='asc'?'desc':'asc';} else {sort={c,dir:(c==='name'?'asc':'desc')};} render(); }
+
+    function render(){
+        const q=(document.getElementById('search').value||'').toLowerCase();
+        rows = D.vendors.filter(v=>!q||v.name.toLowerCase().includes(q));
+        const s=sort.dir==='asc'?1:-1, c=sort.c;
+        rows.sort((a,b)=>{ let av,bv;
+            if(c==='name'){av=a.name.toLowerCase();bv=b.name.toLowerCase();return av<bv?-s:av>bv?s:0;}
+            if(c==='trend'){av=trendVal(a);bv=trendVal(b);} else {av=a[c];bv=b[c];}
+            return (av-bv)*s; });
+        document.querySelectorAll('th[data-c]').forEach(th=>{const on=th.dataset.c===c;th.classList.toggle('sorted',on);th.querySelector('.arr').textContent=on?(sort.dir==='asc'?'▲':'▼'):'';});
+
+        const maxBar=Math.max(...D.vendors.map(v=>Math.max(v.c2023,v.c2024,v.c2025)))||1;
+        const tbody=document.getElementById('tbody');
+        let html='';
+        rows.forEach(v=>{
+            const d=trendVal(v); const tc=d>0?'trend-up':d<0?'trend-dn':'trend-fl'; const ta=d>0?'▲':d<0?'▼':'▬';
+            const spark=[v.c2023,v.c2024,v.c2025].map(x=>`<i style="height:${Math.max(3,Math.round(x/maxBar*22))}px"></i>`).join('');
+            const open=expanded===v.name;
+            html+=`<tr class="vrow" onclick="toggle('${v.name.replace(/'/g,"\\'")}')">
+                <td><span class="twist">${open?'▾':'▸'}</span><span class="vname">${v.name}</span></td>
+                <td class="num yr">${v.c2023}</td><td class="num yr">${v.c2024}</td><td class="num yr">${v.c2025}</td>
+                <td class="num tot">${v.total}</td><td class="num dol">${money(v.dtotal)}</td>
+                <td><span class="${tc}">${ta} ${d>0?'+':''}${d}</span><span class="spark">${spark}</span></td></tr>`;
+            if(open) html+=detailRow(v);
+        });
+        tbody.innerHTML=html;
+        document.getElementById('note').textContent =
+            `${rows.length} of ${D.vendors.length} vendors · ${num(D.totals.closures)} contracts total. Source: ${D.generated}.`;
+    }
+
+    function detailRow(v){
+        let cs=D.contracts.filter(c=>c.v===v.name).sort((a,b)=>b.y-a.y||b.amt-a.amt);
+        const rowsHtml=cs.map(c=>{
+            const yc=c.y===2023?'y23':c.y===2024?'y24':'y25';
+            return `<tr><td><span class="yrtag ${yc}">${c.y}</span></td><td>${c.dept}</td>
+                <td>${c.no||'—'}</td><td class="num">${money(c.amt)}</td><td class="num">${money(c.spent)}</td>
+                <td>${c.start||'—'} – ${c.end||'—'}</td><td>${c.desc||''}</td></tr>`;
+        }).join('');
+        return `<tr class="detail"><td colspan="7"><div class="inner">
+            <h4>${v.name} — ${cs.length} contracts (2023: ${v.c2023} · 2024: ${v.c2024} · 2025: ${v.c2025} · total award ${money(v.dtotal)})</h4>
+            <table class="ctable"><thead><tr><th>Year</th><th>Department / Agency</th><th>Contract #</th>
+            <th class="num">Award $</th><th class="num">Spent</th><th>Term</th><th>Description</th></tr></thead>
+            <tbody>${rowsHtml}</tbody></table></div></td></tr>`;
+    }
+
+    function toggle(name){ expanded = expanded===name ? null : name; render(); }
+
+    function csv(text,name){ const b=new Blob([text],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); }
+    function q(s){ return /[",]/.test(s)?'"'+String(s).replace(/"/g,'""')+'"':s; }
+    function exportVendors(){
+        const h=['Vendor','Closures_2023','Closures_2024','Closures_2025','Total_Placements','Award_2023','Award_2024','Award_2025','Total_Award'];
+        const l=[h.join(',')];
+        D.vendors.forEach(v=>l.push([q(v.name),v.c2023,v.c2024,v.c2025,v.total,v.d2023,v.d2024,v.d2025,v.dtotal].join(',')));
+        csv(l.join('\n'),'hbits_vendor_summary.csv');
+    }
+    function exportContracts(){
+        const h=['Vendor','Year','Department','Contract_No','Award','Spent','Start','End','Description'];
+        const l=[h.join(',')];
+        D.contracts.forEach(c=>l.push([q(c.v),c.y,q(c.dept),q(c.no),c.amt,c.spent,c.start,c.end,q(c.desc)].join(',')));
+        csv(l.join('\n'),'hbits_all_contracts.csv');
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
