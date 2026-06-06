@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBITS Pricing Strategy Briefing — IDIQ Quality Review</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1f2733; background: #eef1f6; line-height: 1.62; }
+    .topnav { background: #11203a; color: #fff; padding: 12px 26px; display: flex; gap: 8px; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .topnav a { color: #cdd8ee; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 14px; border-radius: 6px; }
+    .topnav a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .topnav a.current { background: #2a64c4; color: #fff; }
+    .topnav .spacer { flex: 1; }
+
+    .hero { background: linear-gradient(135deg, #11203a 0%, #1f5a8a 100%); color: #fff; padding: 40px 40px 34px; }
+    .hero h1 { font-size: 30px; margin-bottom: 8px; }
+    .hero .sub { opacity: .92; font-size: 15px; max-width: 880px; }
+    .hero .meta { margin-top: 14px; font-size: 12.5px; opacity: .8; }
+
+    .layout { display: grid; grid-template-columns: 250px 1fr; gap: 0; max-width: 1280px; margin: 0 auto; }
+    .toc { position: sticky; top: 56px; align-self: start; height: calc(100vh - 56px); overflow-y: auto; padding: 24px 16px; background: #f7f9fc; border-right: 1px solid #e2e8f2; font-size: 13.5px; }
+    .toc a { display: block; color: #44506a; text-decoration: none; padding: 6px 10px; border-radius: 5px; }
+    .toc a:hover { background: #e7eef9; color: #11203a; }
+    .toc .num { color: #8a97ad; font-weight: 700; margin-right: 6px; }
+
+    .content { padding: 30px 42px 80px; background: #fff; }
+    section { padding: 26px 0; border-bottom: 1px solid #eef1f6; scroll-margin-top: 64px; }
+    section h2 { font-size: 22px; color: #11203a; margin-bottom: 12px; }
+    section h3 { font-size: 16px; color: #1f5a8a; margin: 18px 0 8px; }
+    p { margin-bottom: 12px; }
+    ul, ol { margin: 0 0 12px 22px; }
+    li { margin-bottom: 6px; }
+
+    .callout { border-left: 4px solid #2a64c4; background: #eef4fc; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+    .callout.warn { border-left-color: #c4413a; background: #fdeeec; }
+    .callout.win { border-left-color: #1f8a54; background: #ecf7f0; }
+    .callout .tag { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 4px; }
+    .callout.warn .tag { color: #c4413a; }
+    .callout.win .tag { color: #167045; }
+    .callout .tag.blue { color: #2a64c4; }
+
+    .formula { background: #0f1b30; color: #eaf0fb; padding: 18px 22px; border-radius: 8px; font-family: 'Consolas','Courier New',monospace; font-size: 15px; margin: 14px 0; overflow-x: auto; }
+    .formula .c { color: #7fd1a6; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+    th { background: #11203a; color: #fff; text-align: left; padding: 9px 11px; font-size: 12px; }
+    td { padding: 8px 11px; border-bottom: 1px solid #e8edf5; }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+
+    .checklist li { margin-bottom: 12px; }
+    .checklist .q { font-weight: 700; color: #11203a; }
+    .pill { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 11.5px; font-weight: 700; }
+    .pill.crit { background: #fdeeec; color: #c4413a; }
+    .pill.med { background: #fff4e2; color: #b3771a; }
+    .pill.low { background: #ecf7f0; color: #167045; }
+
+    .snapshot { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin: 14px 0; }
+    .stat { background: #f3f7fc; border: 1px solid #e2e8f2; border-radius: 8px; padding: 14px; text-align: center; }
+    .stat .n { font-size: 26px; font-weight: 800; color: #1f5a8a; }
+    .stat .l { font-size: 12px; color: #5a6678; margin-top: 3px; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .toc { display: none; } }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="index.html">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html" class="current">Strategy Briefing</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.7;">NYS OGS Group 73012 · Award 23158 / Solicitation 23311</span>
+</div>
+
+<div class="hero">
+    <h1>HBITS Pricing Strategy — Briefing for IDIQ Pricing Quality Review</h1>
+    <div class="sub">A transparent walkthrough of the context, narrative, formulas, data provenance, and known limitations behind Best Pegasus's
+    Hourly-Based IT Services bid pricing — structured so a State-level IDIQ pricing strategist can independently quality-test every assumption.</div>
+    <div class="meta">Prepared for competitive review · Bid opening 7/1/2026 · 5-year term + 2-year option · Persona: Federal/State Government Pricing &amp; Capture</div>
+</div>
+
+<div class="layout">
+    <nav class="toc" id="toc">
+        <a href="#exec"><span class="num">1</span>Executive Summary</a>
+        <a href="#context"><span class="num">2</span>Procurement Context</a>
+        <a href="#story"><span class="num">3</span>The Strategic Story</a>
+        <a href="#core"><span class="num">4</span>Core Pricing Formula</a>
+        <a href="#v1"><span class="num">5</span>Version 1 — Baseline</a>
+        <a href="#v11"><span class="num">6</span>Version 1.1 — Rank Positioning</a>
+        <a href="#data"><span class="num">7</span>Data Foundation</a>
+        <a href="#snapshot"><span class="num">8</span>Live Data Snapshot</a>
+        <a href="#margin"><span class="num">9</span>Margin &amp; Cost Build</a>
+        <a href="#landscape"><span class="num">10</span>Competitive Landscape</a>
+        <a href="#qt"><span class="num">11</span>Quality-Test Checklist</a>
+        <a href="#risks"><span class="num">12</span>Risks &amp; Limitations</a>
+        <a href="#glossary"><span class="num">13</span>Glossary &amp; Sources</a>
+    </nav>
+
+    <main class="content">
+
+    <section id="exec">
+        <h2>1 · Executive Summary</h2>
+        <p>The New York State Office of General Services (OGS) procures Hourly-Based IT Services (HBITS) through a centralized,
+        <strong>non-negotiated, fixed-bill-rate</strong> contract vehicle. Bidders submit Not-To-Exceed (NTE) hourly bill rates for
+        31 job titles across 4 skill levels and 3 regions; those rates are firm for the life of each placement.</p>
+        <p>Best Pegasus's pricing has been modeled in two versions:</p>
+        <ul>
+            <li><strong>Version 1 (Baseline)</strong> — derived from an internal cost/CPI estimation; lands in the expensive third of the field.</li>
+            <li><strong>Version 1.1 (Rank Positioning)</strong> — the current formula; reverse-engineers the competitor field and prices each role to a
+            <strong>target rank of #19 of 33 bidders</strong> (mid-field).</li>
+        </ul>
+        <div class="callout"><span class="tag blue">For the reviewer</span>
+        This briefing exists to be challenged. Section&nbsp;11 lists the specific assumptions and design choices we believe most warrant scrutiny —
+        starting with whether a flat mid-field rank target is compatible with the MSP's 50% price filter.</div>
+    </section>
+
+    <section id="context">
+        <h2>2 · Procurement Context</h2>
+        <h3>The vehicle</h3>
+        <p>HBITS (Group 73012, Award 23158, refreshed under Solicitation 23311) is used by state agencies, local governments, school
+        districts, public authorities, and eligible non-profits ("Authorized Users"). The contract term is five years with a two-year
+        extension option; the bid opening date is <strong>July 1, 2026</strong>. Task orders under the prior award continue on their own terms,
+        so the rates established at transition are decisive for incoming contractors.</p>
+        <h3>Three regions</h3>
+        <table>
+            <thead><tr><th>Region</th><th>Coverage</th><th>Character</th></tr></thead>
+            <tbody>
+                <tr><td>Region 1</td><td>All NY counties outside R2/R3 (Albany hub)</td><td>Statewide baseline; majority of placements</td></tr>
+                <tr><td>Region 2</td><td>Dutchess, Orange, Putnam (Mid-Hudson)</td><td>Mid-market labor rates</td></tr>
+                <tr><td>Region 3</td><td>Nassau, Rockland, Suffolk, Westchester, Bronx, Kings, New York, Queens, Richmond (NYC Metro)</td><td>Highest labor cost</td></tr>
+            </tbody>
+        </table>
+        <h3>The MSP price filter — the critical mechanic</h3>
+        <p>When an agency issues a task order, a Managed Service Provider (MSP) collects candidate submissions from all active vendors and applies a
+        <strong>price filter before any technical evaluation</strong>:</p>
+        <ul>
+            <li><strong>10–40 candidates:</strong> only the <strong>lowest 50%</strong> of bill rates are forwarded (plus any candidate within 1% of the cutoff). The rest are rejected on price alone.</li>
+            <li><strong>6–10 candidates:</strong> only the <strong>5 lowest</strong> bill rates are forwarded.</li>
+            <li><strong>≤5 candidates:</strong> the filter is bypassed — all candidates are forwarded.</li>
+        </ul>
+        <div class="callout warn"><span class="tag">Why this matters to the formula</span>
+        For high-volume, commoditized roles the pool routinely exceeds 10 candidates, so roughly the <strong>lowest half</strong> survive. A rate
+        positioned at rank&nbsp;#19 of&nbsp;33 sits in the <em>upper</em> half — and would be filtered out before technical review. See Section&nbsp;11, item&nbsp;A.</div>
+    </section>
+
+    <section id="story">
+        <h2>3 · The Strategic Story</h2>
+        <p>HBITS is engineered to be price-driven and transparent. That creates a structural tension every bidder must resolve:</p>
+        <ul>
+            <li><strong>Bid too high</strong> (large markup) → protect margin per placement, but get filtered out of high-volume task orders before anyone reads the résumé.</li>
+            <li><strong>Bid too low</strong> (small markup) → pass the filter and win volume, but compress margin and starve the overhead needed to administer the work.</li>
+        </ul>
+        <p>There is a second-order effect on talent. Because the bill rate is fixed, a low-markup vendor can pay the consultant a
+        <strong>higher wage</strong> for the same bill rate than a high-markup competitor — recruiting better people and earning higher agency
+        satisfaction scores. Example from the source analysis: at a Business Analyst Junior bill of $40.33, an 11% markup vendor can pay ~$36.33,
+        while a 47% markup vendor can pay only ~$27.43.</p>
+        <div class="callout"><span class="tag blue">The question the formula answers</span>
+        "Given a fixed, transparent, filter-driven market, where exactly should we place each of our 372 rates?" Version 1.1 answers it with a
+        single rule — target rank #19 — which is precisely what this review should pressure-test.</div>
+    </section>
+
+    <section id="core">
+        <h2>4 · Core Pricing Formula</h2>
+        <p>Every bill rate is the consultant wage grossed up by the vendor's markup:</p>
+        <div class="formula">R<sub>bill</sub> = R<sub>wage</sub> × ( 1 + M / 100 )   <span class="c">// HBR_NTE = HWR × (1 + markup)</span></div>
+        <p>The markup <em>M</em> must cover payroll taxes, insurance, corporate overhead &amp; G&amp;A, the OGS administrative fee, and net profit.</p>
+        <h3>Annual CPI escalation (Section 6.5)</h3>
+        <p>NTE rates may be escalated each contract anniversary by the change in the unadjusted CPI-U (Series CUUR0000SA0), using the index for the
+        third month prior to the anniversary:</p>
+        <div class="formula">Price Adjustment (%) = ( CPI<sub>t</sub> − CPI<sub>t−12</sub> ) / CPI<sub>t−12</sub> × 100</div>
+        <p>Escalation is <strong>not automatic</strong> — the contractor must file the request with BLS index sheets between 90 days and the first of the month
+        before the anniversary, or forfeit that year's adjustment.</p>
+        <table>
+            <thead><tr><th>Anchor</th><th>Index basis</th><th>Multiplier</th></tr></thead>
+            <tbody>
+                <tr><td>2025 → 2021 (de-escalation)</td><td>270.970 / 321.943</td><td>0.8417 (−15.83%)</td></tr>
+                <tr><td>2025 → 2026 (bid year)</td><td>Apr 2026 333.020 / Apr 2025 320.795</td><td>1.0381 (+3.81%)</td></tr>
+                <tr><td>2026 → 2029 (CBO/Fed projection)</td><td>2.4% / 2.3% / 2.3%</td><td>1.0716 (+7.16%)</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="v1">
+        <h2>5 · Version 1 — Baseline Formula</h2>
+        <p>Version 1 takes Best Pegasus's internally estimated <strong>Bid Year 2026 bill rates</strong> (the "NYS OGS IT Vendor Rate Estimation").
+        These are built bottom-up from labor benchmarks and the CPI multipliers above, then presented as Region&nbsp;1 averages.</p>
+        <ul>
+            <li>Covers <strong>30 of 31 titles</strong> — the source document omits <em>Business Analyst</em>.</li>
+            <li>Region 1 values are applied across all three regions in the dataset.</li>
+            <li>Resulting competitive position: <strong>expensive third</strong> of the field (e.g., Programmer / R1 / Senior ranks #26 of 33).</li>
+        </ul>
+        <div class="callout warn"><span class="tag">Limitation</span> A purely cost-up baseline ignores where competitors actually sit, so it tends to
+        price above the filter cutoff for commodity roles. This is what motivated Version 1.1.</div>
+    </section>
+
+    <section id="v11">
+        <h2>6 · Version 1.1 — Rank Positioning Formula (current)</h2>
+        <p>Version 1.1 is a <strong>market-relative</strong> rule. For each Title × Region × Skill it inspects the live competitor field and places
+        Best Pegasus at a chosen <strong>target rank</strong> (default #19 of 33 — 18 competitors below us, 14 above).</p>
+        <h3>Method</h3>
+        <p>Let the 32 competitor bill rates be sorted ascending: c<sub>(1)</sub> ≤ c<sub>(2)</sub> ≤ … ≤ c<sub>(32)</sub>. To land at rank&nbsp;19 of 33 we need exactly 18 competitors strictly below us:</p>
+        <div class="formula">choose B*  such that  c<sub>(18)</sub> &lt; B* &lt; c<sub>(19)</sub>     <span class="c">// 18 below, 14 above ⇒ rank 19</span>
+B* = midpoint( c<sub>(18)</sub> , c<sub>(19)</sub> )  rounded to whole cents,
+     nudged so exactly 18 competitors are strictly below and none tie.</div>
+        <ul>
+            <li>Computed independently per region (regional competitor sets differ).</li>
+            <li><strong>356 / 372</strong> roles hit exactly #19. <strong>16 / 372</strong> land at #18 because the 18th and 19th cheapest competitors are
+            <em>tied</em> (an exact #19 is mathematically impossible) — the nearest, more-competitive rank is used.</li>
+            <li>Because it only needs competitor data, it covers <strong>all 31 titles</strong>, including Business Analyst.</li>
+            <li>The target rank is a single tunable parameter — the <a href="positioning.html">Bid Builder</a> lets you re-rank live (e.g., #10, #15) and see the impact.</li>
+        </ul>
+        <div class="callout win"><span class="tag">Strength</span> Self-calibrating to the actual field, region-specific, fully transparent, and reproducible from public award-notice data.</div>
+    </section>
+
+    <section id="data">
+        <h2>7 · Data Foundation &amp; Provenance</h2>
+        <ul>
+            <li><strong>Source:</strong> public OGS award-notice pricing schedules (Attachment 1) for each awarded contractor under Group 73012 / Award 23158.</li>
+            <li><strong>Coverage:</strong> 32 competitor rate cards, each parsed to exactly 372 rows (31 titles × 4 skills × 3 regions).</li>
+            <li><strong>Currency rule:</strong> each vendor's schedule contains several effective-date sections; we keep only that vendor's <strong>latest</strong>
+            effective date — their current contracted (NTE) rate.</li>
+            <li><strong>Best Pegasus:</strong> added as a 33rd bidder per combo, under whichever formula version is selected.</li>
+        </ul>
+        <div class="callout warn"><span class="tag">Provenance caveat</span> Many incumbents' latest effective date is pre-2025 and un-escalated, so the
+        low end of the field reflects <em>stale</em> rates. Ranking a 2026 rate against a 2019 rate is not strictly like-for-like — see Section&nbsp;11, item&nbsp;B.</div>
+    </section>
+
+    <section id="snapshot">
+        <h2>8 · Live Data Snapshot</h2>
+        <p>Computed in your browser from <code>vendors_rates.csv</code> so the numbers in this briefing match the working dataset:</p>
+        <div class="snapshot" id="snapshotGrid"><div class="stat"><div class="n">…</div><div class="l">loading</div></div></div>
+        <p id="snapshotNote" style="font-size:12.5px;color:#5a6678;"></p>
+    </section>
+
+    <section id="margin">
+        <h2>9 · Margin &amp; Cost-Build Decomposition</h2>
+        <p>At a market-positioned bill rate, profit depends on the cost build. Using the standard decomposition:</p>
+        <div class="formula">Net profit = (R<sub>bill</sub> − R<sub>wage</sub>) − R<sub>wage</sub>×(payroll+insurance+overhead) − R<sub>bill</sub>×OGSfee
+Net margin % = Net profit / R<sub>bill</sub> × 100</div>
+        <p>Default assumptions: payroll taxes 13.5%, insurance 3.5%, overhead + G&amp;A 10.5% (of wage); OGS fee 0.75% (of bill); markup sets the wage.</p>
+        <table>
+            <thead><tr><th>Markup</th><th>Implied wage (of bill)</th><th>Net margin (approx)</th></tr></thead>
+            <tbody>
+                <tr><td>30%</td><td>~77%</td><td><strong>~1–2%</strong></td></tr>
+                <tr><td>40%</td><td>~71%</td><td>~8%</td></tr>
+                <tr><td>45%</td><td>~69%</td><td><strong>~11%</strong></td></tr>
+            </tbody>
+        </table>
+        <div class="callout"><span class="tag blue">Key property</span> Because cost loadings are a percentage of wage, net margin is driven almost entirely
+        by the chosen markup, <em>not</em> by the individual role. Rank-#19 bill rates require roughly a <strong>40–45% markup</strong> to clear a healthy (~10%) margin —
+        which in turn lowers the wage we can offer (recruiting risk) and, for high-volume roles, may push us toward the filter cutoff.</div>
+    </section>
+
+    <section id="landscape">
+        <h2>10 · Competitive Landscape</h2>
+        <p>Observed markups across the 32 awarded vendors span an order of magnitude, reflecting three classic archetypes:</p>
+        <table>
+            <thead><tr><th>Archetype</th><th>Typical markup</th><th>Example vendors</th><th>Play</th></tr></thead>
+            <tbody>
+                <tr><td>High-volume / low-margin</td><td>11–33%</td><td>CTS (11%), GCOM (30%), Broad Crossing (33%)</td><td>Win volume, scale-dependent</td></tr>
+                <tr><td>Mid-market</td><td>38–52%</td><td>Mindlance (38%), Sligo (47%), Experis (50%)</td><td>Balanced</td></tr>
+                <tr><td>Aggregator / niche-high</td><td>65–110%</td><td>Spruce (65%), CMA/OST (80%), KBI (110%)</td><td>Margin on scarce roles that bypass the filter</td></tr>
+            </tbody>
+        </table>
+        <p>The source analysis recommends a <strong>tiered markup</strong>: low (15–25%) for commoditized, high-supply roles (Business Analyst, Tester,
+        Technical Writer, Graphic Designer) to pass the 50% filter, and higher (35–45%) for scarce roles (Cloud Engineer, Database/Software Architect,
+        Security Manager) whose pools fall below 5 and bypass the filter entirely.</p>
+    </section>
+
+    <section id="qt">
+        <h2>11 · Quality-Test Checklist <span style="font-size:13px;font-weight:400;color:#5a6678;">— what to scrutinize</span></h2>
+        <ol class="checklist">
+            <li><span class="pill crit">Critical</span> <span class="q">A. Does rank #19 survive the MSP 50% filter?</span>
+                In a 33-bidder, high-volume pool, only the lowest ~16–17 are forwarded. <strong>Rank #19 is in the upper half and would be filtered out
+                before technical evaluation.</strong> Should the target rank be ≤16 for commodity roles?</li>
+            <li><span class="pill crit">Critical</span> <span class="q">B. Are competitor benchmarks current?</span>
+                Many incumbent rates are pre-2025 and un-escalated. Ranking our 2026 rate against stale rates may overstate how "expensive" we look.
+                Should competitor rates be escalated to 2026-equivalents (via CPI) before ranking?</li>
+            <li><span class="pill med">Material</span> <span class="q">C. Flat rank vs. tiered strategy.</span>
+                A single #19 target ignores role scarcity. The doctrine recommends low markups for high-supply roles and high markups for filter-bypassing
+                scarce roles. Should the target rank vary by title?</li>
+            <li><span class="pill med">Material</span> <span class="q">D. Margin sustainability vs. recruiting.</span>
+                Rank-#19 pricing yields ~1–2% margin at a 30% markup; ~10% needs ~45%. Higher markup lowers the wage we can pay (talent risk) and raises
+                filter risk. Is the markup/wage trade-off validated against real recruiting data?</li>
+            <li><span class="pill med">Material</span> <span class="q">E. Wage &amp; cost-build assumptions.</span>
+                Best Pegasus's wage is currently derived at an assumed 30% markup; the cost-build percentages are illustrative. Replace with audited fringe,
+                overhead, G&amp;A, and fee rates.</li>
+            <li><span class="pill low">Check</span> <span class="q">F. Profitability decay over 10 years.</span>
+                NTE rates are fixed; CPI escalation (~2.3–3.8%/yr) typically trails IT wage inflation (~3.5–5.5%/yr). Model margin erosion across the
+                5+2 year term, not just year one.</li>
+            <li><span class="pill low">Check</span> <span class="q">G. Tie-affected roles.</span>
+                16 of 372 combos land at #18 (not #19) due to competitor ties. Confirm this is acceptable.</li>
+            <li><span class="pill low">Check</span> <span class="q">H. Data completeness.</span>
+                Are all 32 cards the full awarded pool? Any primes, resellers, or recent modifications missing?</li>
+            <li><span class="pill low">Check</span> <span class="q">I. Region modeling.</span>
+                V1.1 computes per region (correct); V1 applied Region 1 across all regions. Confirm regional competitor sets are genuinely distinct.</li>
+            <li><span class="pill low">Check</span> <span class="q">J. Escalation compliance.</span>
+                Is there an internal workflow to file the CPI adjustment in the 90-day window every anniversary so margin isn't silently eroded?</li>
+        </ol>
+    </section>
+
+    <section id="risks">
+        <h2>12 · Risks, Assumptions &amp; Limitations</h2>
+        <ul>
+            <li><strong>Assumption:</strong> competitors will re-bid at or near their current Award 23158 rates under 23311 (their 2026 bids are unknown).</li>
+            <li><strong>Assumption:</strong> the MSP filter mechanics carry forward unchanged under Solicitation 23311.</li>
+            <li><strong>Limitation:</strong> displayed Best Pegasus wage and margin are illustrative pending audited cost data.</li>
+            <li><strong>Limitation:</strong> Version 1 omits Business Analyst (source-document gap).</li>
+            <li><strong>Limitation:</strong> ranking treats each vendor's latest effective rate as current regardless of its year.</li>
+        </ul>
+    </section>
+
+    <section id="glossary">
+        <h2>13 · Glossary &amp; Sources</h2>
+        <p><strong>NTE</strong> — Not-To-Exceed (ceiling) bill rate. <strong>HWR</strong> — Hourly Wage Rate (paid to consultant; contractual minimum).
+        <strong>HBR</strong> — Hourly Bill Rate (billed to the State). <strong>MSP</strong> — Managed Service Provider (runs the price filter).
+        <strong>CPI-U</strong> — Consumer Price Index, All Urban Consumers (Series CUUR0000SA0). <strong>IDIQ</strong> — Indefinite-Delivery/Indefinite-Quantity.</p>
+        <p style="font-size:12.5px;color:#5a6678;">Sources: OGS HBITS program pages and Solicitation 23311; Award 23158 pricing schedules (Attachment 1) per vendor;
+        BLS CPI-U; CBO / Federal Reserve inflation projections; internal "NYS OGS IT Vendor Rate Estimation."</p>
+    </section>
+
+    </main>
+</div>
+
+<script>
+    // Live snapshot from the working dataset
+    async function snapshot() {
+        try {
+            const text = await (await fetch('vendors_rates.csv', { cache: 'no-store' })).text();
+            const rows = parseCSV(text);
+            const competitors = rows.filter(r => r.Is_Our_Rate !== 'true');
+            const vendors = new Set(competitors.map(r => r.Contractor_Name));
+            const combos = new Set(competitors.map(r => r.Job_Title + '|' + r.Region + '|' + r.Skill_Level));
+            const markups = competitors.map(r => parseFloat(r.Markup_Percent)).filter(x => !isNaN(x));
+            const mkMin = Math.min(...markups), mkMax = Math.max(...markups);
+
+            // V1.1 rank distribution
+            const groups = {};
+            rows.forEach(r => {
+                if (r.Is_Our_Rate === 'true' && r.Formula_Version !== 'v1.1') return;
+                const k = r.Job_Title + '|' + r.Region + '|' + r.Skill_Level;
+                (groups[k] = groups[k] || []).push(r);
+            });
+            let at19 = 0, atOther = 0;
+            Object.values(groups).forEach(list => {
+                const sorted = list.slice().sort((a, b) => parseFloat(a.Hourly_Bill_Rate) - parseFloat(b.Hourly_Bill_Rate));
+                const idx = sorted.findIndex(r => r.Is_Our_Rate === 'true');
+                if (idx === -1) return;
+                if (idx + 1 === 19) at19++; else atOther++;
+            });
+
+            const cards = [
+                [vendors.size + 1, 'Bidders / role'],
+                [vendors.size, 'Competitors'],
+                [combos.size, 'Role combinations'],
+                [mkMin + '–' + mkMax + '%', 'Competitor markups'],
+                [at19, 'Roles at exactly #19'],
+                [atOther, 'Roles at nearest (ties)']
+            ];
+            document.getElementById('snapshotGrid').innerHTML = cards.map(c =>
+                `<div class="stat"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`).join('');
+            document.getElementById('snapshotNote').textContent =
+                'Version 1.1 places Best Pegasus at rank #19 of ' + (vendors.size + 1) + ' in ' + at19 +
+                ' of ' + (at19 + atOther) + ' roles; the remaining ' + atOther + ' fall to the nearest rank because of competitor ties.';
+        } catch (e) {
+            document.getElementById('snapshotGrid').innerHTML =
+                '<div class="stat"><div class="n">—</div><div class="l">load vendors_rates.csv via a local server</div></div>';
+        }
+    }
+    function parseCSV(csvText) {
+        const out = []; let f = '', row = [], q = false;
+        for (let i = 0; i < csvText.length; i++) {
+            const c = csvText[i];
+            if (q) { if (c === '"') { if (csvText[i+1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+            else { if (c === '"') q = true; else if (c === ',') { row.push(f); f = ''; } else if (c === '\n') { row.push(f); out.push(row); row = []; f = ''; } else if (c === '\r') {} else f += c; }
+        }
+        if (f.length || row.length) { row.push(f); out.push(row); }
+        const h = out[0].map(x => x.trim()); const objs = [];
+        for (let i = 1; i < out.length; i++) { if (out[i].length === 1 && out[i][0] === '') continue; const o = {}; h.forEach((k, j) => o[k] = (out[i][j] || '').trim()); objs.push(o); }
+        return objs;
+    }
+    document.addEventListener('DOMContentLoaded', snapshot);
+</script>
+</body>
+</html>
