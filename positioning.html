@@ -8,11 +8,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh; padding: 20px;
+            background: #eef1f6; min-height: 100vh;
         }
+        .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+        .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+        .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+        .topnav a.current { background:#2a64c4; color:#fff; }
+        .topnav .spacer { flex:1; }
         .container {
-            max-width: 1400px; margin: 0 auto; background: white;
+            max-width: 1400px; margin: 20px auto; background: white;
             border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); overflow: hidden;
         }
         .header {
@@ -100,10 +104,16 @@
     </style>
 </head>
 <body>
+    <div class="topnav">
+        <a href="index.html">Rate Comparison</a>
+        <a href="positioning.html" class="current">Bid Builder</a>
+        <a href="briefing.html">Strategy Briefing</a>
+        <a href="analytics.html">Market Analytics</a>
+        <span class="spacer"></span>
+        <span style="font-size:12px;opacity:.7;">NYS OGS Group 73012 · Award 23158</span>
+    </div>
     <div class="container">
         <div class="header">
-            <a class="backlink" href="index.html">← Comparison</a>
-            <a class="backlink" href="briefing.html" style="left:auto;right:24px;">Strategy Briefing →</a>
             <h1>Best Pegasus Bid Builder</h1>
             <p>Rank-Positioning Formula — recommended NTE bill rates derived from the live competitor field</p>
         </div>

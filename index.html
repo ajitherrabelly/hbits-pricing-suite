@@ -292,7 +292,11 @@
     async function loadData(){
         try{
             const txt = await (await fetch('vendors_rates.csv')).text();
-            parseCSV(txt); updateBanner(); applyFilters(); buildPositions();
+            parseCSV(txt); updateBanner();
+            // Land on a featured high-value role so executives see a meaningful comparison immediately.
+            // (Reset filters to browse the whole market.)
+            setFeaturedRole();
+            applyFilters(); buildPositions();
         }catch(e){
             document.getElementById('tableBody').innerHTML =
               '<tr><td colspan="9" style="text-align:center;padding:30px;">Could not load vendors_rates.csv — serve this folder over a local web server.</td></tr>';
@@ -424,6 +428,12 @@
         note.textContent = filteredData.length>MAX ? `Showing first ${MAX} of ${filteredData.length.toLocaleString()} rows — narrow the filters for a focused view.` : `${filteredData.length.toLocaleString()} rows.`;
     }
 
+    function setFeaturedRole(){
+        const has=v=>[...document.getElementById('jobTitle').options].some(o=>o.value===v);
+        document.getElementById('region').value='Region 1';
+        document.getElementById('skillLevel').value='Expert';
+        document.getElementById('jobTitle').value = has('Software Architect') ? 'Software Architect' : (document.getElementById('jobTitle').options[1]||{}).value||'';
+    }
     function quickPick(){
         // jump to a representative single role for an instant, meaningful comparison
         if(!val('jobTitle')) document.getElementById('jobTitle').value='Software Architect';
