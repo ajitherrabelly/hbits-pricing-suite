@@ -1,0 +1,31 @@
+{
+  "eval_id": 4,
+  "eval_name": "financial-score-positioning",
+  "prompt": "In the master bid evaluation, my average NTE rate across the OGS market basket is estimated at $112.50/hour. Market intelligence suggests the lowest bidder will average around $108.00/hour...",
+  "assertions": [
+    {
+      "id": "score_calculation",
+      "text": "Correctly calculates financial score using FS = 30 × (Lowest / Yours)",
+      "passed": true,
+      "evidence": "30 × ($108/$112.50) = 28.8 points, correct application of formula"
+    },
+    {
+      "id": "gap_analysis",
+      "text": "Accurately identifies points lost and provides rate adjustment options",
+      "passed": true,
+      "evidence": "Identifies 1.2-point gap, calculates required rate of $111.72 for 29 points, shows margin impact analysis"
+    },
+    {
+      "id": "roi_analysis",
+      "text": "Provides clear ROI analysis of rate reduction vs. margin compression",
+      "passed": true,
+      "evidence": "Shows $78K annual margin loss for 1.2-point gain (0.36 points in 70/30 split), recommends against rate cut"
+    },
+    {
+      "id": "strategic_recommendation",
+      "text": "Provides actionable competitive positioning strategy with long-term contract perspective",
+      "passed": true,
+      "evidence": "Recommends holding rate, winning on technical merit, addresses 10-year margin decay risk at $108 bid level, positions margin sustainability as differentiator"
+    }
+  ]
+}

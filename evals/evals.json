@@ -1,0 +1,40 @@
+{
+  "skill_name": "hbits-pricing-calculator",
+  "evals": [
+    {
+      "id": 1,
+      "name": "bill-rate-decomposition",
+      "prompt": "I'm pricing a Senior Systems Administrator role for NYC. The minimum wage I want to submit is $82/hour, and I'm targeting a 31% markup. Walk me through the bill rate calculation and decompose the markup into its cost components: payroll taxes (13.5%), insurance (3.5%), corporate overhead (10.5%), and OGS fee (0.75%). What's my profit margin, and is this competitive for HBITS?",
+      "expected_output": "Calculation of NTE rate using HBR_NTE = HWR × (1 + M), breakdown of all cost components, profit margin analysis, competitiveness assessment",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "strategic-headroom-analysis",
+      "prompt": "The historical baseline rate for a Senior Java Developer (Level 4, NYC) from the predecessor HBITS contract was $95/hour effective July 2025. Using the 4% strategic headroom multiplier, what should I bid as my NTE rate? Calculate the absolute and percentage headroom, and tell me under what annual wage inflation rate my margin begins to erode if I apply a 32% markup.",
+      "expected_output": "Recommended NTE rate with 4% multiplier, headroom analysis in dollars and percentage, wage inflation sensitivity analysis, margin cushion estimate",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "cpi-escalation-seven-year",
+      "prompt": "I'm submitting an NTE rate of $120/hour in my master bid Year 1 (2026). My base wage cost is $85/hour with a 32% markup. Model the 7-year contract lifecycle assuming: (a) annual CPI-U increases average 2.3%, (b) wage inflation averages 3.5% annually (IT wages inflate faster than CPI), and (c) I submit CPI adjustments every year. Show me year-by-year bill rates, wage costs, and realized margins. In which year does my margin fall below 35%?",
+      "expected_output": "Year-by-year projection table with NTE rates, wage costs, gross margins, and margin percentages; identification of margin threshold crossing; cumulative margin erosion analysis",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "financial-score-positioning",
+      "prompt": "In the master bid evaluation, my average NTE rate across the OGS market basket is estimated at $112.50/hour. Market intelligence suggests the lowest bidder will average around $108.00/hour. Using the financial score formula FS_i = 30 × (Lowest / Mine), calculate my financial score. How many points do I lose vs. the lowest bidder? If I wanted to earn 29 points, what average rate would I need?",
+      "expected_output": "Financial score calculation, points difference, rate adjustment needed for score targets, competitive positioning recommendation",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "profitability-stress-test",
+      "prompt": "Stress-test my pricing under three wage inflation scenarios. Base case: NTE $120/hour, wage $85/hour, 32% markup, minimum acceptable margin 5%. Run scenarios for: (1) Conservative – wage inflation at 2.5% annually (CPI track), (2) Moderate – wage inflation at 3.8% annually (CPI + 1.5%), and (3) Aggressive – wage inflation at 5.3% annually (IT market tightness). For each scenario, show Year 1, Year 4, and Year 7 margins. At what annual wage inflation rate does my margin hit exactly 5%?",
+      "expected_output": "Three scenario projections with Year 1, 4, 7 margins; break-even wage inflation calculation; risk assessment and recommendation; visualization of margin decay trajectory",
+      "files": []
+    }
+  ]
+}

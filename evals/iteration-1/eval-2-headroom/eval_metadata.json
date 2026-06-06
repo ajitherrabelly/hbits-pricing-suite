@@ -1,0 +1,31 @@
+{
+  "eval_id": 2,
+  "eval_name": "strategic-headroom-analysis",
+  "prompt": "The historical baseline rate for a Senior Java Developer (Level 4, NYC) from the predecessor HBITS contract was $95/hour effective July 2025. Using the 4% strategic headroom multiplier, what should I bid as my NTE rate...",
+  "assertions": [
+    {
+      "id": "apply_multiplier",
+      "text": "Correctly applies 4% multiplier to historical baseline",
+      "passed": true,
+      "evidence": "Output shows $95 × 1.04 = $98.80/hour, correct application of 1.04 scaling factor"
+    },
+    {
+      "id": "headroom_calculation",
+      "text": "Calculates absolute and percentage headroom accurately",
+      "passed": true,
+      "evidence": "Absolute headroom: $3.80/hour; Percentage: 4.0% - both correct"
+    },
+    {
+      "id": "wage_inflation_sensitivity",
+      "text": "Identifies critical wage inflation threshold and margin erosion rate",
+      "passed": true,
+      "evidence": "Correctly identifies 4.0% annual wage inflation as break-even point, explains why margin compression occurs"
+    },
+    {
+      "id": "defensibility_assessment",
+      "text": "Provides defensibility assessment with risk factors and recommendations",
+      "passed": true,
+      "evidence": "Clearly flags rate as not defensible without increased headroom, recommends 6-7% multiplier, suggests escalation language"
+    }
+  ]
+}

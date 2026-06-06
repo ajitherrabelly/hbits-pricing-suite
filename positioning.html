@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBITS Bid Builder — Rank Positioning</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh; padding: 20px;
+        }
+        .container {
+            max-width: 1400px; margin: 0 auto; background: white;
+            border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1f8a54 0%, #155e8a 100%);
+            color: white; padding: 30px; text-align: center; position: relative;
+        }
+        .header h1 { font-size: 30px; margin-bottom: 8px; }
+        .header p { font-size: 14px; opacity: 0.92; }
+        .header .backlink {
+            position: absolute; left: 24px; top: 28px; color: #fff;
+            text-decoration: none; font-weight: 600; font-size: 14px;
+            background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 6px;
+        }
+        .header .backlink:hover { background: rgba(255,255,255,0.28); }
+
+        .methodology {
+            background: #eef6f0; border-left: 4px solid #1f8a54;
+            padding: 16px 24px; font-size: 13.5px; color: #2a3b30; line-height: 1.6;
+        }
+        .methodology code { background: #d7ebdd; padding: 1px 6px; border-radius: 4px; }
+
+        .filters-section { background: #f8f9fa; padding: 24px 30px; border-bottom: 1px solid #e9ecef; }
+        .filters-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px; margin-bottom: 18px;
+        }
+        .filter-group { display: flex; flex-direction: column; }
+        .filter-group label { font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px; }
+        select, input {
+            padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
+        }
+        select:focus, input:focus { outline: none; border-color: #1f8a54; box-shadow: 0 0 0 3px rgba(31,138,84,0.12); }
+
+        .button-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        button {
+            padding: 10px 18px; border: none; border-radius: 6px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; font-size: 14px;
+        }
+        .btn-secondary { background: #e9ecef; color: #333; }
+        .btn-secondary:hover { background: #dee2e6; }
+        .btn-primary { background: #1f8a54; color: #fff; }
+        .btn-primary:hover { background: #19704494; background: #167045; }
+
+        .results-section { padding: 24px 30px; }
+        .results-info {
+            margin-bottom: 18px; padding: 14px 16px; background: #eef6f0;
+            border-radius: 6px; color: #333; font-size: 14px;
+        }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead { background: #1f8a54; color: white; }
+        th { padding: 13px 14px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+        td { padding: 11px 14px; border-bottom: 1px solid #e9ecef; }
+        tbody tr:hover { background: #f4faf6; }
+
+        .region-badge, .skill-badge {
+            display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;
+        }
+        .region-badge { background: #e9ecef; color: #333; }
+        .skill-badge { background: #d4e7f5; color: #1e3a8a; }
+        .rec-cell { text-align: right; font-weight: 700; color: #167045; font-size: 14px; }
+        .num-cell { text-align: right; color: #555; }
+        .gap-cell { text-align: right; font-weight: 600; }
+        .rank-badge {
+            display: inline-block; min-width: 80px; padding: 5px 10px; border-radius: 6px;
+            font-weight: 700; font-size: 13px; text-align: center; color: #fff;
+        }
+        .rank-on { background: #1f8a54; }   /* exactly on target */
+        .rank-off { background: #e0a32e; }  /* nearest (boundary tie) */
+        .no-results { text-align: center; padding: 40px; color: #999; }
+        .target-input { max-width: 120px; font-weight: 700; }
+        .cost-input { max-width: 110px; }
+
+        .delta-up { color: #c4413a; font-weight: 600; }   /* v1.1 higher than v1 */
+        .delta-down { color: #167045; font-weight: 600; } /* v1.1 lower than v1 */
+        .marg-good { color: #167045; font-weight: 700; }
+        .marg-mid  { color: #b3771a; font-weight: 700; }
+        .marg-bad  { color: #c4413a; font-weight: 700; }
+        .cost-fieldset {
+            border: 1px solid #dce6df; border-radius: 8px; padding: 14px 16px 4px;
+            margin-bottom: 18px; background: #fbfdfc;
+        }
+        .cost-fieldset legend { font-weight: 700; color: #167045; font-size: 13px; padding: 0 6px; }
+        .cost-row { display: flex; flex-wrap: wrap; gap: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a class="backlink" href="index.html">← Comparison</a>
+            <h1>Best Pegasus Bid Builder</h1>
+            <p>Rank-Positioning Formula — recommended NTE bill rates derived from the live competitor field</p>
+        </div>
+
+        <div class="methodology">
+            <strong>How it works:</strong> For every Job Title × Region × Skill, the competitor bill rates are ranked ascending
+            (rank&nbsp;#1 = lowest / most competitive). Best Pegasus's recommended rate is placed to land at your
+            <strong>Target Rank</strong> — e.g. <code>#19 of 33</code> means 18 competitors priced below us and 14 above.
+            Where the boundary competitors are tied (an exact target is impossible), the nearest more-competitive rank is used (shown in amber).
+            Recommended wage = bill ÷ (1 + markup).
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="targetRank">Target Rank (of 33)</label>
+                    <input type="number" id="targetRank" class="target-input" value="19" min="1" max="33" oninput="recompute()">
+                </div>
+                <div class="filter-group">
+                    <label for="markup">Markup % (for wage)</label>
+                    <input type="number" id="markup" class="target-input" value="30" min="0" max="200" step="0.5" oninput="recompute()">
+                </div>
+                <div class="filter-group">
+                    <label for="search">Search Job Title</label>
+                    <input type="text" id="search" placeholder="Type to search..." oninput="render()" autocomplete="off">
+                </div>
+                <div class="filter-group">
+                    <label for="region">Region</label>
+                    <select id="region" onchange="render()">
+                        <option value="">All Regions</option>
+                        <option value="Region 1">Region 1</option>
+                        <option value="Region 2">Region 2</option>
+                        <option value="Region 3">Region 3</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="skill">Skill Level</label>
+                    <select id="skill" onchange="render()">
+                        <option value="">All Skill Levels</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Mid-Level">Mid-Level</option>
+                        <option value="Senior">Senior</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+            </div>
+            <fieldset class="cost-fieldset">
+                <legend>Margin assumptions (cost build, % of wage; OGS fee % of bill)</legend>
+                <div class="cost-row">
+                    <div class="filter-group">
+                        <label for="payroll">Payroll taxes %</label>
+                        <input type="number" id="payroll" class="cost-input" value="13.5" min="0" step="0.1" oninput="recompute()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="insurance">Insurance %</label>
+                        <input type="number" id="insurance" class="cost-input" value="3.5" min="0" step="0.1" oninput="recompute()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="overhead">Overhead + G&amp;A %</label>
+                        <input type="number" id="overhead" class="cost-input" value="10.5" min="0" step="0.1" oninput="recompute()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="ogsfee">OGS fee %</label>
+                        <input type="number" id="ogsfee" class="cost-input" value="0.75" min="0" step="0.05" oninput="recompute()">
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="button-group">
+                <button class="btn-secondary" onclick="setSort('title')">Sort: By Title</button>
+                <button class="btn-secondary" onclick="setSort('rec')">Sort: Rate Low → High</button>
+                <button class="btn-secondary" onclick="setSort('gap')">Sort: Biggest Gap to #1</button>
+                <button class="btn-secondary" onclick="setSort('margin')">Sort: Lowest Margin First</button>
+                <button class="btn-primary" onclick="downloadCSV()">⤓ Export Bid Sheet (CSV)</button>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="results-info" id="summary">Loading competitor data…</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Region</th>
+                            <th>Skill Level</th>
+                            <th>V1 Baseline</th>
+                            <th>V1.1 Rec. Bill</th>
+                            <th>Δ vs V1</th>
+                            <th>Rank</th>
+                            <th>Wage</th>
+                            <th>Net Profit/hr</th>
+                            <th>Net Margin</th>
+                            <th>Lowest Bid</th>
+                            <th>Gap to #1</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+                <div id="noResults" class="no-results" style="display:none;"><p>No combinations match your search.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let competitors = [];   // rows where Is_Our_Rate !== 'true'
+        let groups = {};        // "title||region||skill" -> sorted bill cents
+        let v1ByKey = {};       // "title||region||skill" -> v1 baseline bill (number)
+        let recommendations = [];
+        let currentSort = 'title';
+
+        async function loadData() {
+            try {
+                const resp = await fetch('vendors_rates.csv', { cache: 'no-store' });
+                const text = await resp.text();
+                const rows = parseCSV(text);
+                competitors = rows.filter(r => r.Is_Our_Rate !== 'true');
+                v1ByKey = {};
+                rows.filter(r => r.Is_Our_Rate === 'true' && r.Formula_Version === 'v1')
+                    .forEach(r => { v1ByKey[r.Job_Title + '||' + r.Region + '||' + r.Skill_Level] = parseFloat(r.Hourly_Bill_Rate); });
+                buildGroups();
+                recompute();
+            } catch (e) {
+                document.getElementById('summary').textContent = 'Error loading vendors_rates.csv: ' + e;
+            }
+        }
+
+        // RFC-4180 parser (vendor names contain commas)
+        function parseCSV(csvText) {
+            const out = []; let field = '', row = [], inQ = false;
+            for (let i = 0; i < csvText.length; i++) {
+                const c = csvText[i];
+                if (inQ) {
+                    if (c === '"') { if (csvText[i+1] === '"') { field += '"'; i++; } else inQ = false; }
+                    else field += c;
+                } else {
+                    if (c === '"') inQ = true;
+                    else if (c === ',') { row.push(field); field = ''; }
+                    else if (c === '\n') { row.push(field); out.push(row); row = []; field = ''; }
+                    else if (c === '\r') {}
+                    else field += c;
+                }
+            }
+            if (field.length || row.length) { row.push(field); out.push(row); }
+            const headers = out[0].map(h => h.trim());
+            const objs = [];
+            for (let i = 1; i < out.length; i++) {
+                if (out[i].length === 1 && out[i][0] === '') continue;
+                const o = {}; headers.forEach((h, idx) => o[h] = (out[i][idx] || '').trim());
+                objs.push(o);
+            }
+            return objs;
+        }
+
+        function buildGroups() {
+            groups = {};
+            competitors.forEach(r => {
+                const key = r.Job_Title + '||' + r.Region + '||' + r.Skill_Level;
+                const cents = Math.round(parseFloat(r.Hourly_Bill_Rate) * 100);
+                (groups[key] = groups[key] || []).push(cents);
+            });
+            Object.values(groups).forEach(a => a.sort((x, y) => x - y));
+        }
+
+        // exactly `need` competitors strictly below, none equal -> clean rank need+1
+        function findClean(comp, need) {
+            const n = comp.length;
+            if (need < 0 || need > n) return null;
+            const lo = need >= 1 ? comp[need - 1] : comp[0] - 2;
+            const hi = need < n ? comp[need] : comp[n - 1] + 2;
+            const mid = Math.floor((lo + hi) / 2);
+            for (let d = 0; d <= 6000; d++) {
+                for (const t of [mid + d, mid - d]) {
+                    let below = 0, equal = 0;
+                    for (const x of comp) { if (x < t) below++; else if (x === t) equal++; }
+                    if (below === need && equal === 0) return t;
+                }
+            }
+            return null;
+        }
+
+        function targetCents(comp, targetRank) {
+            const ideal = targetRank - 1;
+            const order = [ideal];
+            for (let d = 1; d < comp.length + 1; d++) {
+                if (ideal - d >= 0) order.push(ideal - d);
+                if (ideal + d <= comp.length) order.push(ideal + d);
+            }
+            for (const nb of order) {
+                const t = findClean(comp, nb);
+                if (t !== null) return { cents: t, rank: nb + 1 };
+            }
+            return null;
+        }
+
+        function recompute() {
+            let target = parseInt(document.getElementById('targetRank').value, 10);
+            if (isNaN(target) || target < 1) target = 1;
+            const markup = parseFloat(document.getElementById('markup').value) || 0;
+            const payroll = (parseFloat(document.getElementById('payroll').value) || 0) / 100;
+            const insurance = (parseFloat(document.getElementById('insurance').value) || 0) / 100;
+            const overhead = (parseFloat(document.getElementById('overhead').value) || 0) / 100;
+            const ogsfee = (parseFloat(document.getElementById('ogsfee').value) || 0) / 100;
+
+            recommendations = [];
+            Object.keys(groups).forEach(key => {
+                const [title, region, skill] = key.split('||');
+                const comp = groups[key];
+                const totalBidders = comp.length + 1; // + Best Pegasus
+                const clampedTarget = Math.min(target, totalBidders);
+                const res = targetCents(comp, clampedTarget);
+                if (!res) return;
+                const bill = res.cents / 100;
+                const wage = bill / (1 + markup / 100);
+                // cost build: payroll/insurance/overhead are % of wage; OGS fee % of bill
+                const costAboveWage = wage * (payroll + insurance + overhead) + bill * ogsfee;
+                const netProfit = (bill - wage) - costAboveWage;
+                const margin = bill > 0 ? (netProfit / bill) * 100 : 0;
+                const v1bill = v1ByKey[key];
+                recommendations.push({
+                    title, region, skill,
+                    bill, wage,
+                    rank: res.rank, total: totalBidders,
+                    onTarget: res.rank === clampedTarget,
+                    lowest: comp[0] / 100,
+                    highest: comp[comp.length - 1] / 100,
+                    gap: bill - comp[0] / 100,
+                    v1bill: (v1bill === undefined ? null : v1bill),
+                    delta: (v1bill === undefined ? null : bill - v1bill),
+                    netProfit, margin
+                });
+            });
+            render();
+        }
+
+        function setSort(mode) { currentSort = mode; render(); }
+
+        function render() {
+            const search = (document.getElementById('search').value || '').toLowerCase();
+            const region = document.getElementById('region').value;
+            const skill = document.getElementById('skill').value;
+            const skillOrder = { 'Junior': 0, 'Mid-Level': 1, 'Senior': 2, 'Expert': 3 };
+
+            let rows = recommendations.filter(r =>
+                (!search || r.title.toLowerCase().includes(search)) &&
+                (!region || r.region === region) &&
+                (!skill || r.skill === skill));
+
+            if (currentSort === 'rec') rows.sort((a, b) => a.bill - b.bill);
+            else if (currentSort === 'gap') rows.sort((a, b) => b.gap - a.gap);
+            else if (currentSort === 'margin') rows.sort((a, b) => a.margin - b.margin);
+            else rows.sort((a, b) => a.title.localeCompare(b.title) || a.region.localeCompare(b.region) || skillOrder[a.skill] - skillOrder[b.skill]);
+
+            const target = document.getElementById('targetRank').value;
+            const exact = recommendations.filter(r => r.onTarget).length;
+            const avgMargin = rows.length ? rows.reduce((s, r) => s + r.margin, 0) / rows.length : 0;
+            document.getElementById('summary').innerHTML =
+                `<strong>${rows.length}</strong> roles shown · Target rank <strong>#${target}</strong> · ` +
+                `<strong style="color:#167045;">${exact}</strong> of ${recommendations.length} hit the exact target ` +
+                `(${recommendations.length - exact} nearest due to ties) · ` +
+                `Avg net margin <strong>${avgMargin.toFixed(1)}%</strong> at current assumptions.`;
+
+            const tbody = document.getElementById('tbody');
+            const noRes = document.getElementById('noResults');
+            if (!rows.length) { tbody.innerHTML = ''; noRes.style.display = 'block'; return; }
+            noRes.style.display = 'none';
+
+            tbody.innerHTML = rows.map(r => {
+                const badgeCls = r.onTarget ? 'rank-on' : 'rank-off';
+                const v1 = r.v1bill === null ? '<span style="color:#aaa;">—</span>' : '$' + r.v1bill.toFixed(2);
+                let delta = '<span style="color:#aaa;">—</span>';
+                if (r.delta !== null) {
+                    const cls = r.delta > 0 ? 'delta-up' : (r.delta < 0 ? 'delta-down' : '');
+                    const sign = r.delta > 0 ? '+' : '';
+                    delta = `<span class="${cls}">${sign}$${r.delta.toFixed(2)}</span>`;
+                }
+                const mCls = r.margin >= 5 ? 'marg-good' : (r.margin >= 0 ? 'marg-mid' : 'marg-bad');
+                return `<tr>
+                    <td><strong>${r.title}</strong></td>
+                    <td><span class="region-badge">${r.region}</span></td>
+                    <td><span class="skill-badge">${r.skill}</span></td>
+                    <td class="num-cell">${v1}</td>
+                    <td class="rec-cell">$${r.bill.toFixed(2)}</td>
+                    <td class="num-cell">${delta}</td>
+                    <td><span class="rank-badge ${badgeCls}">#${r.rank} of ${r.total}</span></td>
+                    <td class="num-cell">$${r.wage.toFixed(2)}</td>
+                    <td class="num-cell">$${r.netProfit.toFixed(2)}</td>
+                    <td class="num-cell ${mCls}">${r.margin.toFixed(1)}%</td>
+                    <td class="num-cell">$${r.lowest.toFixed(2)}</td>
+                    <td class="gap-cell">+$${r.gap.toFixed(2)}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function downloadCSV() {
+            const target = document.getElementById('targetRank').value;
+            const header = ['Job_Title','Region','Skill_Level','V1_Baseline_Bill','V1.1_Recommended_Bill','Delta_vs_V1','Achieved_Rank','Total_Bidders','Wage','Net_Profit_per_hr','Net_Margin_pct','Lowest_Bid','Highest_Bid','Gap_to_1'];
+            const lines = [header.join(',')];
+            // export in stable title/region/skill order
+            const skillOrder = { 'Junior': 0, 'Mid-Level': 1, 'Senior': 2, 'Expert': 3 };
+            const sorted = recommendations.slice().sort((a,b)=>
+                a.title.localeCompare(b.title) || a.region.localeCompare(b.region) || skillOrder[a.skill]-skillOrder[b.skill]);
+            sorted.forEach(r => {
+                lines.push([r.title, r.region, r.skill,
+                    r.v1bill === null ? '' : r.v1bill.toFixed(2),
+                    r.bill.toFixed(2),
+                    r.delta === null ? '' : r.delta.toFixed(2),
+                    r.rank, r.total, r.wage.toFixed(2), r.netProfit.toFixed(2), r.margin.toFixed(1),
+                    r.lowest.toFixed(2), r.highest.toFixed(2), r.gap.toFixed(2)].join(','));
+            });
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'best_pegasus_bid_sheet_rank' + target + '.csv';
+            a.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

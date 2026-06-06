@@ -1,0 +1,31 @@
+{
+  "eval_id": 1,
+  "eval_name": "bill-rate-decomposition",
+  "prompt": "I'm pricing a Senior Systems Administrator role for NYC. The minimum wage I want to submit is $82/hour, and I'm targeting a 31% markup. Walk me through the bill rate calculation and decompose the markup into its cost components...",
+  "assertions": [
+    {
+      "id": "calc_nte_rate",
+      "text": "Correctly calculates NTE bill rate using HBR_NTE = HWR × (1 + M) formula",
+      "passed": true,
+      "evidence": "Output shows $82 × 1.31 = $107.42/hour, matching expected formula application"
+    },
+    {
+      "id": "decompose_markup",
+      "text": "Decomposes 31% markup into all cost components with accurate allocation",
+      "passed": true,
+      "evidence": "Table shows payroll taxes ($11.07), insurance ($2.87), overhead ($8.61), OGS fee ($0.81), and net profit ($2.06) correctly calculated"
+    },
+    {
+      "id": "margin_analysis",
+      "text": "Identifies profit margin and explains significance relative to market norms",
+      "passed": true,
+      "evidence": "Correctly identifies 1.92% net profit margin, flags it as below market (4-6%), and explains the gap"
+    },
+    {
+      "id": "competitive_assessment",
+      "text": "Provides actionable competitive assessment and strategic recommendations",
+      "passed": true,
+      "evidence": "Recommends options to improve margin, validates assumptions, and gives clear action items"
+    }
+  ]
+}

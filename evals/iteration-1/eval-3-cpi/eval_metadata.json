@@ -1,0 +1,37 @@
+{
+  "eval_id": 3,
+  "eval_name": "cpi-escalation-seven-year",
+  "prompt": "I'm submitting an NTE rate of $120/hour in my master bid Year 1 (2026). My base wage cost is $85/hour with a 32% markup. Model the 7-year contract lifecycle...",
+  "assertions": [
+    {
+      "id": "year_by_year_table",
+      "text": "Produces comprehensive year-by-year projection with all required columns",
+      "passed": true,
+      "evidence": "Output includes Year, Date, Bill Rate, Wage Cost, Margin $, Margin % for all 7 years"
+    },
+    {
+      "id": "cpi_calculation",
+      "text": "Applies correct CPI adjustments (2.3% annually) to bill rates",
+      "passed": true,
+      "evidence": "Year 1: $120.00 → Year 2: $122.76 (2.3% increase), continuing correctly through Year 7"
+    },
+    {
+      "id": "wage_escalation",
+      "text": "Applies correct wage inflation (3.5% annually) to wage costs",
+      "passed": true,
+      "evidence": "Year 1: $85.00 → Year 2: $87.98 (3.5% increase), continuing correctly through Year 7"
+    },
+    {
+      "id": "margin_erosion",
+      "text": "Identifies margin crossing below 35% threshold and explains structural cause",
+      "passed": true,
+      "evidence": "Correctly identifies Year 1 margin at 29.17% (below threshold), shows cumulative 5.13pp erosion, attributes to wage inflation exceeding CPI escalation"
+    },
+    {
+      "id": "strategic_insight",
+      "text": "Provides actionable strategic implications and repricing recommendations",
+      "passed": true,
+      "evidence": "Recommends Year 1 NTE of $130.77 to achieve 35% margin, identifies wage-CPI gap as profitability leak, suggests escalation mechanisms"
+    }
+  ]
+}

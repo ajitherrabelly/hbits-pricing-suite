@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBITS Vendor Rate Comparison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .filters-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        select, input {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .results-section {
+            padding: 30px;
+        }
+
+        .results-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: #667eea;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .our-rate {
+            background: #ffe6e6 !important;
+            color: #c41e3a;
+            font-weight: 700;
+        }
+
+        .our-rate:hover {
+            background: #ffd9d9 !important;
+        }
+
+        .sno {
+            text-align: center;
+            width: 50px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .region-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #d4e7f5;
+            color: #1e3a8a;
+        }
+
+        .wage-cell {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .bill-cell {
+            text-align: right;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .no-results p {
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+        }
+
+        .tabs {
+            display: flex;
+            background: #2d3552;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px 20px;
+            text-align: center;
+            color: #c3cbe6;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            border: none;
+            background: transparent;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+        .tab.active {
+            color: #fff;
+            background: rgba(255,255,255,0.10);
+            border-bottom: 3px solid #8aa0ff;
+        }
+
+        .tabs-version { background: #1c2340; }
+        .tabs-version .tab.active { border-bottom-color: #5fd99a; }
+        .tab-link {
+            flex: 0 0 auto; text-decoration: none; display: flex;
+            align-items: center; justify-content: center; color: #9fe7c0;
+        }
+        .tab-link:hover { color: #fff; }
+
+        .version-banner {
+            padding: 12px 30px; font-size: 13.5px; color: #2a3b30;
+            background: #eef6f0; border-bottom: 1px solid #dceee2;
+        }
+        .version-banner strong { color: #167045; }
+        .version-banner.v1 { background: #fdf3e8; border-bottom-color: #f3e2cb; }
+        .version-banner.v1 strong { color: #b3771a; }
+
+        .rank-badge {
+            display: inline-block;
+            min-width: 78px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            text-align: center;
+            color: #fff;
+        }
+        .rank-good { background: #2e9e5b; }   /* top third - cheapest, most competitive */
+        .rank-mid  { background: #e0a32e; }   /* middle third */
+        .rank-bad  { background: #c4413a; }   /* bottom third - most expensive */
+        .rank-na   { background: #9aa0ad; }   /* not bid */
+
+        .pct-cell { text-align: right; color: #555; }
+        .gap-cell { text-align: right; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HBITS Vendor Rate Comparison</h1>
+            <p>NYS OGS Group 73012 - Hourly-Based IT Services Rate Analysis</p>
+        </div>
+
+        <div class="tabs tabs-version">
+            <button class="tab active" id="ver-v1_1" onclick="switchVersion('v1.1')">Version 1.1 — Rank&nbsp;#19 Positioning</button>
+            <button class="tab" id="ver-v1" onclick="switchVersion('v1')">Version 1 — Baseline (Doc)</button>
+            <a class="tab tab-link" href="positioning.html">Bid Builder ↗</a>
+        </div>
+
+        <div class="version-banner" id="versionBanner"></div>
+
+        <div class="tabs">
+            <button class="tab active" id="tab-compare" onclick="switchTab('compare')">Rate Comparison</button>
+            <button class="tab" id="tab-positions" onclick="switchTab('positions')">Best Pegasus Positions</button>
+        </div>
+
+        <div id="view-compare">
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="region">Region</label>
+                    <select id="region">
+                        <option value="">All Regions</option>
+                        <option value="Region 1">Region 1</option>
+                        <option value="Region 2">Region 2</option>
+                        <option value="Region 3">Region 3</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="skillLevel">Skill Level</label>
+                    <select id="skillLevel">
+                        <option value="">All Skill Levels</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Mid-Level">Mid-Level</option>
+                        <option value="Senior">Senior</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="jobTitle">Job Title</label>
+                    <select id="jobTitle">
+                        <option value="">All Job Titles</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="applyFilters()">Apply Filters</button>
+                <button class="btn-secondary" onclick="sortByBillRate('desc')">Bill Rate: High → Low</button>
+                <button class="btn-secondary" onclick="sortByBillRate('asc')">Bill Rate: Low → High</button>
+                <button class="btn-secondary" onclick="clearFilters()">Clear Filters</button>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="results-info">
+                Showing <span id="resultCount">0</span> rates | <strong style="color: #c41e3a;">Bold Red = Best Pegasus (Your Company)</strong>
+                <span id="rankInfo"></span>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Contractor Name</th>
+                            <th>Region</th>
+                            <th>Job Title</th>
+                            <th>Skill Level</th>
+                            <th>Hourly Wage</th>
+                            <th>Bill Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+                <div id="noResults" class="no-results" style="display:none;">
+                    <p>No rates found matching your filters. Try adjusting your search.</p>
+                </div>
+            </div>
+        </div>
+        </div><!-- /view-compare -->
+
+        <div id="view-positions" style="display:none;">
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="posSearch">Search Job Title</label>
+                        <input type="text" id="posSearch" placeholder="Type to search titles..." oninput="renderPositions()" autocomplete="off">
+                    </div>
+                    <div class="filter-group">
+                        <label for="posRegion">Region</label>
+                        <select id="posRegion" onchange="renderPositions()">
+                            <option value="">All Regions</option>
+                            <option value="Region 1">Region 1</option>
+                            <option value="Region 2">Region 2</option>
+                            <option value="Region 3">Region 3</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="posSkill">Skill Level</label>
+                        <select id="posSkill" onchange="renderPositions()">
+                            <option value="">All Skill Levels</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Mid-Level">Mid-Level</option>
+                            <option value="Senior">Senior</option>
+                            <option value="Expert">Expert</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="sortPositions('rank')">Sort: Best Rank First</button>
+                    <button class="btn-secondary" onclick="sortPositions('rankDesc')">Sort: Worst Rank First</button>
+                    <button class="btn-secondary" onclick="sortPositions('title')">Sort: By Title</button>
+                    <button class="btn-secondary" onclick="clearPositionFilters()">Clear</button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div class="results-info">
+                    Best Pegasus position in <span id="posCount">0</span> combinations &nbsp;|&nbsp;
+                    <span class="rank-badge rank-good" style="min-width:0;padding:2px 8px;">Top third</span>
+                    <span class="rank-badge rank-mid" style="min-width:0;padding:2px 8px;">Middle</span>
+                    <span class="rank-badge rank-bad" style="min-width:0;padding:2px 8px;">Bottom third</span>
+                    <span class="rank-badge rank-na" style="min-width:0;padding:2px 8px;">Not bid</span>
+                    <span style="color:#555;"> — rank #1 = lowest (most competitive) bill rate</span>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Region</th>
+                                <th>Skill Level</th>
+                                <th>Our Bill Rate</th>
+                                <th>Rank</th>
+                                <th>Lowest Bid</th>
+                                <th>Gap to #1</th>
+                                <th>Percentile</th>
+                            </tr>
+                        </thead>
+                        <tbody id="posTableBody"></tbody>
+                    </table>
+                    <div id="posNoResults" class="no-results" style="display:none;">
+                        <p>No combinations match your search.</p>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /view-positions -->
+    </div>
+
+    <script>
+        let allData = [];
+        let filteredData = [];
+        let currentSort = { column: 'Hourly_Bill_Rate', direction: 'asc' };
+        let currentVersion = 'v1.1';
+
+        const VERSION_META = {
+            'v1.1': {
+                cls: '',
+                label: 'Version 1.1 — Rank #19 Positioning',
+                text: 'Best Pegasus rates are <strong>derived from the live competitor field</strong> to land at <strong>rank #19 of 33</strong> (18 competitors below, 14 above) in every role. Covers all 31 titles.'
+            },
+            'v1': {
+                cls: 'v1',
+                label: 'Version 1 — Baseline (Estimation Doc)',
+                text: 'Best Pegasus rates come from the original <strong>NYS OGS IT Vendor Rate Estimation</strong> (Bid Year 2026). Covers <strong>30 titles</strong> (Business Analyst not in the source doc) and tends to sit in the expensive third of the field.'
+            }
+        };
+
+        // competitors (always) + Best Pegasus rows for the selected formula version
+        function activeData() {
+            return allData.filter(r => r.Is_Our_Rate === 'false' || r.Formula_Version === currentVersion);
+        }
+
+        function switchVersion(v) {
+            currentVersion = v;
+            document.getElementById('ver-v1_1').classList.toggle('active', v === 'v1.1');
+            document.getElementById('ver-v1').classList.toggle('active', v === 'v1');
+            updateVersionBanner();
+            buildPositions();
+            applyFilters();
+        }
+
+        function updateVersionBanner() {
+            const m = VERSION_META[currentVersion];
+            const b = document.getElementById('versionBanner');
+            b.className = 'version-banner ' + m.cls;
+            b.innerHTML = '<strong>' + m.label + '.</strong> ' + m.text;
+        }
+
+        // Load CSV data
+        async function loadData() {
+            try {
+                const response = await fetch('vendors_rates.csv');
+                const csvText = await response.text();
+                parseCSV(csvText);
+                updateVersionBanner();
+                applyFilters();
+                buildPositions();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('tableBody').innerHTML =
+                    '<tr><td colspan="7" style="text-align:center;">Error loading rate data. Please ensure vendors_rates.csv is in the same directory.</td></tr>';
+            }
+        }
+
+        // RFC-4180 parser: handles commas and newlines inside quoted fields
+        // (vendor names like "Currier, McCabe & Associates, Inc." contain commas).
+        function parseCSV(csvText) {
+            const rows = [];
+            let field = '', row = [], inQuotes = false;
+            for (let i = 0; i < csvText.length; i++) {
+                const c = csvText[i];
+                if (inQuotes) {
+                    if (c === '"') {
+                        if (csvText[i + 1] === '"') { field += '"'; i++; }
+                        else inQuotes = false;
+                    } else field += c;
+                } else {
+                    if (c === '"') inQuotes = true;
+                    else if (c === ',') { row.push(field); field = ''; }
+                    else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+                    else if (c === '\r') { /* skip CR */ }
+                    else field += c;
+                }
+            }
+            if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+
+            const headers = rows[0].map(h => h.trim());
+            for (let i = 1; i < rows.length; i++) {
+                if (rows[i].length === 1 && rows[i][0] === '') continue;
+                const obj = {};
+                headers.forEach((h, idx) => { obj[h] = (rows[i][idx] || '').trim(); });
+                allData.push(obj);
+            }
+
+            populateJobTitleDropdown();
+        }
+
+        function populateJobTitleDropdown() {
+            const jobTitles = [...new Set(allData.map(r => r.Job_Title))].sort();
+            const select = document.getElementById('jobTitle');
+            jobTitles.forEach(title => {
+                const option = document.createElement('option');
+                option.value = title;
+                option.textContent = title;
+                select.appendChild(option);
+            });
+        }
+
+        function applyFilters() {
+            const region = document.getElementById('region').value;
+            const skillLevel = document.getElementById('skillLevel').value;
+            const jobTitle = document.getElementById('jobTitle').value;
+
+            filteredData = activeData().filter(row => {
+                const regionMatch = !region || row.Region === region;
+                const skillMatch = !skillLevel || row.Skill_Level === skillLevel;
+                const jobMatch = !jobTitle || row.Job_Title === jobTitle;
+                return regionMatch && skillMatch && jobMatch;
+            });
+
+            // Apply current sort
+            sortData(currentSort.column, currentSort.direction);
+            displayResults();
+        }
+
+        function sortByBillRate(direction) {
+            currentSort = { column: 'Hourly_Bill_Rate', direction: direction };
+            applyFilters();
+        }
+
+        function sortData(column, direction) {
+            const numericCols = ['Hourly_Bill_Rate', 'Hourly_Wage_Rate', 'Markup_Percent'];
+            const numeric = numericCols.includes(column);
+            filteredData.sort((a, b) => {
+                if (numeric) {
+                    let an = parseFloat(a[column]); if (isNaN(an)) an = Infinity;
+                    let bn = parseFloat(b[column]); if (isNaN(bn)) bn = Infinity;
+                    return direction === 'asc' ? an - bn : bn - an;
+                }
+                const av = (a[column] || '').toLowerCase();
+                const bv = (b[column] || '').toLowerCase();
+                return direction === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+            });
+        }
+
+        function displayResults() {
+            const tbody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+            tbody.innerHTML = '';
+
+            document.getElementById('resultCount').textContent = filteredData.length;
+
+            const rankInfo = document.getElementById('rankInfo');
+            const ourPositions = [];
+            filteredData.forEach((row, i) => {
+                if (row.Is_Our_Rate === 'true') ourPositions.push(i + 1);
+            });
+            if (ourPositions.length === 1) {
+                rankInfo.innerHTML = ` | <strong style="color:#c41e3a;">Best Pegasus Rank: #${ourPositions[0]} of ${filteredData.length}</strong>`;
+            } else if (ourPositions.length > 1) {
+                rankInfo.innerHTML = ` | <strong style="color:#c41e3a;">Best Pegasus appears at ranks ${ourPositions.map(p => '#' + p).join(', ')}</strong> (narrow filters to a single region/title/level for one rank)`;
+            } else {
+                rankInfo.innerHTML = '';
+            }
+
+            if (filteredData.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            noResults.style.display = 'none';
+
+            // Render as a single HTML string (fast) and cap rows to keep the page responsive.
+            const MAX_RENDER = 1500;
+            const renderSet = filteredData.slice(0, MAX_RENDER);
+            const html = renderSet.map((row, index) => {
+                const cls = row.Is_Our_Rate === 'true' ? ' class="our-rate"' : '';
+                return `<tr${cls}>
+                    <td class="sno">${index + 1}</td>
+                    <td><strong>${row.Contractor_Name}</strong></td>
+                    <td><span class="region-badge">${row.Region}</span></td>
+                    <td>${row.Job_Title}</td>
+                    <td><span class="skill-badge">${row.Skill_Level}</span></td>
+                    <td class="wage-cell">$${parseFloat(row.Hourly_Wage_Rate).toFixed(2)}</td>
+                    <td class="bill-cell"><strong>$${parseFloat(row.Hourly_Bill_Rate).toFixed(2)}</strong></td>
+                </tr>`;
+            }).join('');
+            tbody.innerHTML = html;
+
+            if (filteredData.length > MAX_RENDER) {
+                rankInfo.innerHTML += ` | <em>Showing first ${MAX_RENDER} rows — narrow the filters (pick a Job Title) to see a focused ranking.</em>`;
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('region').value = '';
+            document.getElementById('skillLevel').value = '';
+            document.getElementById('jobTitle').value = '';
+            currentSort = { column: 'Hourly_Bill_Rate', direction: 'asc' };
+            applyFilters();
+        }
+
+        // ---------- Tab switching ----------
+        function switchTab(which) {
+            const compare = which === 'compare';
+            document.getElementById('view-compare').style.display = compare ? 'block' : 'none';
+            document.getElementById('view-positions').style.display = compare ? 'none' : 'block';
+            document.getElementById('tab-compare').classList.toggle('active', compare);
+            document.getElementById('tab-positions').classList.toggle('active', !compare);
+        }
+
+        // ---------- Best Pegasus positions ----------
+        const OUR_NAME = 'Best Pegasus';
+        let positionsData = [];
+        let currentPosSort = 'title';
+
+        function buildPositions() {
+            // Group bidder rows (competitors + selected-version Best Pegasus) by Title | Region | Skill
+            const groups = {};
+            activeData().forEach(r => {
+                const key = r.Job_Title + '||' + r.Region + '||' + r.Skill_Level;
+                (groups[key] = groups[key] || []).push(r);
+            });
+
+            // All titles come from the full vendor data (includes titles we didn't bid)
+            const titles = [...new Set(allData.map(r => r.Job_Title))].sort();
+            const regions = ['Region 1', 'Region 2', 'Region 3'];
+            const skills = ['Junior', 'Mid-Level', 'Senior', 'Expert'];
+
+            positionsData = [];
+            titles.forEach(title => regions.forEach(region => skills.forEach(skill => {
+                const list = (groups[title + '||' + region + '||' + skill] || []).slice();
+                if (!list.length) return;
+                list.sort((a, b) => parseFloat(a.Hourly_Bill_Rate) - parseFloat(b.Hourly_Bill_Rate));
+                const total = list.length;
+                const lowest = parseFloat(list[0].Hourly_Bill_Rate);
+                const ourIdx = list.findIndex(r => r.Is_Our_Rate === 'true');
+                if (ourIdx === -1) {
+                    positionsData.push({
+                        title, region, skill, total,
+                        ourBill: null, rank: null, lowest, gap: null, pct: null
+                    });
+                } else {
+                    const ourBill = parseFloat(list[ourIdx].Hourly_Bill_Rate);
+                    const rank = ourIdx + 1;
+                    positionsData.push({
+                        title, region, skill, total,
+                        ourBill, rank, lowest,
+                        gap: ourBill - lowest,
+                        pct: Math.round((rank / total) * 100)
+                    });
+                }
+            })));
+
+            renderPositions();
+        }
+
+        function rankClass(rank, total) {
+            if (rank === null) return 'rank-na';
+            if (rank <= total / 3) return 'rank-good';
+            if (rank <= (2 * total) / 3) return 'rank-mid';
+            return 'rank-bad';
+        }
+
+        function sortPositions(mode) {
+            currentPosSort = mode;
+            renderPositions();
+        }
+
+        function clearPositionFilters() {
+            document.getElementById('posSearch').value = '';
+            document.getElementById('posRegion').value = '';
+            document.getElementById('posSkill').value = '';
+            currentPosSort = 'title';
+            renderPositions();
+        }
+
+        function renderPositions() {
+            const search = (document.getElementById('posSearch').value || '').toLowerCase();
+            const region = document.getElementById('posRegion').value;
+            const skill = document.getElementById('posSkill').value;
+
+            let rows = positionsData.filter(p =>
+                (!search || p.title.toLowerCase().includes(search)) &&
+                (!region || p.region === region) &&
+                (!skill || p.skill === skill)
+            );
+
+            const skillOrder = { 'Junior': 0, 'Mid-Level': 1, 'Senior': 2, 'Expert': 3 };
+            if (currentPosSort === 'rank') {
+                rows.sort((a, b) => (a.rank === null) - (b.rank === null) || (a.rank || 0) - (b.rank || 0));
+            } else if (currentPosSort === 'rankDesc') {
+                rows.sort((a, b) => (a.rank === null) - (b.rank === null) || (b.rank || 0) - (a.rank || 0));
+            } else { // by title, then region, then skill
+                rows.sort((a, b) =>
+                    a.title.localeCompare(b.title) ||
+                    a.region.localeCompare(b.region) ||
+                    skillOrder[a.skill] - skillOrder[b.skill]);
+            }
+
+            document.getElementById('posCount').textContent = rows.length;
+            const tbody = document.getElementById('posTableBody');
+            const noRes = document.getElementById('posNoResults');
+
+            if (!rows.length) {
+                tbody.innerHTML = '';
+                noRes.style.display = 'block';
+                return;
+            }
+            noRes.style.display = 'none';
+
+            tbody.innerHTML = rows.map(p => {
+                const rankCell = p.rank === null
+                    ? `<span class="rank-badge rank-na">Not bid</span>`
+                    : `<span class="rank-badge ${rankClass(p.rank, p.total)}">#${p.rank} of ${p.total}</span>`;
+                const ourBill = p.ourBill === null ? '—' : '$' + p.ourBill.toFixed(2);
+                const gap = p.gap === null ? '—'
+                    : (p.gap === 0 ? '$0.00 (lowest)' : '+$' + p.gap.toFixed(2));
+                const pct = p.pct === null ? '—' : p.pct + '%';
+                return `<tr>
+                    <td><strong>${p.title}</strong></td>
+                    <td><span class="region-badge">${p.region}</span></td>
+                    <td><span class="skill-badge">${p.skill}</span></td>
+                    <td class="bill-cell">${ourBill}</td>
+                    <td>${rankCell}</td>
+                    <td class="wage-cell">$${p.lowest.toFixed(2)}</td>
+                    <td class="gap-cell">${gap}</td>
+                    <td class="pct-cell">${pct}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

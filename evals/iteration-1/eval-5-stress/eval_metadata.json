@@ -1,0 +1,37 @@
+{
+  "eval_id": 5,
+  "eval_name": "profitability-stress-test",
+  "prompt": "Stress-test my pricing under three wage inflation scenarios. Base case: NTE $120/hour, wage $85/hour, 32% markup, minimum acceptable margin 5%...",
+  "assertions": [
+    {
+      "id": "break_even_calculation",
+      "text": "Correctly identifies break-even wage inflation threshold",
+      "passed": true,
+      "evidence": "Identifies 4.09% annual wage inflation as break-even point where margin = 5% by Year 7"
+    },
+    {
+      "id": "scenario_projections",
+      "text": "Produces accurate three-scenario margin projections for Year 1, 4, 7",
+      "passed": true,
+      "evidence": "Conservative (2.5%): 24.24% → 18.80% → 12.93%; Moderate (3.8%): 24.24% → 15.86% → 6.48%; Aggressive (5.3%): 24.24% → 12.37% → -1.49%"
+    },
+    {
+      "id": "risk_categorization",
+      "text": "Categorizes scenarios as Safe/Acceptable/At Risk with clear decision criteria",
+      "passed": true,
+      "evidence": "Conservative = Safe, Moderate = Acceptable (thin buffer), Aggressive = At Risk; explains implications of each"
+    },
+    {
+      "id": "margin_decay_narrative",
+      "text": "Provides clear narrative description of margin decay trajectory and compounding effects",
+      "passed": true,
+      "evidence": "Describes linear decay for conservative, accelerating decay for moderate, non-linear/loss-making for aggressive; notes 1% inflation = 3.5-4.0pp margin impact"
+    },
+    {
+      "id": "mitigation_strategy",
+      "text": "Recommends specific, actionable risk mitigation strategies for each scenario",
+      "passed": true,
+      "evidence": "Escalation clause templates, contract term limits, labor productivity offsets, quarterly monitoring, portfolio diversification, audit risk mitigation for all scenarios"
+    }
+  ]
+}
