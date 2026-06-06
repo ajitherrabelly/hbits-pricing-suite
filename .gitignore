@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 
+# MS Office lock/temp files (created while a doc is open)
+~$*
+
 # Editor / tooling
 .claude/
 
