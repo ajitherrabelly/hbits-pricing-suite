@@ -8,4 +8,5 @@ __pycache__/
 # Source PDFs (public OGS award-notice pricing schedules) — excluded to keep repo lightweight.
 # Re-add the "Pricing document/" folder + estimation PDF to regenerate the dataset.
 Pricing document/
-*.pdf
+NYS OGS IT Vendor Rate Estimation.pdf
+# (Generated deliverable PDFs/PPTX are tracked — see HBITS_Pricing_Strategy_Briefing.*)
