@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Generate a shareable PDF handout and PPTX deck of the HBITS pricing strategy briefing."""
-import os
+import os, json, re
 from fpdf import FPDF
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
@@ -25,6 +25,28 @@ LIGHT = (244, 247, 252)
 # ---------------------------------------------------------------- shared content
 SUBTITLE = ("Briefing for State IDIQ Pricing Quality Review  -  NYS OGS Group 73012 / "
             "Award 23158 / Solicitation 23311")
+
+CHARTS = "charts"
+
+
+def money(n):
+    n = float(n or 0)
+    if n >= 1e9: return f"${n/1e9:.2f}B"
+    if n >= 1e6: return f"${n/1e6:.1f}M"
+    if n >= 1e3: return f"${n/1e3:.0f}K"
+    return f"${n:.0f}"
+
+
+def load_analytics():
+    try:
+        txt = open("analytics_data.js", encoding="utf-8").read()
+        txt = re.sub(r"^\s*window\.ANALYTICS\s*=\s*", "", txt).rstrip().rstrip(";")
+        return json.loads(txt)
+    except Exception:
+        return None
+
+
+ANA = load_analytics()
 
 # ============================ PDF =============================
 class PDF(FPDF):
@@ -171,8 +193,56 @@ def build_pdf():
             "This briefing exists to be challenged. Section 11 lists the assumptions and design choices that most "
             "warrant scrutiny - starting with whether a flat mid-field rank target is compatible with the MSP's 50% price filter.")
 
+    # ---- Market Analytics (charts)
+    def chart_block(img, title, takeaway):
+        if not os.path.exists(img):
+            return
+        if pdf.get_y() + 122 > pdf.h - pdf.b_margin:
+            pdf.add_page()
+        pdf.ln(1); pdf.set_text_color(*BLUE); pdf.set_font("Arial", "B", 11)
+        pdf.multi_cell(0, 6, title, new_x="LMARGIN", new_y="NEXT")
+        pdf.set_text_color(30, 30, 30)
+        w = EPW * 0.86
+        pdf.image(img, x=pdf.l_margin + (EPW - w) / 2, w=w)
+        pdf.ln(1); para(takeaway)
+
+    if ANA:
+        k = ANA["kpi"]; py = k["perYear"]; lead = ANA["vendors"][0]
+        top7 = sum(v["total"] for v in ANA["vendors"][:7])
+        share7 = round(top7 / k["totalClosures"] * 100)
+        ag = ANA["agencies"][0]
+        pdf.add_page()
+        h2("2 - Market at a Glance (2023-2025)")
+        para("Before the pricing method, the size and shape of the prize. Figures below are placements won "
+             "('closures') and current contract amounts from the NYS OGS HBITS award records.")
+        table(["Metric", "Value"],
+              [["Placements won (3 yrs)", f"{k['totalClosures']:,}"],
+               ["Total awarded (3 yrs)", money(k["totalDollars"])],
+               ["Active competing vendors", str(k["activeVendors"])],
+               ["Average contract value", money(k["avgContract"])],
+               ["Market leader", f"{lead['name']} - {lead['total']} placements / {money(lead['dtotal'])}"],
+               ["Top buyer (agency)", f"{ag['name']} - {ag['closures']} placements"]])
+        callout("info", "The opportunity",
+                f"The HBITS market is {money(k['totalDollars'])} over three years and growing "
+                f"({money(py['2023']['dollars'])} in 2023 to {money(py['2025']['dollars'])} in 2025). It is concentrated - "
+                f"the top 7 vendors hold ~{share7}% of placements - so winning means displacing incumbents on price and filter-positioning.")
+        chart_block(f"{CHARTS}/trend.png", "Market activity by year",
+                    "Award dollars are rising and average contract value jumped to "
+                    f"{money(py['2025']['avg'])} in 2025 - bigger, higher-value engagements.")
+        chart_block(f"{CHARTS}/vendors.png", "Market leaders - placements won",
+                    f"{lead['name']} dominates with {lead['total']} placements (~{round(lead['total']/k['totalClosures']*100)}% share). "
+                    "The top 10 capture the large majority of all work.")
+        chart_block(f"{CHARTS}/share.png", "Market share",
+                    f"Just 7 vendors hold ~{share7}% of placements - a concentrated field to break into.")
+        chart_block(f"{CHARTS}/momentum.png", "Who is gaining and who is fading",
+                    "The leader is accelerating while some incumbents slide - which opens share for a sharp new bidder.")
+        chart_block(f"{CHARTS}/agencies.png", "Who is buying",
+                    f"{ag['name']} is by far the biggest buyer ({ag['closures']} placements). A few agencies drive most demand - target capture there.")
+        chart_block(f"{CHARTS}/roles.png", "Hottest roles",
+                    "Demand clusters in Expert and Senior roles (Software Architect, Systems/Software Developer, IT Specialist) - where the volume and margin are.")
+
     # ---- 2 Context
-    h2("2 - Procurement Context")
+    h2("3 - Procurement Context")
     h3("The vehicle")
     para("HBITS (Group 73012, Award 23158, refreshed under Solicitation 23311) serves state agencies, local "
          "governments, school districts, public authorities and eligible non-profits. Term: five years + two-year "
@@ -194,7 +264,7 @@ def build_pdf():
             "in the upper half and would be filtered out before technical review. See Section 11, item A.")
 
     # ---- 3 Story
-    h2("3 - The Strategic Story")
+    h2("4 - The Strategic Story")
     para("HBITS is engineered to be price-driven and transparent, creating a tension every bidder must resolve:")
     bullets([
         "Bid too high (large markup): protect margin per placement, but get filtered out of high-volume task orders.",
@@ -205,7 +275,7 @@ def build_pdf():
          "agency satisfaction. e.g. at a Business Analyst Junior bill of $40.33, an 11% markup pays ~$36.33 vs a 47% markup paying ~$27.43.")
 
     # ---- 4 Core formula
-    h2("4 - Core Pricing Formula")
+    h2("5 - Core Pricing Formula")
     para("Every bill rate is the consultant wage grossed up by the vendor markup:")
     formula("R_bill = R_wage x ( 1 + M / 100 )      // HBR_NTE = HWR x (1 + markup)")
     para("Markup M must cover payroll taxes, insurance, overhead & G&A, the OGS administrative fee, and net profit.")
@@ -219,7 +289,7 @@ def build_pdf():
            ["2026 -> 2029 (CBO/Fed)", "2.4% / 2.3% / 2.3%", "1.0716 (+7.16%)"]])
 
     # ---- 5 V1
-    h2("5 - Version 1: Baseline Formula")
+    h2("6 - Version 1: Baseline Formula")
     para("Version 1 uses Best Pegasus's internally estimated Bid Year 2026 bill rates (the 'NYS OGS IT Vendor Rate "
          "Estimation'), built bottom-up from labor benchmarks and the CPI multipliers, presented as Region 1 averages.")
     bullets([
@@ -232,7 +302,7 @@ def build_pdf():
             "cutoff for commodity roles. This motivated Version 1.1.")
 
     # ---- 6 V1.1
-    h2("6 - Version 1.1: Rank Positioning Formula (current)")
+    h2("7 - Version 1.1: Rank Positioning Formula (current)")
     para("A market-relative rule. For each Title x Region x Skill it inspects the live competitor field and places Best "
          "Pegasus at a chosen target rank (default #19 of 33 - 18 competitors below, 14 above).")
     formula("Sort competitors ascending: c(1) <= c(2) <= ... <= c(32)\n"
@@ -249,7 +319,7 @@ def build_pdf():
             "Self-calibrating to the actual field, region-specific, fully transparent, and reproducible from public award-notice data.")
 
     # ---- 7 Data
-    h2("7 - Data Foundation & Provenance")
+    h2("8 - Data Foundation & Provenance")
     bullets([
         "Source: public OGS award-notice pricing schedules (Attachment 1) per awarded contractor under Award 23158.",
         "Coverage: 32 competitor rate cards, each parsed to exactly 372 rows (31 titles x 4 skills x 3 regions).",
@@ -265,7 +335,7 @@ def build_pdf():
             "stale rates. Ranking a 2026 rate against a 2019 rate is not strictly like-for-like - Section 11, item B.")
 
     # ---- 8 Margin
-    h2("8 - Margin & Cost-Build Decomposition")
+    h2("9 - Margin & Cost-Build Decomposition")
     formula("Net profit  = (R_bill - R_wage) - R_wage x (payroll+insurance+overhead) - R_bill x OGSfee\n"
             "Net margin% = Net profit / R_bill x 100")
     para("Defaults: payroll taxes 13.5%, insurance 3.5%, overhead+G&A 10.5% (of wage); OGS fee 0.75% (of bill); markup sets the wage.")
@@ -277,7 +347,7 @@ def build_pdf():
             "offer (recruiting risk) and, for high-volume roles, pushes us toward the filter cutoff.")
 
     # ---- 9 Landscape
-    h2("9 - Competitive Landscape")
+    h2("10 - Competitive Landscape")
     table(["Archetype", "Markup", "Examples", "Play"],
           [["High-volume / low-margin", "11-33%", "CTS (11%), GCOM (30%), Broad Crossing (33%)", "Win volume; scale-dependent"],
            ["Mid-market", "38-52%", "Mindlance (38%), Sligo (47%), Experis (50%)", "Balanced"],
@@ -286,7 +356,7 @@ def build_pdf():
          "(35-45%) for scarce roles (Cloud Engineer, Architects, Security Manager) whose pools fall below 5 and bypass the filter.")
 
     # ---- 10 Quality test
-    h2("10 - Quality-Test Checklist (what to scrutinize)")
+    h2("11 - Quality-Test Checklist (what to scrutinize)")
     bullets([
         "[CRITICAL] A. Does rank #19 survive the MSP 50% filter? In a 33-bidder high-volume pool only the lowest ~16-17 "
         "are forwarded - #19 is in the upper half and would be filtered out. Should the target be <=16 for commodity roles?",
@@ -303,7 +373,7 @@ def build_pdf():
     ])
 
     # ---- 11 Risks
-    h2("11 - Risks, Assumptions & Limitations")
+    h2("12 - Risks, Assumptions & Limitations")
     bullets([
         "Assumption: competitors re-bid at/near current Award 23158 rates under 23311 (their 2026 bids are unknown).",
         "Assumption: the MSP filter mechanics carry forward unchanged.",
@@ -311,7 +381,7 @@ def build_pdf():
         "Limitation: Version 1 omits Business Analyst (source-document gap).",
         "Limitation: ranking treats each vendor's latest effective rate as current regardless of its year.",
     ])
-    h2("12 - Glossary")
+    h2("13 - Glossary")
     para("NTE - Not-To-Exceed bill rate.  HWR - Hourly Wage Rate (consultant; contractual minimum).  HBR - Hourly Bill "
          "Rate (billed to State).  MSP - Managed Service Provider (runs the price filter).  CPI-U - Consumer Price Index, "
          "All Urban Consumers (CUUR0000SA0).  IDIQ - Indefinite-Delivery/Indefinite-Quantity.")
@@ -391,6 +461,22 @@ def build_pptx():
                 pr = c.text_frame.paragraphs[0]; pr.font.size = Pt(11); pr.font.color.rgb = rgb((40, 40, 40))
         return s
 
+    def add_image_slide(title, img, takeaway, accent=GREEN):
+        if not os.path.exists(img):
+            return
+        s = prs.slides.add_slide(blank)
+        bar = s.shapes.add_shape(1, 0, 0, EMU_W, Inches(0.95))
+        bar.fill.solid(); bar.fill.fore_color.rgb = rgb(accent); bar.line.fill.background()
+        bar.shadow.inherit = False
+        tp = bar.text_frame.paragraphs[0]; bar.text_frame.margin_left = Inches(0.4)
+        tp.text = title; tp.font.size = Pt(24); tp.font.bold = True; tp.font.color.rgb = rgb((255, 255, 255))
+        s.shapes.add_picture(img, Inches(2.57), Inches(1.45), width=Inches(8.2))
+        tb = s.shapes.add_textbox(Inches(1.0), Inches(6.55), Inches(11.3), Inches(0.8))
+        tf = tb.text_frame; tf.word_wrap = True
+        p = tf.paragraphs[0]; p.text = takeaway; p.alignment = PP_ALIGN.CENTER
+        p.font.size = Pt(13); p.font.italic = True; p.font.color.rgb = rgb((60, 70, 85))
+        return s
+
     # ----- slides
     add_title_slide()
 
@@ -401,6 +487,31 @@ def build_pptx():
         ("Version 1.1 (Rank Positioning): current formula - prices each role to rank #19 of 33 (mid-field).", 0, None, False),
         ("This deck is built to be challenged - see the Quality-Test Checklist.", 0, BLUE, True),
     ], NAVY)
+
+    # ----- Market Analytics block (charts)
+    if ANA:
+        k = ANA["kpi"]; py = k["perYear"]; lead = ANA["vendors"][0]
+        share7 = round(sum(v["total"] for v in ANA["vendors"][:7]) / k["totalClosures"] * 100)
+        ag = ANA["agencies"][0]
+        add_slide("Market at a Glance (2023-2025)", [
+            (f"{k['totalClosures']:,} placements won across the market - worth {money(k['totalDollars'])}.", 0, None, True),
+            (f"{k['activeVendors']} active competing vendors; average contract {money(k['avgContract'])}.", 0, None, False),
+            (f"Market leader: {lead['name']} - {lead['total']} placements / {money(lead['dtotal'])}.", 0, None, False),
+            (f"Biggest buyer: {ag['name']} ({ag['closures']} placements).", 0, None, False),
+            (f"Growing market: {money(py['2023']['dollars'])} (2023) to {money(py['2025']['dollars'])} (2025).", 0, GREEN, True),
+        ], GREEN)
+        add_image_slide("Market activity by year", f"{CHARTS}/trend.png",
+                        "Award dollars are rising - bigger, higher-value engagements each year.")
+        add_image_slide("Market leaders - placements won", f"{CHARTS}/vendors.png",
+                        f"{lead['name']} dominates (~{round(lead['total']/k['totalClosures']*100)}% of all placements).")
+        add_image_slide("Market share", f"{CHARTS}/share.png",
+                        f"Just 7 vendors hold ~{share7}% of placements - a concentrated field to break into.")
+        add_image_slide("Who is gaining and who is fading", f"{CHARTS}/momentum.png",
+                        "The leader is accelerating while some incumbents slide - that opens share for a sharp new bidder.")
+        add_image_slide("Who is buying", f"{CHARTS}/agencies.png",
+                        f"{ag['name']} is by far the biggest buyer - focus capture efforts there first.")
+        add_image_slide("Hottest roles", f"{CHARTS}/roles.png",
+                        "Demand clusters in Expert and Senior roles - where the volume and the margin are.")
 
     add_table_slide("Procurement Context - Three Regions",
         ["Region", "Coverage", "Character"],
