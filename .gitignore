@@ -12,4 +12,6 @@ __pycache__/
 # Re-add the "Pricing document/" folder + estimation PDF to regenerate the dataset.
 Pricing document/
 NYS OGS IT Vendor Rate Estimation.pdf
+# Source analytics workbooks (Excel/Docx/PNG market data) — heavy; extracted into analytics_data.js.
+drive-download-20260606T205412Z-3-001/
 # (Generated deliverable PDFs/PPTX are tracked — see HBITS_Pricing_Strategy_Briefing.*)
