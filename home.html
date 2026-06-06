@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBITS Capture Command Center — Overview</title>
+<script src="analytics_data.js"></script>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.5; }
+    .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+    .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+    .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+    .topnav a.current { background:#2a64c4; color:#fff; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#11203a 0%,#1f5a8a 100%); color:#fff; padding:36px 40px 30px; }
+    .hero h1 { font-size:30px; margin-bottom:8px; }
+    .hero p { opacity:.93; font-size:15px; max-width:920px; }
+
+    .wrap { max-width:1240px; margin:0 auto; padding:24px 26px 70px; }
+    .section-label { font-size:12px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:#6b7688; margin:6px 0 12px; }
+
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; }
+    .kpi { background:#fff; border-radius:12px; padding:20px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-top:4px solid #0d7a4f; }
+    .kpi .n { font-size:30px; font-weight:800; color:#11203a; line-height:1.1; }
+    .kpi .l { font-size:13px; color:#5a6678; margin-top:6px; }
+    .kpi .s { font-size:12px; color:#0d7a4f; font-weight:700; margin-top:4px; }
+    .kpi.blue { border-top-color:#2a64c4; } .kpi.amber { border-top-color:#d99a16; } .kpi.purple { border-top-color:#7048c4; }
+
+    .takeaways { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:16px; margin-top:14px; }
+    .tk { background:#fff; border-radius:12px; padding:20px 22px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-left:5px solid #2a64c4; }
+    .tk.green { border-left-color:#0d7a4f; } .tk.red { border-left-color:#c4413a; }
+    .tk .h { font-size:15.5px; font-weight:800; color:#11203a; margin-bottom:6px; }
+    .tk .b { font-size:13.5px; color:#43506a; }
+    .tk .b b { color:#11203a; } .tk.red .b b { color:#c4413a; } .tk.green .b b { color:#0a5c3c; }
+
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:14px; }
+    @media (max-width:820px){ .two{grid-template-columns:1fr;} }
+    .card { background:#fff; border-radius:12px; padding:20px 22px; box-shadow:0 3px 14px rgba(0,0,0,.06); }
+    .card h3 { font-size:16px; color:#11203a; margin-bottom:2px; }
+    .card .sub { font-size:12.5px; color:#6b7688; margin-bottom:12px; }
+    .rank-list { list-style:none; }
+    .rank-list li { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f0f3f8; font-size:14px; }
+    .rank-list li:last-child { border-bottom:none; }
+    .rank-list .pos { width:24px; height:24px; border-radius:50%; background:#11203a; color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .rank-list .nm { flex:1; }
+    .rank-list .vbar { height:8px; border-radius:5px; background:#2a64c4; }
+    .rank-list .vwrap { width:120px; background:#eef1f6; border-radius:5px; }
+    .rank-list .val { width:54px; text-align:right; font-weight:800; color:#11203a; }
+    .green .pos { background:#0d7a4f; } .green .vbar { background:#0d7a4f; }
+
+    .tools { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:14px; }
+    .tool { background:#fff; border-radius:12px; padding:22px; box-shadow:0 3px 14px rgba(0,0,0,.06); text-decoration:none; color:inherit; display:block; transition:transform .12s, box-shadow .12s; border-top:4px solid #2a64c4; }
+    .tool:hover { transform:translateY(-3px); box-shadow:0 8px 22px rgba(0,0,0,.12); }
+    .tool .ic { font-size:26px; }
+    .tool .t { font-size:17px; font-weight:800; color:#11203a; margin:8px 0 4px; }
+    .tool .d { font-size:13px; color:#5a6678; }
+    .tool .go { margin-top:12px; font-weight:800; color:#2a64c4; font-size:13.5px; }
+    .tool.g { border-top-color:#0d7a4f; } .tool.g .go{color:#0d7a4f;}
+    .tool.a { border-top-color:#d99a16; } .tool.a .go{color:#a4720f;}
+    .tool.p { border-top-color:#7048c4; } .tool.p .go{color:#5e39a8;}
+    .note { font-size:12px; color:#8a94a6; margin-top:22px; }
+    .spacer-lg { height:26px; }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="home.html" class="current">Overview</a>
+    <a href="index.html">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html">Strategy Briefing</a>
+    <a href="analytics.html">Market Analytics</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.7;">NYS OGS HBITS · Jan 2023 – Dec 2025</span>
+</div>
+
+<div class="hero">
+    <h1>HBITS Capture Command Center</h1>
+    <p>One screen to brief any executive: how big the market is, where the demand is, how Best Pegasus is priced against
+    the field, and the one decision that matters most — with a direct link into each detailed tool.</p>
+</div>
+
+<div class="wrap">
+
+    <div class="section-label">The market at a glance · 2023–2025</div>
+    <div class="kpis" id="kpis"></div>
+
+    <div class="section-label" style="margin-top:26px;">Top 3 takeaways for decision-makers</div>
+    <div class="takeaways">
+        <div class="tk green">
+            <div class="h">1 · The market is large and rebounding</div>
+            <div class="b" id="tk1">…</div>
+        </div>
+        <div class="tk">
+            <div class="h">2 · Demand is concentrated in senior talent</div>
+            <div class="b" id="tk2">…</div>
+        </div>
+        <div class="tk red">
+            <div class="h">3 · One pricing decision dominates</div>
+            <div class="b" id="tk3">Best Pegasus's current formula targets <b>rank #19 of 33</b> — mid-field, but in the
+            <b>upper price half</b>. On high-volume roles the MSP forwards only the cheapest ~50%, so #19 risks being
+            filtered out before review. <b>Decide the target rank by role</b> (≤16 for commodity roles) and validate margin.</div>
+        </div>
+    </div>
+
+    <div class="two">
+        <div class="card">
+            <h3>Where the demand is — top roles (2025)</h3>
+            <div class="sub">Most-filled job titles across the HBITS market last year.</div>
+            <ul class="rank-list" id="topTitles"></ul>
+        </div>
+        <div class="card green">
+            <h3>Who is winning the work — market leaders</h3>
+            <div class="sub">Top vendors by total placements, 2023–2025.</div>
+            <ul class="rank-list" id="topVendors"></ul>
+        </div>
+    </div>
+
+    <div class="spacer-lg"></div>
+    <div class="section-label">Open a tool</div>
+    <div class="tools">
+        <a class="tool g" href="index.html">
+            <div class="ic">📊</div><div class="t">Rate Comparison</div>
+            <div class="d">See exactly where our price lands against every competitor for any role, region and skill.</div>
+            <div class="go">Open →</div>
+        </a>
+        <a class="tool p" href="positioning.html">
+            <div class="ic">🎯</div><div class="t">Bid Builder</div>
+            <div class="d">Set a target rank and instantly get recommended bill rates, V1-vs-V1.1, and margin per role.</div>
+            <div class="go">Open →</div>
+        </a>
+        <a class="tool a" href="analytics.html">
+            <div class="ic">📈</div><div class="t">Market Analytics</div>
+            <div class="d">Three-year view of who's winning, demand by role, momentum, and where the money goes.</div>
+            <div class="go">Open →</div>
+        </a>
+        <a class="tool" href="briefing.html">
+            <div class="ic">📋</div><div class="t">Strategy Briefing</div>
+            <div class="d">The full methodology and a quality-test checklist for a pricing strategist to scrutinize.</div>
+            <div class="go">Open →</div>
+        </a>
+    </div>
+
+    <p class="note" id="note"></p>
+</div>
+
+<script>
+    function money(n){ n=+n||0; if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B'; if(n>=1e6)return '$'+(n/1e6).toFixed(0)+'M'; if(n>=1e3)return '$'+(n/1e3).toFixed(0)+'K'; return '$'+n; }
+    function render(){
+        var A = window.ANALYTICS;
+        if(!A){ document.getElementById('note').textContent='Live figures unavailable — serve this folder over a local web server to load analytics_data.js.'; return; }
+        var k=A.kpi;
+        var card=(n,l,s,cls)=>`<div class="kpi ${cls||''}"><div class="n">${n}</div><div class="l">${l}</div><div class="s">${s}</div></div>`;
+        document.getElementById('kpis').innerHTML =
+            card(k.totalClosures.toLocaleString(),'Placements won (3 yrs)','across the whole market','green')
+          + card(money(k.totalDollars),'Total awarded (3 yrs)','contract value','blue')
+          + card(k.activeVendors,'Active competing vendors','awarded contracts','purple')
+          + card(money(k.avgContract),'Average contract value','per placement','amber');
+
+        var y=A.years, py=k.perYear, last=y[y.length-1], first=y[0];
+        document.getElementById('tk1').innerHTML =
+            `<b>${money(k.totalDollars)}</b> awarded across <b>${k.totalClosures.toLocaleString()}</b> placements in three years. `+
+            `${last} rebounded to <b>${money(py[last].dollars)}</b> (${py[last].closures} placements) — up from ${money(py[2024].dollars)} in 2024.`;
+
+        var t=A.titles[last]||[];
+        document.getElementById('tk2').innerHTML =
+            `The top role, <b>${t[0]?t[0][0]:''}</b>, drove <b>${t[0]?t[0][1]:''}</b> placements in ${last} alone. `+
+            `Expert and Senior architects, developers and IT specialists dominate demand — exactly the high-value roles where pricing matters most.`;
+
+        // top titles list
+        var max=t[0]?t[0][1]:1;
+        document.getElementById('topTitles').innerHTML = t.slice(0,6).map((row,i)=>{
+            var w=Math.max(8,Math.round(row[1]/max*100));
+            return `<li><span class="pos">${i+1}</span><span class="nm">${row[0]}</span>`+
+                   `<span class="vwrap"><span class="vbar" style="display:block;width:${w}%"></span></span>`+
+                   `<span class="val">${row[1]}</span></li>`;
+        }).join('');
+
+        // top vendors list
+        var v=A.vendors.slice(0,6), vmax=v[0]?v[0].total:1;
+        document.getElementById('topVendors').innerHTML = v.map((d,i)=>{
+            var w=Math.max(8,Math.round(d.total/vmax*100));
+            return `<li><span class="pos">${i+1}</span><span class="nm">${d.name}</span>`+
+                   `<span class="vwrap"><span class="vbar" style="display:block;width:${w}%"></span></span>`+
+                   `<span class="val">${d.total}</span></li>`;
+        }).join('');
+
+        document.getElementById('note').textContent =
+            'Source: HBITS closure & award workbooks (Jan 2023 – Dec 2025). Pricing position from vendors_rates.csv (33-bidder field).';
+    }
+    document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>
