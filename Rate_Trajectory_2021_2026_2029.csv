@@ -1,0 +1,121 @@
+Job_Title,Skill_Level,Historical_2021_Rate,Bid_Year_2026_Rate,Target_Year_2029_Rate
+Programmer,Junior,35.74,44.08,47.23
+Programmer,Mid-Level,49.69,61.29,65.67
+Programmer,Senior,60.66,74.81,80.16
+Programmer,Expert,69.14,85.27,91.36
+Software Developer,Junior,36.62,45.16,48.39
+Software Developer,Mid-Level,50.5,62.28,66.73
+Software Developer,Senior,63.36,78.15,83.73
+Software Developer,Expert,71.84,88.61,94.94
+Software Analyst,Junior,35.7,44.03,47.18
+Software Analyst,Mid-Level,46.96,57.92,62.06
+Software Analyst,Senior,60.02,74.03,79.32
+Software Analyst,Expert,69.37,85.56,91.67
+Software Architect,Junior,44.66,55.08,59.02
+Software Architect,Mid-Level,57.82,71.31,76.41
+Software Architect,Senior,73.45,90.59,97.06
+Software Architect,Expert,82.75,102.06,109.35
+Software Manager,Junior,41.55,51.24,54.9
+Software Manager,Mid-Level,53.02,65.39,70.06
+Software Manager,Senior,67.56,83.33,89.28
+Software Manager,Expert,78.65,97.0,103.93
+Systems Developer,Junior,37.85,46.68,50.02
+Systems Developer,Mid-Level,49.64,61.22,65.59
+Systems Developer,Senior,63.32,78.1,83.68
+Systems Developer,Expert,72.62,89.57,95.97
+Cloud Engineer,Junior,42.7,52.67,56.43
+Cloud Engineer,Mid-Level,56.19,69.3,74.25
+Cloud Engineer,Senior,69.46,85.67,91.79
+Cloud Engineer,Expert,80.99,99.89,107.03
+Database Administrator,Junior,36.99,45.62,48.88
+Database Administrator,Mid-Level,47.67,58.8,63.0
+Database Administrator,Senior,62.06,76.54,82.01
+Database Administrator,Expert,71.25,87.88,94.16
+Database Architect,Junior,43.05,53.09,56.88
+Database Architect,Mid-Level,55.49,68.44,73.33
+Database Architect,Senior,70.01,86.35,92.52
+Database Architect,Expert,80.44,99.21,106.3
+Database Manager,Junior,39.11,48.24,51.69
+Database Manager,Mid-Level,49.57,61.14,65.51
+Database Manager,Senior,65.07,80.25,85.98
+Database Manager,Expert,75.94,93.66,100.35
+Systems Administrator,Junior,33.13,40.86,43.78
+Systems Administrator,Mid-Level,42.52,52.44,56.19
+Systems Administrator,Senior,56.62,69.83,74.82
+Systems Administrator,Expert,65.72,81.05,86.84
+Systems Analyst,Junior,36.06,44.48,47.66
+Systems Analyst,Mid-Level,46.43,57.27,61.36
+Systems Analyst,Senior,58.59,72.26,77.42
+Systems Analyst,Expert,67.98,83.84,89.83
+Systems Architect,Junior,44.16,54.46,58.35
+Systems Architect,Mid-Level,56.5,69.69,74.67
+Systems Architect,Senior,72.1,88.93,95.29
+Systems Architect,Expert,82.17,101.35,108.59
+Network Administrator,Junior,34.97,43.13,46.21
+Network Administrator,Mid-Level,43.78,53.99,57.85
+Network Administrator,Senior,56.28,69.41,74.37
+Network Administrator,Expert,65.07,80.25,85.98
+Network Architect,Junior,42.04,51.85,55.56
+Network Architect,Mid-Level,53.6,66.11,70.83
+Network Architect,Senior,67.27,82.97,88.9
+Network Architect,Expert,77.24,95.27,102.08
+Security Analyst,Junior,39.0,48.1,51.54
+Security Analyst,Mid-Level,51.4,63.4,67.93
+Security Analyst,Senior,65.46,80.74,86.51
+Security Analyst,Expert,75.55,93.18,99.84
+Security Manager,Junior,42.21,52.06,55.78
+Security Manager,Mid-Level,55.41,68.34,73.22
+Security Manager,Senior,70.1,86.46,92.64
+Security Manager,Expert,81.9,101.01,108.23
+IT Specialist,Junior,35.22,43.44,46.54
+IT Specialist,Mid-Level,47.62,58.73,62.93
+IT Specialist,Senior,61.02,75.26,80.64
+IT Specialist,Expert,72.06,88.88,95.23
+Help Desk Manager,Junior,31.39,38.71,41.48
+Help Desk Manager,Mid-Level,37.3,46.01,49.3
+Help Desk Manager,Senior,46.28,57.08,61.16
+Help Desk Manager,Expert,53.37,65.82,70.52
+Project Manager,Junior,39.3,48.47,51.93
+Project Manager,Mid-Level,49.91,61.56,65.96
+Project Manager,Senior,66.7,82.26,88.14
+Project Manager,Expert,79.74,98.35,105.38
+IT Manager,Junior,39.14,48.27,51.72
+IT Manager,Mid-Level,48.67,60.03,64.32
+IT Manager,Senior,62.22,76.74,82.22
+IT Manager,Expert,72.47,89.38,95.77
+Operations Manager,Junior,36.5,45.02,48.24
+Operations Manager,Mid-Level,44.97,55.47,59.43
+Operations Manager,Senior,57.98,71.51,76.62
+Operations Manager,Expert,67.6,83.38,89.34
+Training Developer,Junior,32.78,40.43,43.32
+Training Developer,Mid-Level,40.08,49.43,52.96
+Training Developer,Senior,50.12,61.81,66.23
+Training Developer,Expert,57.55,70.98,76.05
+Technical Writer,Junior,27.97,34.5,36.97
+Technical Writer,Mid-Level,34.02,41.96,44.96
+Technical Writer,Senior,41.58,51.28,54.94
+Technical Writer,Expert,48.82,60.21,64.51
+Tester,Junior,31.09,38.35,41.09
+Tester,Mid-Level,38.52,47.51,50.91
+Tester,Senior,48.2,59.45,63.7
+Tester,Expert,55.03,67.87,72.72
+Web Developer,Junior,35.35,43.6,46.72
+Web Developer,Mid-Level,47.93,59.11,63.33
+Web Developer,Senior,58.51,72.16,77.32
+Web Developer,Expert,66.38,81.87,87.72
+Web Administrator,Junior,33.23,40.98,43.91
+Web Administrator,Mid-Level,43.6,53.77,57.61
+Web Administrator,Senior,55.43,68.36,73.25
+Web Administrator,Expert,63.21,77.96,83.53
+Web Designer,Junior,31.88,39.32,42.13
+Web Designer,Mid-Level,41.2,50.81,54.44
+Web Designer,Senior,50.56,62.36,66.82
+Web Designer,Expert,57.48,70.89,75.96
+Web Manager,Junior,36.95,45.57,48.83
+Web Manager,Mid-Level,46.54,57.4,61.5
+Web Manager,Senior,60.68,74.84,80.19
+Web Manager,Expert,69.73,86.0,92.15
+Graphic Designer,Junior,30.15,37.19,39.85
+Graphic Designer,Mid-Level,37.09,45.74,49.01
+Graphic Designer,Senior,46.14,56.91,60.98
+Graphic Designer,Expert,53.86,66.43,71.18

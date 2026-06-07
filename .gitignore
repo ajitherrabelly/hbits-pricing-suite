@@ -18,3 +18,8 @@ drive-download-20260606T205412Z-3-001/
 
 # Source archives
 *.zip
+
+# RFP 23311 source workbooks (heavy xlsx) + generated SQLite DB.
+# Regenerate the DB with: python build_db.py   (needs rfp_data/ present)
+rfp_data/
+hbits.db
