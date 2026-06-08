@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V1 vs V2 Comparison — HBITS Pricing Suite v2.0</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        header h1 { font-size: 2em; margin-bottom: 10px; }
+        .nav { padding: 20px 40px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
+        .nav a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+        }
+        .nav a:hover { background: #e9ecef; }
+        .content { padding: 40px; }
+        h2 { color: #333; margin: 40px 0 20px 0; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        h3 { color: #555; margin: 30px 0 15px 0; }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .comp-box {
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        .comp-box.v1 { background: #fffbf0; border-color: #ffc107; }
+        .comp-box.v2 { background: #f1f8f5; border-color: #28a745; }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .metric:last-child { border-bottom: none; }
+        .metric-label { font-weight: 500; }
+        .metric-value { text-align: right; font-weight: 600; color: #667eea; }
+        .comp-box.v2 .metric-value { color: #28a745; }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        tr:hover { background: #f8f9fa; }
+        .highlight { background: #fff59d; padding: 2px 4px; border-radius: 3px; }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+        .insight-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.5em; }
+        }
+            /* shared V2 top nav */
+        .topnav { margin:-20px -20px 24px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; box-shadow:0 2px 10px rgba(0,0,0,.15); }
+        .topnav .brand { font-weight:800; font-size:15px; margin-right:10px; letter-spacing:.3px; }
+        .topnav a { color:#e7e9ff; text-decoration:none; font-weight:600; font-size:13.5px; padding:8px 13px; border-radius:6px; transition:all .15s; }
+        .topnav a:hover { background:rgba(255,255,255,.18); color:#fff; }
+        .topnav a.current { background:#fff; color:#5a3db5; }
+        .topnav .spacer { flex:1; }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <span class="brand">🚀 V2.0</span>
+    <a href="index.html">Home</a>
+    <a href="rate-comparison.html">Rate Comparison</a>
+    <a href="all-vendor-rates.html">All Vendor Rates</a>
+    <a href="bill-rate-distribution.html">Bill-Rate Report</a>
+    <a href="net-margin-method.html">How Net Margin Works</a>
+    <a href="comparison.html" class="current">V1 vs V2</a>
+    <a href="kbi-margin-distribution.html">KBI Margin Distribution</a>
+    <a href="top-5-vendors-comparison.html">Top 5 Competitors</a>
+    <a href="expertise-margin-comparison.html">Expertise Analysis</a>
+    <a href="job-title-margin-comparison.html">Job-Title Analysis</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.8;">NYS OGS Group 73012</span>
+</div>
+    <div class="container">
+        <header>
+            <h1>V1 vs V2 Detailed Comparison</h1>
+            <p>Best Pegasus Strategy Evolution — From Rank-Based (V1.1) to Margin-First (V2.0)</p>
+        </header>
+
+        <div class="content">
+            <h2>The Fundamental Difference</h2>
+            <div class="insight-box">
+                <strong>Best Pegasus V1 Strategy:</strong> Fix market rank (target #19) and let margin float. Results: 1.2% net margin, unstable profitability.<br/>
+                <strong>Best Pegasus V2.0 Strategy:</strong> Fix margin at 35-38% (KBI formula) and let rank float (#21). Results: 37.3% net margin, 30× profit improvement, market-leading consistency.
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comp-box v1">
+                    <h3>V1.1 (Legacy)</h3>
+                    <div class="metric">
+                        <span class="metric-label">Independent Variable:</span>
+                        <span class="metric-value">Market Rank</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Target:</span>
+                        <span class="metric-value">#19 of 33</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Markup:</span>
+                        <span class="metric-value">~30% (derived)</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Wage:</span>
+                        <span class="metric-value">Reverse-solved</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Net Margin:</span>
+                        <span class="metric-value"><span class="highlight">1.2%</span></span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Profit/Hour:</span>
+                        <span class="metric-value">$0.76</span>
+                    </div>
+                </div>
+
+                <div class="comp-box v2">
+                    <h3>Best Pegasus V2.0 (NEW) ✨</h3>
+                    <div class="metric">
+                        <span class="metric-label">Independent Variable:</span>
+                        <span class="metric-value">Sourced Wage</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Target:</span>
+                        <span class="metric-value">Lowest-cost recruiting</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Markup:</span>
+                        <span class="metric-value">110% (fixed)</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Bill:</span>
+                        <span class="metric-value">wage × 2.10</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Net Margin:</span>
+                        <span class="metric-value"><span class="highlight">38.5%</span></span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Profit/Hour:</span>
+                        <span class="metric-value">$25.50</span>
+                    </div>
+                </div>
+            </div>
+
+            <h2>The Formula Difference</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 30px 0;">
+                <div style="padding: 25px; background: #fffbf0; border-radius: 8px; border: 2px solid #ffc107;">
+                    <h3>V1.1 Equation</h3>
+                    <p style="font-family: monospace; background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                        bill = rank_target_bill<br/>
+                        wage = bill / (1 + 0.30)<br/>
+                        margin = leftover<br/>
+                    </p>
+                    <p style="font-size: 0.9em; color: #666;">You choose rank, solve for bill, then back into wage. Margin is whatever's left.</p>
+                </div>
+
+                <div style="padding: 25px; background: #f1f8f5; border-radius: 8px; border: 2px solid #28a745;">
+                    <h3>V2.0 Equation</h3>
+                    <p style="font-family: monospace; background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                        wage = sourced_cost<br/>
+                        bill = wage × 2.10<br/>
+                        margin = locked in<br/>
+                    </p>
+                    <p style="font-size: 0.9em; color: #666;">You source the wage, apply 110% markup, ship it. Margin is guaranteed.</p>
+                </div>
+            </div>
+
+            <h2>Example: Programmer / Senior / Region 1 (2026)</h2>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>V1.1</th>
+                    <th>V2.0</th>
+                    <th>Difference</th>
+                </tr>
+                <tr>
+                    <td><strong>Bill Rate</strong></td>
+                    <td>$85.00/hr</td>
+                    <td>$83.30/hr</td>
+                    <td>−$1.70 (cheaper)</td>
+                </tr>
+                <tr>
+                    <td><strong>Implied Wage</strong></td>
+                    <td>$65.38</td>
+                    <td>$39.66</td>
+                    <td>−$25.72 (better sourcing)</td>
+                </tr>
+                <tr>
+                    <td><strong>Markup %</strong></td>
+                    <td>30%</td>
+                    <td>110%</td>
+                    <td>+80 pts</td>
+                </tr>
+                <tr>
+                    <td><strong>Net Margin %</strong></td>
+                    <td>1.2%</td>
+                    <td>38.5%</td>
+                    <td><span style="color: #28a745; font-weight: bold;">+3,730 bps</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Profit/Hour</strong></td>
+                    <td>$0.76</td>
+                    <td>$25.50</td>
+                    <td><span style="color: #28a745; font-weight: bold;">×33.6</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Bill Rank</strong></td>
+                    <td>#19 (target)</td>
+                    <td>#18 (output)</td>
+                    <td>−1 (better)</td>
+                </tr>
+            </table>
+
+            <h2>Market Position Analysis</h2>
+            <div class="chart-container">
+                <canvas id="rankChart"></canvas>
+            </div>
+
+            <h2>Profitability Across All Titles (2026)</h2>
+            <div class="chart-container">
+                <canvas id="marginChart"></canvas>
+            </div>
+
+            <h2>Why V2 Works</h2>
+
+            <h3>1. The KBI Insight</h3>
+            <p>
+                Knowledge Builders Inc. (KBI) is the #1 HBITS vendor with 317 wins and $160.5M in revenue (2023-2025).
+                They use <strong>exactly V2's formula</strong>:
+            </p>
+            <ul style="margin: 15px 0 15px 40px; line-height: 2;">
+                <li>Fixed 110% markup (constant across all 372 job combos)</li>
+                <li>Lowest-cost wages in the field (rank #6 of 32)</li>
+                <li>Bill rank #21 (median — not cheap, not expensive)</li>
+                <li>38.5% net margin (same as V2)</li>
+            </ul>
+            <p>
+                <strong>Key finding:</strong> KBI does NOT win on price. They win on incumbency, fulfillment volume,
+                and customer relationships — while sitting in the median price lane and keeping fat margins.
+            </p>
+
+            <h3>2. V1's False Premise</h3>
+            <p>
+                V1.1 was built on the assumption: <em>"MSPs award to the cheapest 50% of bidders."</em>
+            </p>
+            <p>
+                <strong>Reality (from backtest of 1,488 real awards):</strong>
+            </p>
+            <ul style="margin: 15px 0 15px 40px; line-height: 2;">
+                <li>Winners in the <strong>cheapest 50%:</strong> 49.6%</li>
+                <li>Winners in the <strong>expensive half:</strong> 50.4% (a coin flip)</li>
+                <li>Winners who were the <strong>cheapest bidder:</strong> 0.2%</li>
+                <li><strong>KBI's 295 wins at median rank #21:</strong> from the expensive half</li>
+            </ul>
+            <p><strong>Verdict:</strong> Price is not the driver. V1's "be cheap" strategy is falsified.</p>
+
+            <h3>3. The Margin Math</h3>
+            <p>
+                V1 tries to hit a transparent rank (#19) by solving backwards: <em>rank → bill → wage → margin.</em>
+                This produces a thin margin as a leftover.
+            </p>
+            <p>
+                V2 locks in the margin first (35-38%, proven sustainable), sources a wage, applies a fixed markup,
+                and lands wherever in the rank distribution. The rank is an output, not a target.
+            </p>
+
+            <h2>3-Year Financial Projection (100 FTEs)</h2>
+            <table>
+                <tr>
+                    <th>Year</th>
+                    <th>V1.1 Annual Profit</th>
+                    <th>V2.0 Annual Profit</th>
+                    <th>Difference</th>
+                </tr>
+                <tr>
+                    <td><strong>2024</strong></td>
+                    <td>$0.16M</td>
+                    <td>$5.60M</td>
+                    <td>+$5.44M</td>
+                </tr>
+                <tr>
+                    <td><strong>2025</strong></td>
+                    <td>$0.17M</td>
+                    <td>$5.73M</td>
+                    <td>+$5.56M</td>
+                </tr>
+                <tr>
+                    <td><strong>2026</strong></td>
+                    <td>$0.17M</td>
+                    <td>$5.87M</td>
+                    <td>+$5.70M</td>
+                </tr>
+                <tr style="background: #f1f8f5; font-weight: bold;">
+                    <td>TOTAL</td>
+                    <td>$0.50M</td>
+                    <td>$17.2M</td>
+                    <td>+$16.7M</td>
+                </tr>
+            </table>
+
+            <h2>Key Takeaways</h2>
+            <div style="background: #e7f3ff; padding: 25px; border-left: 4px solid #2196F3; border-radius: 4px; margin: 30px 0;">
+                <h3 style="margin-top: 0;">✅ What V2 Solves</h3>
+                <ul style="margin: 15px 0 0 40px; line-height: 2;">
+                    <li><strong>Margin parity with KBI</strong> — locked-in 35-38% vs. V1's 1.2%</li>
+                    <li><strong>Competitive bill positioning</strong> — rank #21 (median), not cheap but not expensive</li>
+                    <li><strong>Scalable profitability</strong> — margin doesn't erode with volume</li>
+                    <li><strong>Simple decision rule</strong> — "source cheapest wage, apply 110%, ship"</li>
+                    <li><strong>Wage escalation advantage</strong> — bill grows with wage, margin stays locked</li>
+                </ul>
+            </div>
+
+            <div style="background: #fff3cd; padding: 25px; border-left: 4px solid #ffc107; border-radius: 4px; margin: 30px 0;">
+                <h3 style="margin-top: 0;">⚠️ What V2 Does NOT Solve</h3>
+                <ul style="margin: 15px 0 0 40px; line-height: 2;">
+                    <li><strong>Win volume vs KBI</strong> — KBI wins 295 awards; V2 model predicts ~65-73 wins. The ~227-win gap is <strong>non-price moat</strong> (incumbency, fulfillment, relationships). That's an operations program, not a pricing change.</li>
+                    <li><strong>Customer relationship switching costs</strong> — price won't overcome established vendor stickiness</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="v2-index.html" class="btn">← Back to Home</a>
+                <a href="v2-analysis.html" class="btn">View KBI Analysis →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>HBITS Pricing Suite v2.0</strong></p>
+            <p>Best Pegasus V1 vs V2.0 Comparison • V2.0 matches KBI's 110% fixed-markup formula (37.3% net margin)</p>
+            <p style="margin-top: 15px; color: #999;">30× profit improvement: V1.1 ($0.76/hr) → V2.0 ($25.50/hr)</p>
+        </footer>
+    </div>
+
+    <script>
+        // Rank Distribution Chart
+        const rankCtx = document.getElementById('rankChart');
+        new Chart(rankCtx, {
+            type: 'bar',
+            data: {
+                labels: ['V1.1 Target', 'V2.0 Output', 'KBI Actual'],
+                datasets: [{
+                    label: 'Market Rank (of 33)',
+                    data: [19, 21, 21],
+                    backgroundColor: ['#ffc107', '#28a745', '#2196F3'],
+                    borderColor: ['#ff9800', '#20c997', '#1976d2'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 33 } },
+                plugins: {
+                    title: { display: true, text: 'Market Position: V1 vs V2 vs KBI (Benchmark)' },
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Margin Chart
+        const marginCtx = document.getElementById('marginChart');
+        new Chart(marginCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Junior', 'Mid-Level', 'Senior', 'Expert'],
+                datasets: [
+                    {
+                        label: 'Best Pegasus V1.1 (Legacy)',
+                        data: [1.2, 1.2, 1.2, 1.2],
+                        backgroundColor: '#ffc107',
+                        borderColor: '#ff9800',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Best Pegasus V2.0',
+                        data: [37.3, 37.3, 37.3, 37.3],
+                        backgroundColor: '#00BCD4',
+                        borderColor: '#0097A7',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'KBI Benchmark',
+                        data: [37.3, 37.3, 37.3, 37.3],
+                        backgroundColor: '#FFD700',
+                        borderColor: '#DAA520',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 45 } },
+                plugins: {
+                    title: { display: true, text: 'Net Margin % by Skill Level (All Titles)' }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

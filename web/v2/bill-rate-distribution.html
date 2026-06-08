@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Bill-Rate Distribution — HBITS Pricing Suite</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color:#1f2733; background:#eef1f6; line-height:1.5; }
+
+        /* shared V2 top nav */
+        .topnav { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; box-shadow:0 2px 10px rgba(0,0,0,.15); }
+        .topnav .brand { font-weight:800; font-size:15px; margin-right:10px; letter-spacing:.3px; }
+        .topnav a { color:#e7e9ff; text-decoration:none; font-weight:600; font-size:13.5px; padding:8px 13px; border-radius:6px; transition:all .15s; }
+        .topnav a:hover { background:rgba(255,255,255,.18); color:#fff; }
+        .topnav a.current { background:#fff; color:#5a3db5; }
+        .topnav .spacer { flex:1; }
+
+        .hero { background:linear-gradient(135deg,#11203a 0%,#5a3db5 100%); color:#fff; padding:30px 40px 26px; }
+        .hero h1 { font-size:27px; margin-bottom:6px; }
+        .hero p { opacity:.92; font-size:14.5px; max-width:980px; }
+
+        .wrap { max-width:1320px; margin:0 auto; padding:24px 26px 70px; }
+        h2 { color:#11203a; margin:36px 0 8px; }
+        .muted { color:#6b7688; font-size:13.5px; margin-bottom:14px; }
+
+        .insight-box { background:#f1edfb; padding:18px 20px; border-left:4px solid #5a3db5; border-radius:6px; margin:18px 0; font-size:14px; }
+        .insight-box b { color:#5a3db5; }
+
+        .stat-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:16px; margin:20px 0; }
+        .stat-card { background:#fff; padding:18px 20px; border-radius:10px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-top:4px solid #5a3db5; text-align:center; }
+        .stat-card.bp { border-top-color:#00BCD4; }
+        .stat-card h4 { font-size:.9em; color:#666; margin-bottom:8px; font-weight:600; }
+        .stat-card .big { font-size:1.9em; font-weight:800; color:#11203a; }
+        .stat-card.bp .big { color:#0097A7; }
+        .stat-card .sub { font-size:.82em; color:#999; margin-top:4px; }
+
+        .tabs { display:flex; gap:6px; margin:18px 0 0; flex-wrap:wrap; }
+        .tab-btn { padding:10px 22px; border:2px solid #d7deea; border-bottom:none; background:#f1f3f5; color:#5a3db5; font-weight:700; font-size:.95em; border-radius:8px 8px 0 0; cursor:pointer; transition:all .15s; }
+        .tab-btn:hover { background:#e7ecff; }
+        .tab-btn.active { background:#5a3db5; color:#fff; border-color:#5a3db5; }
+        .tab-panel { display:none; }
+        .tab-panel.active { display:block; }
+
+        .chart-card { background:#fff; border:2px solid #d7deea; border-top:none; border-radius:0 8px 8px 8px; padding:18px; box-shadow:0 3px 14px rgba(0,0,0,.06); }
+        .chart-container { position:relative; height:520px; }
+
+        .tablewrap { overflow-x:auto; background:#fff; border-radius:10px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-top:14px; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        thead { background:#11203a; color:#fff; }
+        th { padding:11px 12px; text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; }
+        th.num, td.num { text-align:right; }
+        td { padding:9px 12px; border-bottom:1px solid #eef1f6; }
+        tbody tr:hover { background:#f6f4fd; }
+        .bp-col { background:#e0f6fb; font-weight:700; }
+        .lowest { color:#0d7a4f; font-weight:800; }
+        .highest { color:#c4413a; font-weight:700; }
+        .btn { padding:9px 16px; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; background:#5a3db5; color:#fff; margin-top:14px; }
+        .btn:hover { background:#48309a; }
+        footer { text-align:center; color:#8a94a6; font-size:12.5px; padding:30px; }
+        @media (max-width:760px){ .hero{padding:24px;} table{font-size:12px;} }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <span class="brand">🚀 V2.0</span>
+    <a href="index.html">Home</a>
+    <a href="rate-comparison.html">Rate Comparison</a>
+    <a href="all-vendor-rates.html">All Vendor Rates</a>
+    <a href="bill-rate-distribution.html" class="current">Bill-Rate Report</a>
+    <a href="net-margin-method.html">How Net Margin Works</a>
+    <a href="comparison.html">V1 vs V2</a>
+    <a href="kbi-margin-distribution.html">KBI Margin Distribution</a>
+    <a href="top-5-vendors-comparison.html">Top 5 Competitors</a>
+    <a href="expertise-margin-comparison.html">Expertise Analysis</a>
+    <a href="job-title-margin-comparison.html">Job-Title Analysis</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.8;">NYS OGS Group 73012</span>
+</div>
+
+<div class="hero">
+    <h1>2026 Bill-Rate Distribution by Job Title</h1>
+    <p>Hourly <b>bill rate</b> ($/hr) for 14 HBITS roles across all six players — Best Pegasus V2.0, KBI, Genesys, MVP, Sligo &amp; Panha.
+    Best Pegasus bills are the <b>2026 V2 quotes</b> from the rate trajectory; competitor bills are the live HBITS field (Region&nbsp;1). Switch skill level with the tabs.</p>
+</div>
+
+<div class="wrap">
+
+    <div class="insight-box">
+        <b>What this shows:</b> unlike the margin view (where vendors split into two flat tiers), <b>bill rates rise with seniority and scarcity</b> for everyone.
+        <b>Best Pegasus V2.0 tracks KBI almost exactly</b> — both price <i>wage × 2.10</i> off the same low sourced-wage floor, so the cyan and yellow lines sit on top of each other.
+        The low-markup vendors (MVP, Sligo, Panha) pay higher wages, so their bills are <b>not</b> systematically cheaper — they simply keep less margin.
+    </div>
+
+    <div class="stat-grid" id="kpis"></div>
+
+    <h2>Bill Rate ($/hr) by Job Title — All Six Players</h2>
+    <div class="muted">Hover any title to see every vendor's 2026 bill rate at that role. Each tab is a skill level.</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-level="0">Junior</button>
+        <button class="tab-btn" data-level="1">Mid-Level</button>
+        <button class="tab-btn" data-level="2">Senior</button>
+        <button class="tab-btn" data-level="3">Expert</button>
+    </div>
+    <div class="tab-panel active" data-level="0"><div class="chart-card"><div class="chart-container"><canvas id="billChart0"></canvas></div></div></div>
+    <div class="tab-panel" data-level="1"><div class="chart-card"><div class="chart-container"><canvas id="billChart1"></canvas></div></div></div>
+    <div class="tab-panel" data-level="2"><div class="chart-card"><div class="chart-container"><canvas id="billChart2"></canvas></div></div></div>
+    <div class="tab-panel" data-level="3"><div class="chart-card"><div class="chart-container"><canvas id="billChart3"></canvas></div></div></div>
+
+    <h2>Bill-Rate Table — <span id="tblSkill">Junior</span></h2>
+    <div class="muted">Green = lowest (most price-competitive) bill for the role · red = highest. Table follows the selected tab.</div>
+    <div class="tablewrap">
+        <table>
+            <thead><tr>
+                <th>Job Title</th>
+                <th class="num bp-col">BP V2.0</th>
+                <th class="num">KBI</th>
+                <th class="num">Genesys</th>
+                <th class="num">MVP</th>
+                <th class="num">Sligo</th>
+                <th class="num">Panha</th>
+                <th class="num">Field Low</th>
+                <th class="num">Field High</th>
+            </tr></thead>
+            <tbody id="tblBody"></tbody>
+        </table>
+    </div>
+    <button class="btn" onclick="exportCSV()">⤓ Export all skill levels (CSV)</button>
+</div>
+
+<footer>
+    Source: Best Pegasus bills = <code>V2_Rate_Trajectory_2021_2026_2029.csv</code> (Bid_Year_2026_Rate) · competitor bills = <code>vendors_rates_v2.csv</code> (Region 1).
+    NYS OGS Group 73012 — HBITS.
+</footer>
+
+<script>
+    const TITLES = ['Tech Writer','Help Desk Mgr','Tester','Web Admin','Business Analyst','Programmer','Sys Admin','Software Dev','Project Mgr','DB Admin','Sys Architect','Net Architect','Security Analyst','Cloud Engineer'];
+
+    // 2026 bill rate ($/hr) — BP from V2_Rate_Trajectory (Bid_Year_2026_Rate); competitors Region 1.
+    const BILL = {
+        'Junior': {
+            bp:      [38.76, 40.30, 36.18, 41.46, 41.34, 42.38, 41.46, 44.50, 46.14, 43.53, 46.14, 43.41, 50.30, 43.41],
+            kbi:     [40.71, 42.32, 37.99, 43.53, 43.42, 44.50, 43.53, 44.50, 46.13, 43.53, 46.13, 43.42, 52.81, 43.42],
+            genesys: [29.92, 30.45, 36.60, 35.01, 38.72, 37.13, 35.01, 37.13, 43.50, 42.44, 45.62, 38.19, 37.33, 46.53],
+            mvp:     [30.77, 41.24, 36.23, 41.24, 40.52, 41.89, 37.39, 41.89, 45.13, 42.37, 51.29, 46.32, 42.37, 37.97],
+            sligo:   [31.87, 39.61, 36.44, 36.15, 40.33, 41.34, 41.59, 43.35, 47.53, 44.65, 50.77, 52.51, 49.69, 51.91],
+            panha:   [27.56, 34.20, 27.56, 29.34, 32.58, 35.82, 32.58, 39.06, 37.28, 32.58, 38.58, 35.34, 34.85, 37.44],
+        },
+        'Mid-Level': {
+            bp:      [41.34, 54.38, 45.58, 52.81, 48.87, 52.19, 51.05, 59.70, 59.70, 56.44, 59.70, 58.34, 67.18, 67.28],
+            kbi:     [43.42, 57.09, 47.86, 52.81, 48.86, 52.19, 51.05, 59.71, 59.71, 59.26, 59.71, 58.35, 70.54, 70.65],
+            genesys: [36.07, 39.36, 44.03, 46.26, 51.24, 53.05, 46.26, 53.05, 56.23, 53.05, 59.41, 51.98, 48.70, 60.60],
+            mvp:     [36.33, 44.26, 44.59, 55.32, 52.53, 59.13, 50.20, 59.13, 60.80, 50.84, 65.85, 65.85, 60.25, 60.25],
+            sligo:   [38.17, 45.33, 44.22, 46.45, 51.85, 59.17, 52.56, 57.79, 58.33, 56.17, 64.09, 63.19, 64.71, 70.94],
+            panha:   [33.23, 40.52, 33.23, 40.68, 44.57, 58.84, 39.71, 60.46, 48.63, 44.57, 56.73, 55.11, 49.44, 48.63],
+        },
+        'Senior': {
+            bp:      [46.34, 60.78, 56.97, 65.68, 68.22, 71.63, 67.45, 75.42, 77.60, 69.90, 86.82, 81.14, 82.70, 80.62],
+            kbi:     [48.66, 63.82, 56.98, 68.97, 71.63, 71.63, 67.46, 79.20, 81.48, 73.39, 91.17, 85.19, 86.83, 84.65],
+            genesys: [47.74, 56.51, 53.58, 64.18, 69.49, 70.02, 64.18, 70.72, 80.73, 71.08, 85.22, 73.84, 70.85, 84.87],
+            mvp:     [44.60, 53.54, 55.26, 72.55, 68.49, 70.31, 65.37, 70.31, 80.24, 70.98, 83.73, 83.73, 75.91, 73.67],
+            sligo:   [47.41, 54.85, 54.16, 59.77, 64.96, 71.41, 63.50, 72.20, 79.03, 71.97, 78.86, 77.81, 78.37, 80.30],
+            panha:   [46.68, 48.79, 55.43, 52.52, 68.08, 72.13, 58.03, 76.99, 79.10, 72.13, 84.12, 79.33, 61.59, 74.40],
+        },
+        'Expert': {
+            bp:      [54.92, 65.98, 65.18, 78.08, 78.14, 80.85, 77.50, 84.92, 98.12, 85.30, 96.64, 89.54, 90.96, 91.16],
+            kbi:     [57.66, 69.29, 65.18, 78.08, 78.14, 80.84, 81.36, 84.92, 103.02, 89.57, 101.48, 89.55, 95.52, 91.17],
+            genesys: [55.17, 66.91, 62.84, 72.40, 79.55, 81.69, 72.40, 86.99, 101.68, 80.10, 95.80, 86.46, 83.16, 95.48],
+            mvp:     [54.18, 54.66, 61.36, 87.09, 79.08, 79.91, 75.91, 79.91, 96.12, 79.26, 94.90, 94.30, 89.32, 81.50],
+            sligo:   [52.57, 64.21, 62.93, 68.03, 73.15, 80.59, 72.93, 80.69, 92.62, 83.20, 90.02, 95.39, 87.28, 92.44],
+            panha:   [52.03, 63.21, 64.51, 70.36, 77.38, 81.04, 72.94, 87.04, 95.31, 82.18, 92.23, 91.90, 80.07, 86.56],
+        },
+    };
+    const LEVELS = ['Junior','Mid-Level','Senior','Expert'];
+    const DSKEYS = ['bp','kbi','genesys','mvp','sligo','panha'];
+    const VLABEL = { bp:'Best Pegasus V2.0', kbi:'KBI', genesys:'Genesys', mvp:'MVP', sligo:'Sligo', panha:'Panha' };
+    const VCOLOR = { bp:'#00BCD4', kbi:'#FFD700', genesys:'#9C27B0', mvp:'#C0C0C0', sligo:'#CD7F32', panha:'#F44336' };
+
+    const charts = [];
+    function buildChart(li) {
+        const D = BILL[LEVELS[li]];
+        return new Chart(document.getElementById('billChart' + li), {
+            type: 'line',
+            data: {
+                labels: TITLES,
+                datasets: DSKEYS.map(k => ({
+                    label: VLABEL[k], data: D[k], borderColor: VCOLOR[k],
+                    backgroundColor: k==='bp' ? 'rgba(0,188,212,0.10)' : 'transparent',
+                    borderWidth: k==='bp' ? 4 : 2.5, borderDash: k==='bp' ? [6,4] : [],
+                    tension: 0.25, fill: k==='bp', pointRadius: 4,
+                    pointBackgroundColor: VCOLOR[k]
+                }))
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: { y: { beginAtZero: false, title: { display: true, text: 'Bill Rate ($/hr)' },
+                               ticks: { callback: v => '$' + v } },
+                          x: { ticks: { maxRotation: 60, minRotation: 45 } } },
+                plugins: {
+                    title: { display: true, text: '2026 Bill Rate ($/hr) by Job Title — ' + LEVELS[li] + ' (hover a title for all vendors)' },
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: {
+                        label: ctx => ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(2) + '/hr'
+                    } }
+                }
+            }
+        });
+    }
+    for (let li = 0; li < 4; li++) charts.push(buildChart(li));
+
+    // KPIs — average bill per vendor across all 14 titles × 4 skills
+    function avgBill(k) {
+        let s = 0, n = 0;
+        LEVELS.forEach(sk => BILL[sk][k].forEach(v => { s += v; n++; }));
+        return s / n;
+    }
+    (function renderKPIs() {
+        const avgs = DSKEYS.map(k => ({ k, v: avgBill(k) })).sort((a,b) => b.v - a.v);
+        const hi = avgs[0], lo = avgs[avgs.length-1];
+        const bp = avgBill('bp'), kbi = avgBill('kbi');
+        const card = (cls,label,big,sub) => `<div class="stat-card ${cls}"><h4>${label}</h4><div class="big">${big}</div><div class="sub">${sub}</div></div>`;
+        document.getElementById('kpis').innerHTML =
+            card('bp','Best Pegasus V2.0','$'+bp.toFixed(2),'avg bill /hr (all roles)')
+          + card('','KBI (Benchmark)','$'+kbi.toFixed(2),'avg bill /hr — BP tracks within $'+Math.abs(bp-kbi).toFixed(2))
+          + card('','Highest avg biller',VLABEL[hi.k]+' · $'+hi.v.toFixed(2),'priciest across the board')
+          + card('','Lowest avg biller',VLABEL[lo.k]+' · $'+lo.v.toFixed(2),'cheapest across the board');
+    })();
+
+    // Data table (follows active tab)
+    function renderTable(li) {
+        const D = BILL[LEVELS[li]];
+        document.getElementById('tblSkill').textContent = LEVELS[li];
+        let html = '';
+        TITLES.forEach((t, i) => {
+            const row = DSKEYS.map(k => D[k][i]);
+            const lo = Math.min(...row), hi = Math.max(...row);
+            const cell = (k) => {
+                const v = D[k][i];
+                const cls = (v === lo ? 'lowest' : v === hi ? 'highest' : '') + (k === 'bp' ? ' bp-col' : '');
+                return `<td class="num ${cls}">$${v.toFixed(2)}</td>`;
+            };
+            html += `<tr><td>${t}</td>${DSKEYS.map(cell).join('')}`
+                  + `<td class="num">$${lo.toFixed(2)}</td><td class="num">$${hi.toFixed(2)}</td></tr>`;
+        });
+        document.getElementById('tblBody').innerHTML = html;
+    }
+    renderTable(0);
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const li = +btn.dataset.level;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', +p.dataset.level === li));
+            charts[li].resize();
+            renderTable(li);
+        });
+    });
+
+    function exportCSV() {
+        const head = ['Skill_Level','Job_Title','Best_Pegasus_V2','KBI','Genesys','MVP','Sligo','Panha'];
+        const lines = [head.join(',')];
+        LEVELS.forEach(sk => TITLES.forEach((t, i) =>
+            lines.push([sk, t, ...DSKEYS.map(k => BILL[sk][k][i].toFixed(2))].join(','))));
+        const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'hbits_2026_bill_rates.csv'; a.click();
+    }
+</script>
+</body>
+</html>

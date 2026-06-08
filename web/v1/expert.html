@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing Working Session — Expert Review</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.55; }
+    .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+    .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+    .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+    .topnav a.current { background:#2a64c4; color:#fff; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#3a0d52 0%,#11203a 60%,#1f5a8a 100%); color:#fff; padding:34px 40px 28px; }
+    .hero h1 { font-size:28px; margin-bottom:7px; }
+    .hero p { opacity:.93; font-size:14.5px; max-width:940px; }
+    .hero .pill { display:inline-block; background:rgba(255,255,255,.16); border-radius:20px; padding:4px 12px; font-size:12.5px; font-weight:700; margin-top:10px; }
+
+    .wrap { max-width:1180px; margin:0 auto; padding:24px 26px 80px; }
+    h3.section { font-size:12.5px; text-transform:uppercase; letter-spacing:.6px; color:#6b7688; margin:26px 0 10px; font-weight:800; }
+
+    .card { background:#fff; border-radius:12px; padding:20px 22px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-bottom:18px; }
+    .card h2 { font-size:19px; color:#11203a; margin-bottom:8px; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:18px; } @media(max-width:820px){.two{grid-template-columns:1fr;}}
+
+    .facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+    .fact { background:#f7f9fc; border:1px solid #e6ecf5; border-radius:10px; padding:12px 14px; }
+    .fact .n { font-size:18px; font-weight:800; color:#11203a; } .fact .l { font-size:12px; color:#5a6678; margin-top:3px; }
+
+    ul.tight { margin-left:18px; } ul.tight li { margin-bottom:6px; font-size:14px; }
+    .crit { color:#c4413a; font-weight:700; }
+
+    table { width:100%; border-collapse:collapse; font-size:13.5px; }
+    th { background:#11203a; color:#fff; text-align:left; padding:10px 12px; font-size:11.5px; text-transform:uppercase; letter-spacing:.3px; }
+    td { padding:9px 12px; border-bottom:1px solid #eef1f6; vertical-align:top; }
+    tbody tr:hover { background:#f7f9fc; }
+    .conf { font-weight:800; font-size:11px; padding:2px 8px; border-radius:10px; }
+    .c-lo { background:#fdeeec; color:#c4413a; } .c-md { background:#fdf0d8; color:#a4720f; } .c-hi { background:#e3f3ea; color:#0a5c3c; }
+
+    /* agenda */
+    .agenda li { margin-bottom:10px; font-size:14px; }
+    .agenda .t { display:inline-block; min-width:74px; font-weight:800; color:#2a64c4; }
+
+    /* worksheet */
+    .ws th, .ws td { vertical-align:top; }
+    .ws .q { font-weight:700; color:#11203a; width:24%; }
+    .ws .def { width:26%; color:#5a6678; font-size:13px; }
+    .ws input, .ws textarea { width:100%; border:1px solid #cfd8e6; border-radius:6px; padding:7px 9px; font-size:13px; font-family:inherit; }
+    .ws textarea { min-height:38px; resize:vertical; }
+    .ws-actions { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+    .btn { padding:9px 16px; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; }
+    .btn-p { background:#2a64c4; color:#fff; } .btn-p:hover{background:#214f9e;}
+    .btn-g { background:#eef1f6; color:#33415c; border:1px solid #d7deea; } .btn-g:hover{background:#e2e8f2;}
+
+    .openq li { margin-bottom:9px; font-size:14px; }
+    .openq b { color:#11203a; }
+    .tools { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .tool { background:#f7f9fc; border:1px solid #e6ecf5; border-radius:10px; padding:14px; text-decoration:none; color:inherit; }
+    .tool:hover { background:#eef3fc; }
+    .tool .t { font-weight:800; color:#11203a; } .tool .d { font-size:12.5px; color:#5a6678; margin-top:3px; } .tool .go{color:#2a64c4;font-weight:700;font-size:12.5px;margin-top:6px;}
+    .lead { background:#11203a; color:#fff; border-radius:12px; padding:18px 22px; margin-bottom:18px; }
+    .lead b { color:#9fe7c0; }
+    @media print { .topnav,.tools,.ws-actions{display:none;} body{background:#fff;} .card{box-shadow:none;border:1px solid #ddd;} }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="compare.html">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html">Strategy Briefing</a>
+    <a href="analytics.html">Market Analytics</a>
+    <a href="vendors.html">Vendor Detail</a>
+    <a href="formulas.html">How It Works</a>
+    <a href="factors.html">Factors &amp; Inputs</a>
+    <a href="expert.html" class="current">Expert Session</a>
+    <a href="resources.html">Resources</a>
+    <span class="spacer"></span>
+</div>
+
+<div class="hero">
+    <h1>Pricing Working Session — Expert Review &amp; Improvement</h1>
+    <p>Built for senior State-level IDIQ pricing analysts. This single page is the orientation + working agenda: skim the
+    first two cards (5 min), then drive the 60-minute decision agenda and capture your calls in the live worksheet.
+    Full methodology and provenance live in the <a href="briefing.html" style="color:#9fe7c0;">Strategy Briefing</a>;
+    test rank/markup scenarios live in the <a href="positioning.html" style="color:#9fe7c0;">Bid Builder</a>.</p>
+    <span class="pill">Goal: actionable formula inputs within the first hour — no ramp-up time</span>
+</div>
+
+<div class="wrap">
+
+    <div class="lead">
+        <b>What we're asking of you:</b> pressure-test the current pricing logic and lock a set of parameters for the next
+        iteration (v1.2). The defaults below are deliberate but provisional — every one is yours to challenge. Decisions to
+        finalize today are in the <b>worksheet</b>; the export button turns your calls into a hand-off artifact.
+    </div>
+
+    <!-- 1. ORIENTATION -->
+    <h3 class="section">1 · 5-minute orientation (the only context you need)</h3>
+    <div class="card">
+        <h2>The vehicle &amp; the two formulas</h2>
+        <ul class="tight">
+            <li><b>Vehicle:</b> NYS OGS HBITS (Group 73012 / Award 23158 → Solicitation 23311). Non-negotiated, <b>fixed NTE bill rates</b>, firm for each placement's life. 31 titles × 4 skills × 3 regions. 5-yr + 2-yr option; bid opens 7/1/2026.</li>
+            <li><b>The mechanic that governs everything — the MSP price filter:</b> for 10–40 candidates the MSP forwards only the <b>lowest ~50%</b> of bill rates (+1% buffer) before any technical review; 6–10 → 5 lowest; ≤5 → all. <span class="crit">At ~33 bidders that's ~16–17 forwarded.</span></li>
+            <li><b>Formula 1.0 (Baseline):</b> cost-plus. Bill = Wage × (1+M). Wage = historical 2021 anchor × CPI multipliers (de-esc 0.8417 → bid-yr 1.0381 → 2029 1.0716). Lands us in the <b>expensive third (~#26/33)</b>; covers 30 titles (omits Business Analyst).</li>
+            <li><b>Formula 1.1 (Rank positioning):</b> place our rate at <b>target rank #19 of 33</b> (18 below, 14 above), computed per region from the live competitor field. 356/372 roles hit #19 exactly; 16 fall to #18 on boundary ties. Covers all 31 titles.</li>
+            <li><span class="crit">The headline tension:</span> #19 sits in the <b>upper price half</b> → on high-volume roles it is filtered out before evaluation. This is the first thing to resolve.</li>
+        </ul>
+    </div>
+
+    <!-- 2. FACTS AT HAND -->
+    <h3 class="section">2 · Facts at hand (so nothing slows you down)</h3>
+    <div class="card">
+        <div class="facts">
+            <div class="fact"><div class="n">33</div><div class="l">bidders / role (32 + us)</div></div>
+            <div class="fact"><div class="n">11%–110%</div><div class="l">competitor markup range</div></div>
+            <div class="fact"><div class="n">~16–17</div><div class="l">forwarded by MSP (cheapest 50%)</div></div>
+            <div class="fact"><div class="n">#19 / #26</div><div class="l">our rank: v1.1 / v1.0</div></div>
+            <div class="fact"><div class="n">~1–2% → ~11%</div><div class="l">net margin at 30% → 45% markup</div></div>
+            <div class="fact"><div class="n">1,664</div><div class="l">historical placements (2023–25)</div></div>
+            <div class="fact"><div class="n">$1.58B</div><div class="l">3-yr awarded value</div></div>
+            <div class="fact"><div class="n">2.3–3.8%</div><div class="l">CPI vs ~3.5–5.5% IT wage infl.</div></div>
+        </div>
+        <p style="font-size:12.5px;color:#6b7688;margin-top:12px;">Cost build (current assumption): payroll 13.5% · insurance 3.5% · overhead+G&amp;A 10.5% (of wage) · OGS fee 0.75% (of bill). Competitor rates = each vendor's <b>latest effective date</b> (many pre-2025, un-escalated).</p>
+    </div>
+
+    <!-- 3. AGENDA -->
+    <h3 class="section">3 · The first 60 minutes — decision agenda</h3>
+    <div class="card">
+        <ul class="agenda" style="list-style:none;">
+            <li><span class="t">0–10′</span> <b>Benchmark integrity.</b> Are stale (pre-2025, un-escalated) competitor rates a fair basis, or do we CPI-normalize the field to 2026 before ranking? (Materially shifts every v1.1 price.)</li>
+            <li><span class="t">10–25′</span> <b>Target-rank strategy.</b> Flat #19 vs <b>tiered by role</b>: commodity/high-volume titles aim ≤ filter cut-off (~#16); scarce/filter-bypassing titles can sit higher for margin. Define the tiers and the rank per tier.</li>
+            <li><span class="t">25–40′</span> <b>Cost build &amp; margin floor.</b> Validate fringe/OH/G&amp;A/fee; set a <b>minimum acceptable net margin</b> and a markup band (margin vs. wage-competitiveness for recruiting).</li>
+            <li><span class="t">40–50′</span> <b>Escalation &amp; decay.</b> CPI (2.3–3.8%) trails IT wage inflation (3.5–5.5%). Decide protective posture and the multi-year repricing/monitoring rule.</li>
+            <li><span class="t">50–60′</span> <b>Lock v1.2 parameters.</b> Convert the calls above into a concrete parameter set; capture owners + open items in the worksheet and export.</li>
+        </ul>
+    </div>
+
+    <!-- 4. ASSUMPTIONS ON THE TABLE -->
+    <h3 class="section">4 · Current assumptions on the table (challenge these)</h3>
+    <div class="card">
+        <table>
+            <thead><tr><th>Assumption</th><th>Current value</th><th>Confidence</th><th>The question for you</th></tr></thead>
+            <tbody>
+                <tr><td>Target rank</td><td>#19 of 33 (flat, all roles)</td><td><span class="conf c-lo">LOW</span></td><td>Right number? Flat or tiered? Aligned to the filter cut-off?</td></tr>
+                <tr><td>Benchmark currency</td><td>Competitors' latest effective rate, as-is</td><td><span class="conf c-lo">LOW</span></td><td>Normalize stale rates to 2026 via CPI before ranking?</td></tr>
+                <tr><td>Markup</td><td>~30% (display/implied wage)</td><td><span class="conf c-md">MED</span></td><td>Policy band? Ceiling driven by recruiting?</td></tr>
+                <tr><td>Cost build</td><td>13.5 / 3.5 / 10.5% wage; 0.75% bill</td><td><span class="conf c-md">MED</span></td><td>Replace with audited fringe/OH/G&amp;A/fee?</td></tr>
+                <tr><td>Minimum margin</td><td>Not set (≈1.5% at 30%)</td><td><span class="conf c-lo">LOW</span></td><td>What net margin floor is acceptable?</td></tr>
+                <tr><td>Region handling</td><td>v1.1 per-region; v1.0 R1 applied to all</td><td><span class="conf c-hi">OK</span></td><td>Per-region rank targets, or uniform?</td></tr>
+                <tr><td>Title coverage</td><td>v1.1 all 31; v1.0 missing Business Analyst</td><td><span class="conf c-md">MED</span></td><td>Confirm full title set &amp; any add/drop.</td></tr>
+                <tr><td>Field completeness</td><td>32 awarded vendors</td><td><span class="conf c-md">MED</span></td><td>Is the awarded pool complete &amp; current?</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 5. WORKSHEET -->
+    <h3 class="section">5 · Decision worksheet — capture your calls live</h3>
+    <div class="card">
+        <table class="ws">
+            <thead><tr><th class="q">Decision to lock</th><th class="def">Current default</th><th>Your recommendation</th><th>Rationale / conditions</th></tr></thead>
+            <tbody id="wsBody"></tbody>
+        </table>
+        <div class="ws-actions">
+            <button class="btn btn-p" onclick="exportWS()">⤓ Export decisions (CSV)</button>
+            <button class="btn btn-g" onclick="window.print()">🖨 Print / Save as PDF</button>
+            <button class="btn btn-g" onclick="clearWS()">Clear</button>
+        </div>
+    </div>
+
+    <!-- 6. OPEN QUESTIONS -->
+    <h3 class="section">6 · Open questions where your judgment is decisive</h3>
+    <div class="card">
+        <ul class="openq" style="list-style:none;">
+            <li>① <b>Filter vs. margin:</b> what rank reliably clears the MSP cut-off on high-volume roles, and what margin does that imply at our cost build?</li>
+            <li>② <b>Tiering rule:</b> by what signal do we classify a title as commodity vs. scarce — historical response volume, closure counts, BLS supply, or judgment?</li>
+            <li>③ <b>Stale-rate normalization:</b> if we CPI-lift incumbents to 2026, does our #19 placement move materially, and is that defensible in a protest?</li>
+            <li>④ <b>Wage floor compliance:</b> at higher markups the pass-through wage drops — where's the recruiting break-point by region/role?</li>
+            <li>⑤ <b>10-year decay:</b> what repricing/escalation posture protects margin given CPI-vs-wage divergence on a fixed-rate vehicle?</li>
+            <li>⑥ <b>Win-rate evidence:</b> can the 2023–25 closure data calibrate the rank↔win-probability curve to replace the assumed #19?</li>
+        </ul>
+    </div>
+
+    <!-- 7. TOOLS -->
+    <h3 class="section">7 · Built &amp; ready — test your hypotheses live</h3>
+    <div class="card">
+        <div class="tools">
+            <a class="tool" href="positioning.html"><div class="t">Bid Builder</div><div class="d">Change the target rank / markup and see every recommended rate &amp; margin instantly.</div><div class="go">Open →</div></a>
+            <a class="tool" href="compare.html"><div class="t">Rate Comparison</div><div class="d">Any role's full 33-bidder field, our rank, vs-lowest, price position.</div><div class="go">Open →</div></a>
+            <a class="tool" href="analytics.html"><div class="t">Market Analytics</div><div class="d">Demand by role, leaders, momentum — for tiering &amp; win-rate calibration.</div><div class="go">Open →</div></a>
+            <a class="tool" href="vendors.html"><div class="t">Vendor Detail</div><div class="d">Per-vendor, per-year closures + contract-level drill-down.</div><div class="go">Open →</div></a>
+            <a class="tool" href="briefing.html"><div class="t">Strategy Briefing</div><div class="d">Full methodology, provenance, and quality-test checklist.</div><div class="go">Open →</div></a>
+            <a class="tool" href="factors.html"><div class="t">Factors &amp; Inputs</div><div class="d">Every factor/variable/parameter and its effect on price.</div><div class="go">Open →</div></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const DECISIONS = [
+        ["Target rank — commodity / high-volume roles", "#19 (flat)"],
+        ["Target rank — specialized / scarce roles", "#19 (flat)"],
+        ["Benchmark currency (normalize stale rates?)", "Use as-is"],
+        ["Minimum acceptable net margin", "Not set (~1.5% @30%)"],
+        ["Markup policy / band", "~30% assumed"],
+        ["Cost build (fringe / OH+G&A / fee)", "13.5 / 3.5 / 10.5% ; 0.75%"],
+        ["Escalation & multi-year decay posture", "CPI filing only"],
+        ["Title tiering rule (commodity vs scarce)", "Undefined"],
+        ["Region rank differentiation", "Same rank all regions"],
+        ["v1.2 sign-off & owner", "—"],
+    ];
+    function rowHtml(d,i){
+        return `<tr><td class="q">${d[0]}</td><td class="def">${d[1]}</td>
+            <td><input id="call${i}" placeholder="your call…"></td>
+            <td><textarea id="why${i}" placeholder="rationale / conditions…"></textarea></td></tr>`;
+    }
+    document.getElementById('wsBody').innerHTML = DECISIONS.map(rowHtml).join('');
+
+    function q(s){ s=String(s==null?'':s); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }
+    function exportWS(){
+        const lines=[['Decision','Current_default','Recommendation','Rationale'].join(',')];
+        DECISIONS.forEach((d,i)=>{
+            lines.push([q(d[0]),q(d[1]),q(document.getElementById('call'+i).value),q(document.getElementById('why'+i).value)].join(','));
+        });
+        const b=new Blob([lines.join('\n')],{type:'text/csv'}); const a=document.createElement('a');
+        a.href=URL.createObjectURL(b); a.download='hbits_pricing_decisions.csv'; a.click();
+    }
+    function clearWS(){ DECISIONS.forEach((d,i)=>{document.getElementById('call'+i).value='';document.getElementById('why'+i).value='';}); }
+</script>
+</body>
+</html>

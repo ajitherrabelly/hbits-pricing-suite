@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Net Margin Is Defined — HBITS Pricing Suite</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color:#1f2733; background:#eef1f6; line-height:1.55; }
+
+        .topnav { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; box-shadow:0 2px 10px rgba(0,0,0,.15); }
+        .topnav .brand { font-weight:800; font-size:15px; margin-right:10px; letter-spacing:.3px; }
+        .topnav a { color:#e7e9ff; text-decoration:none; font-weight:600; font-size:13.5px; padding:8px 13px; border-radius:6px; transition:all .15s; }
+        .topnav a:hover { background:rgba(255,255,255,.18); color:#fff; }
+        .topnav a.current { background:#fff; color:#5a3db5; }
+        .topnav .spacer { flex:1; }
+
+        .hero { background:linear-gradient(135deg,#11203a 0%,#5a3db5 100%); color:#fff; padding:30px 40px 26px; }
+        .hero h1 { font-size:27px; margin-bottom:6px; }
+        .hero p { opacity:.92; font-size:14.5px; max-width:920px; }
+
+        .wrap { max-width:1040px; margin:0 auto; padding:24px 26px 70px; }
+        h2 { color:#11203a; margin:34px 0 10px; font-size:21px; }
+        p.lead { color:#44506a; font-size:14.5px; margin-bottom:10px; }
+
+        .card { background:#fff; border-radius:12px; padding:22px 24px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin:16px 0; }
+
+        .formula { background:#0f1b30; color:#e7ecf5; border-radius:10px; padding:20px 22px; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:14.5px; line-height:1.9; overflow-x:auto; margin:14px 0; white-space:pre-wrap; }
+        .formula .v { color:#7fd1ff; } .formula .c { color:#9fe7c0; } .formula .o { color:#ffcaa8; } .formula .cmt { color:#7a8aa5; }
+
+        table { width:100%; border-collapse:collapse; font-size:13.5px; margin:10px 0; }
+        thead { background:#11203a; color:#fff; }
+        th { padding:11px 13px; text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; }
+        th.num, td.num { text-align:right; }
+        td { padding:10px 13px; border-bottom:1px solid #eef1f6; }
+        tbody tr:hover { background:#f6f4fd; }
+        .tot td { font-weight:800; border-top:2px solid #5a3db5; background:#f6f4fd; }
+        .wage-row td { color:#5a6678; } .bill-row td { color:#11203a; font-weight:700; }
+        .pos { color:#0d7a4f; font-weight:800; }
+
+        .pill { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11.5px; font-weight:700; color:#fff; }
+        .p-wage { background:#5a6678; } .p-bill { background:#11203a; }
+
+        .calc { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; align-items:end; }
+        .fg label { display:block; font-size:12px; font-weight:700; color:#44506a; margin-bottom:6px; text-transform:uppercase; letter-spacing:.3px; }
+        .fg input, .fg select { width:100%; padding:11px 12px; border:1px solid #cfd8e6; border-radius:8px; font-size:15px; }
+        .fg input:focus, .fg select:focus { outline:none; border-color:#5a3db5; box-shadow:0 0 0 3px rgba(102,126,234,.18); }
+        .result-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:18px; }
+        .rcard { background:#f6f4fd; border-radius:10px; padding:16px 18px; text-align:center; border-top:4px solid #5a3db5; }
+        .rcard.green { border-top-color:#0d7a4f; } .rcard.navy { border-top-color:#11203a; } .rcard.cyan { border-top-color:#00BCD4; }
+        .rcard .n { font-size:23px; font-weight:800; color:#11203a; } .rcard.green .n { color:#0d7a4f; }
+        .rcard .l { font-size:12px; color:#5a6678; margin-top:4px; }
+
+        .note { background:#f1edfb; border-left:4px solid #5a3db5; border-radius:6px; padding:14px 18px; font-size:14px; margin:14px 0; }
+        .note b { color:#5a3db5; }
+        footer { text-align:center; color:#8a94a6; font-size:12.5px; padding:30px; }
+        code { background:#eef1f6; padding:1px 6px; border-radius:4px; font-size:13px; }
+        .qlink { font-size:11px; font-weight:700; color:#5a3db5; text-decoration:none; margin-left:7px; border-bottom:1px dotted #5a3db5; white-space:nowrap; }
+        .qlink:hover { color:#48309a; border-bottom-style:solid; }
+        h2[id] { scroll-margin-top:74px; }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <span class="brand">🚀 V2.0</span>
+    <a href="index.html">Home</a>
+    <a href="rate-comparison.html">Rate Comparison</a>
+    <a href="all-vendor-rates.html">All Vendor Rates</a>
+    <a href="bill-rate-distribution.html">Bill-Rate Report</a>
+    <a href="net-margin-method.html" class="current">How Net Margin Works</a>
+    <a href="kbi-margin-distribution.html">KBI Margin Distribution</a>
+    <a href="job-title-margin-comparison.html">Job-Title Analysis</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.8;">NYS OGS Group 73012</span>
+</div>
+
+<div class="hero">
+    <h1>How Net Margin Is Defined</h1>
+    <p>Every margin figure in this suite — the 38.5% on a KBI quote, the 11.3% on a Panha bid, the two-tier charts —
+    comes from one transparent cost model. Here is exactly what goes into it, the formula, and a calculator you can drive yourself.</p>
+</div>
+
+<div class="wrap">
+
+    <h2>1. The short version</h2>
+    <p class="lead">Net margin is the profit left after taking the wage and every loaded cost out of the bill rate, expressed as a percent of the bill:</p>
+    <div class="formula"><span class="cmt">// the bill rate is the wage marked up</span>
+<span class="v">bill</span> = <span class="v">wage</span> × (1 + <span class="v">markup</span>/100)
+
+<span class="cmt">// loaded cost = burdens on the wage + the OGS fee on the bill</span>
+<span class="c">cost</span> = <span class="v">wage</span> × (0.135 + 0.035 + 0.105) + <span class="v">bill</span> × 0.0075
+
+<span class="cmt">// net profit per hour, then margin as a share of the bill</span>
+<span class="o">net_profit</span> = <span class="v">bill</span> − <span class="v">wage</span> − <span class="c">cost</span>
+<span class="o">net_margin</span> = <span class="o">net_profit</span> / <span class="v">bill</span></div>
+
+    <h2>2. What's in the cost build</h2>
+    <p class="lead">Four loadings. Three are a percentage of the <span class="pill p-wage">wage</span>; one is a percentage of the <span class="pill p-bill">bill</span>.</p>
+    <div class="card">
+        <table>
+            <thead><tr><th>Cost component</th><th>Rate</th><th>Applied to</th><th>What it covers</th></tr></thead>
+            <tbody>
+                <tr><td>Payroll burden</td><td class="num">13.5%</td><td><span class="pill p-wage">wage</span></td><td>Employer taxes (FICA, FUTA/SUTA), workers' comp</td></tr>
+                <tr><td>Insurance</td><td class="num">3.5%</td><td><span class="pill p-wage">wage</span></td><td>Health / benefits load</td></tr>
+                <tr><td>Overhead + G&amp;A</td><td class="num">10.5%</td><td><span class="pill p-wage">wage</span></td><td>Recruiting, back-office, corporate overhead</td></tr>
+                <tr><td>OGS contract fee</td><td class="num">0.75%</td><td><span class="pill p-bill">bill</span></td><td>NYS OGS administrative fee on the bill rate</td></tr>
+                <tr class="tot"><td>Wage burden total</td><td class="num">27.5%</td><td><span class="pill p-wage">wage</span></td><td>13.5% + 3.5% + 10.5%</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>3. A worked example — Programmer · Expert</h2>
+    <p class="lead">Sourced wage <b>$38.50</b>, V2 markup <b>110%</b> → bill <b>$80.85</b>:</p>
+    <div class="card">
+        <table>
+            <tbody>
+                <tr class="wage-row"><td>Wage (cost of the worker)</td><td class="num">$38.50</td></tr>
+                <tr><td>+ Payroll burden &nbsp;13.5% × wage</td><td class="num">$5.20</td></tr>
+                <tr><td>+ Insurance &nbsp;3.5% × wage</td><td class="num">$1.35</td></tr>
+                <tr><td>+ Overhead + G&amp;A &nbsp;10.5% × wage</td><td class="num">$4.04</td></tr>
+                <tr><td>+ OGS fee &nbsp;0.75% × bill</td><td class="num">$0.61</td></tr>
+                <tr class="tot"><td>= Total cost to vendor</td><td class="num">$49.70</td></tr>
+                <tr class="bill-row"><td>Bill rate (wage × 2.10)</td><td class="num">$80.85</td></tr>
+                <tr class="tot"><td>Net profit / hr&nbsp; = bill − total cost</td><td class="num pos">$31.15</td></tr>
+                <tr class="tot"><td>Net margin&nbsp; = profit ÷ bill</td><td class="num pos">38.5%</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>4. Try it yourself</h2>
+    <p class="lead">Enter a wage and markup (or pick a vendor's markup) to see the full cost build and resulting net margin.</p>
+    <div class="card">
+        <div class="calc">
+            <div class="fg"><label>Hourly wage ($) <a href="#what-is-wage" class="qlink">ⓘ what's this?</a></label><input id="wage" type="number" value="38.50" step="0.01" min="0" oninput="calc()"></div>
+            <div class="fg"><label>Markup (%) <a href="#what-is-markup" class="qlink">ⓘ what's this?</a></label><input id="markup" type="number" value="110" step="1" min="0" oninput="syncSel(); calc()"></div>
+            <div class="fg"><label>…or a vendor's markup</label>
+                <select id="vendor" onchange="pickVendor()">
+                    <option value="">— custom —</option>
+                    <option value="110">KBI — 110%</option>
+                    <option value="100">Genesys — 100%</option>
+                    <option value="48">MVP — 48%</option>
+                    <option value="47">Sligo — 47%</option>
+                    <option value="45">Panha — 45%</option>
+                    <option value="30">Old V1.1 — 30%</option>
+                </select>
+            </div>
+        </div>
+        <div class="result-grid">
+            <div class="rcard navy"><div class="n" id="rBill">$80.85</div><div class="l">Bill rate</div></div>
+            <div class="rcard"><div class="n" id="rCost">$49.70</div><div class="l">Total cost to vendor</div></div>
+            <div class="rcard green"><div class="n" id="rProfit">$31.15</div><div class="l">Net profit / hr</div></div>
+            <div class="rcard cyan"><div class="n" id="rMargin">38.5%</div><div class="l">Net margin</div></div>
+        </div>
+        <div class="note" id="calcNote"></div>
+    </div>
+
+    <h2>5. The big consequence: markup drives margin, not the role</h2>
+    <p class="lead">Because every loading is a fixed percentage, the role and seniority cancel out — net margin depends almost entirely on the <b>markup</b>. That is why each vendor's margin is flat across all titles, and why the field splits into two tiers:</p>
+    <div class="card">
+        <table>
+            <thead><tr><th>Vendor</th><th class="num">Markup</th><th class="num">Net margin</th><th>Tier</th></tr></thead>
+            <tbody>
+                <tr><td>KBI</td><td class="num">110%</td><td class="num pos">38.5%</td><td>High-markup</td></tr>
+                <tr><td>Best Pegasus V2.0</td><td class="num">100–110%</td><td class="num pos">35.5–38.5%</td><td>High-markup</td></tr>
+                <tr><td>Genesys</td><td class="num">100%</td><td class="num pos">35.5%</td><td>High-markup</td></tr>
+                <tr><td>MVP</td><td class="num">48%</td><td class="num">13.1%</td><td>Low-markup</td></tr>
+                <tr><td>Sligo</td><td class="num">47%</td><td class="num">12.5%</td><td>Low-markup</td></tr>
+                <tr><td>Panha</td><td class="num">45%</td><td class="num">11.3%</td><td>Low-markup</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note">
+        <b>Why ~38.5% at a 110% markup?</b> A 110% markup means <code>bill = 2.10 × wage</code>. Costs eat the wage plus 27.5% of the wage plus
+        0.75% of the bill, so profit ≈ <code>(2.10 − 1 − 0.275)wage − 0.0075·bill</code> ≈ <b>38–39%</b> of the bill — independent of how large the wage is.
+    </div>
+
+    <div class="note">
+        <b>Where these numbers live in code:</b> the loadings (payroll 13.5%, insurance 3.5%, overhead/G&amp;A 10.5% of wage; OGS 0.75% of bill)
+        are defined once as <code>TAX/INS/OH/OGS</code> and reused everywhere — <code>rate-comparison.html</code>, <code>all-vendor-rates.html</code>,
+        and the margin charts — so every page reports margin the same way. Source: <code>SESSION-HANDOFF-KBI-ANALYSIS.md</code> / <code>PRICING-MODEL.md</code>.
+    </div>
+
+    <h2 id="what-is-wage">Glossary — What is “wage”?</h2>
+    <p class="lead">The <b>wage</b> is the hourly rate paid to the <b>worker</b> — the consultant actually doing the IT work. It's your raw cost of labor, the <i>starting input</i> of the price, before any of your own costs or profit are added.</p>
+    <div class="card">
+        <table>
+            <thead><tr><th>Term</th><th>Who it's for</th><th class="num">Example</th></tr></thead>
+            <tbody>
+                <tr><td><span class="pill p-wage">wage</span></td><td>paid to the worker</td><td class="num">$38.50</td></tr>
+                <tr><td>loaded cost</td><td>wage + your burdens (payroll 13.5% + insurance 3.5% + overhead/G&amp;A 10.5% + OGS fee)</td><td class="num">$49.70</td></tr>
+                <tr><td><span class="pill p-bill">bill</span></td><td>charged to the customer</td><td class="num">$80.85</td></tr>
+                <tr class="tot"><td>net profit</td><td>what you keep</td><td class="num pos">$31.15</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note">
+        Wage is <b>not</b> your total cost (you also carry ~27.5% in burdens on top) and <b>not</b> what the customer pays (that's the bill).
+        In the V2 model it's the real lever: markup is a fixed rule, so competitiveness and year-over-year change both come from the
+        <b>sourced wage</b> — <code>Δbill = Δwage × (1 + markup)</code>. <b>Whoever sources the lowest wage and holds a high markup wins the margin.</b>
+    </div>
+
+    <h2 id="what-is-markup">What is “markup”?</h2>
+    <p class="lead">The <b>markup</b> is the percentage added on top of the wage to get the bill rate — the gross spread between your cost of labor and your price, as a percent of the <span class="pill p-wage">wage</span>:</p>
+    <div class="formula"><span class="v">bill</span> = <span class="v">wage</span> × (1 + <span class="v">markup</span>/100)
+<span class="v">markup</span> % = (<span class="v">bill</span> − <span class="v">wage</span>) / <span class="v">wage</span> × 100</div>
+    <div class="card">
+        <table>
+            <thead><tr><th>Markup</th><th>On wage $38.50</th><th class="num">Bill rate</th><th class="num">→ Net margin</th></tr></thead>
+            <tbody>
+                <tr><td>45% (Panha)</td><td>× 1.45</td><td class="num">$55.82</td><td class="num">11.3%</td></tr>
+                <tr><td>100% (Genesys)</td><td>× 2.00</td><td class="num">$77.00</td><td class="num pos">35.5%</td></tr>
+                <tr><td>110% (KBI / BP V2)</td><td>× 2.10</td><td class="num">$80.85</td><td class="num pos">38.5%</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note">
+        <b>Markup ≠ margin.</b> Markup is measured against the <b>wage</b> (your cost): “$80.85 is 110% above the $38.50 wage.”
+        Net margin is measured against the <b>bill</b> (your price), after loaded costs: “$31.15 ÷ $80.85 = 38.5%.” Same deal, two denominators —
+        and because every cost loading is a fixed %, <b>the markup alone decides the margin tier</b>.
+    </div>
+</div>
+
+<footer>Net-margin methodology · NYS OGS Group 73012 — HBITS · cost model identical across the V2 suite.</footer>
+
+<script>
+    const TAX = 0.135, INS = 0.035, OH = 0.105, OGS = 0.0075;
+    const $ = id => document.getElementById(id);
+
+    function calc() {
+        const wage = parseFloat($('wage').value) || 0;
+        const markup = parseFloat($('markup').value) || 0;
+        const bill = wage * (1 + markup / 100);
+        const cost = wage * (TAX + INS + OH) + bill * OGS;     // loaded cost (excludes the wage itself)
+        const totalCost = wage + cost;
+        const profit = bill - totalCost;
+        const margin = bill > 0 ? profit / bill * 100 : 0;
+        $('rBill').textContent = '$' + bill.toFixed(2);
+        $('rCost').textContent = '$' + totalCost.toFixed(2);
+        $('rProfit').textContent = '$' + profit.toFixed(2);
+        $('rMargin').textContent = margin.toFixed(1) + '%';
+        const tier = margin >= 30 ? 'the <b>high-markup tier</b> (with KBI &amp; Genesys)'
+                   : margin >= 0 ? 'the <b>low-markup tier</b> (with MVP, Sligo, Panha)'
+                   : 'a <b>loss</b> — the bill does not cover loaded cost';
+        $('calcNote').innerHTML = `At a ${markup.toFixed(0)}% markup this role nets <b>${margin.toFixed(1)}%</b> — `
+            + `$${profit.toFixed(2)}/hr profit on an $${bill.toFixed(2)} bill. That lands in ${tier}.`;
+    }
+    function syncSel() { $('vendor').value = ''; }
+    function pickVendor() { const v = $('vendor').value; if (v) { $('markup').value = v; calc(); } }
+    calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBITS Pricing Suite v2.0 — Best Pegasus</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header .version {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .hero {
+            padding: 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .model-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .model-box {
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 5px solid #ddd;
+        }
+        .model-box.v1 {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        .model-box.v2 {
+            background: #d4edda;
+            border-left-color: #28a745;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+        }
+        .model-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        .metric-label {
+            font-weight: 500;
+        }
+        .metric-value {
+            text-align: right;
+            font-weight: 600;
+        }
+        .highlight {
+            background: #fff59d;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .formula-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .formula-box {
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        .formula-box h4 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        .formula {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95em;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .example {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 3px solid #2196F3;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1em;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+            border: 2px solid #667eea;
+        }
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+        .key-insight {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #ffc107;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        .key-insight strong {
+            color: #856404;
+        }
+        .financial-impact {
+            margin: 30px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature-card {
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+        .feature-card h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
+        }
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        @media (max-width: 768px) {
+            .model-switch, .formula-grid, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+            .nav-buttons {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="version">
+                <span>🚀 VERSION 2.0</span>
+            </div>
+            <h1>HBITS Pricing Suite</h1>
+            <p>Margin-First Strategy for NYS OGS Group 73012</p>
+            <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">Best Pegasus Competitive Pricing Model</p>
+        </header>
+
+        <div class="hero">
+            <h2 style="margin-bottom: 30px; color: #333;">What's New in v2.0</h2>
+
+            <div class="key-insight">
+                <strong>🎯 The Big Shift:</strong> V2.0 flips from rank-based pricing (V1) to margin-first pricing.
+                By adopting KBI's proven formula (110% fixed markup on sourced wages), we capture <strong>35-38% net margins</strong>
+                instead of V1's 1.2% — a <strong>30× improvement in profitability</strong> while staying competitive in the market.
+            </div>
+
+            <h3 style="margin: 30px 0 20px 0;">Model Comparison</h3>
+            <div class="model-switch">
+                <div class="model-box v1">
+                    <h3>V1.1 (Legacy)</h3>
+                    <div class="metric-row">
+                        <span class="metric-label">Strategy:</span>
+                        <span class="metric-value">Rank-based (#19)</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Markup:</span>
+                        <span class="metric-value">~30%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Net Margin:</span>
+                        <span class="metric-value"><span class="highlight">1.2%</span></span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Profit/Hour:</span>
+                        <span class="metric-value">~$0.76</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Market Rank:</span>
+                        <span class="metric-value">#19 (transparent)</span>
+                    </div>
+                </div>
+
+                <div class="model-box v2">
+                    <h3>✨ V2.0 (NEW)</h3>
+                    <div class="metric-row">
+                        <span class="metric-label">Strategy:</span>
+                        <span class="metric-value">Wage-based (sourced)</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Markup:</span>
+                        <span class="metric-value">110% (fixed)</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Net Margin:</span>
+                        <span class="metric-value"><span class="highlight">35-38%</span></span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Profit/Hour:</span>
+                        <span class="metric-value">~$25.50</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Market Rank:</span>
+                        <span class="metric-value">#21 (median)</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin: 40px 0 20px 0;">V2 Core Formulas</h3>
+            <div class="formula-grid">
+                <div class="formula-box">
+                    <h4>Bill Rate Formula</h4>
+                    <div class="formula">
+Bill = Sourced Wage × (1 + Markup%)
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        Where Markup% = 110% (fixed constant), 100% (guardrail)
+                    </p>
+                    <div class="example">
+                        <strong>Example:</strong><br/>
+                        Programmer/Expert, R1:<br/>
+                        $39.66 × 2.10 = <strong>$83.30/hr</strong> bill<br/>
+                        → Rank #18/33, 38.5% margin
+                    </div>
+                </div>
+
+                <div class="formula-box">
+                    <h4>Cost & Margin (Unchanged)</h4>
+                    <div class="formula">
+Cost = Wage×(13.5%+3.5%+10.5%) + Bill×0.75%
+
+Margin% = (Bill - Wage - Cost) / Bill
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        OGS pass-through + overhead baked in
+                    </p>
+                    <div class="example">
+                        <strong>V2 Economics:</strong><br/>
+                        Bill $83.30 - Wage $39.66 - Cost $18.93<br/>
+                        = <strong>$24.71 profit</strong> (38.5% margin)
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin: 40px 0 20px 0;">Financial Impact (100 FTEs over 3 Years)</h3>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>V1.1</th>
+                    <th>V2.0</th>
+                    <th>Delta</th>
+                </tr>
+                <tr>
+                    <td><strong>Bill Rate</strong></td>
+                    <td>$85.00/hr</td>
+                    <td>$83.30/hr</td>
+                    <td>−$1.70 (cheaper)</td>
+                </tr>
+                <tr>
+                    <td><strong>Net Margin %</strong></td>
+                    <td>1.2%</td>
+                    <td>38.5%</td>
+                    <td>+3,708 bps</td>
+                </tr>
+                <tr>
+                    <td><strong>Profit/Hour</strong></td>
+                    <td>$0.76</td>
+                    <td>$25.50</td>
+                    <td>×33.6</td>
+                </tr>
+                <tr>
+                    <td><strong>3-Year Profit</strong></td>
+                    <td>$0.5M</td>
+                    <td><span style="color: #28a745; font-weight: bold;">$16.8M</span></td>
+                    <td><span style="color: #28a745; font-weight: bold;">+$16.3M</span></td>
+                </tr>
+            </table>
+
+            <h3 style="margin: 40px 0 20px 0;">V2 Implementation Rules</h3>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <h5>🎯 Wage Rule</h5>
+                    <p>Source from lowest-cost recruiter. Default: KBI-floor benchmark (proven #1 winner).</p>
+                    <span class="badge badge-success">Independent Variable</span>
+                </div>
+                <div class="feature-card">
+                    <h5>📊 Markup Rule</h5>
+                    <p>Fixed 110% (never lower). Floor 100% only if guardrail (rank > #21) triggers.</p>
+                    <span class="badge badge-success">Defended Margin</span>
+                </div>
+                <div class="feature-card">
+                    <h5>🛡️ Guardrail</h5>
+                    <p>If bill rank exceeds #21, lower wage estimate. Never thin the markup.</p>
+                    <span class="badge badge-success">Competitive</span>
+                </div>
+            </div>
+
+            <h3 style="margin: 40px 0 20px 0;">Year-over-Year Escalation</h3>
+            <div class="formula-grid">
+                <div class="formula-box">
+                    <h4>Automatic Escalation</h4>
+                    <div class="formula">
+bill(year N) = wage(year N) × 2.10
+
+Since markup is fixed (110%), bill
+escalates EXACTLY as wage escalates.
+                    </div>
+                    <div class="example">
+                        <strong>2026:</strong> wage $39.66 → bill $83.30<br/>
+                        <strong>2027:</strong> wage $40.85 (+3%) → bill $85.79<br/>
+                        (Margin stays locked at 38.5%)
+                    </div>
+                </div>
+                <div class="formula-box">
+                    <h4>Why V2 Wins</h4>
+                    <p style="margin: 15px 0;">KBI wins not on price, but on incumbency + fulfillment, WHILE keeping massive margins.</p>
+                    <p><strong>295 KBI wins @ median rank #21 + 38.5% margin = $44.8M profit</strong></p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">V2 captures KBI's economics while maintaining competitive positioning.</p>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="all-vendor-rates.html" class="btn btn-secondary">📒 All Vendor Bill Rates</a>
+                <a href="rate-comparison.html" class="btn btn-secondary">⚖️ Rate Comparison</a>
+                <a href="v2-comparison.html" class="btn btn-secondary">📊 V1 vs V2 Comparison</a>
+                <a href="kbi-margin-distribution.html" class="btn btn-secondary">📈 KBI Margin Distribution</a>
+                <a href="top-5-vendors-comparison.html" class="btn btn-secondary">🏆 Top 5 Competitors</a>
+                <a href="expertise-margin-comparison.html" class="btn btn-secondary">💼 Expertise-Level Analysis</a>
+                <a href="job-title-margin-comparison.html" class="btn btn-secondary">🧩 Job-Title Analysis</a>
+                <a href="v2-bid-sheet.html" class="btn btn-secondary">📋 2026 Bid Sheet (V2)</a>
+                <a href="v2-formulas.html" class="btn btn-secondary">🔬 All Formulas</a>
+                <a href="v2-analysis.html" class="btn btn-primary">🎯 KBI Analysis & Backtest</a>
+            </div>
+
+            <h3 style="margin: 40px 0 20px 0;">V2 Key Files & Resources</h3>
+            <table>
+                <tr>
+                    <th>File</th>
+                    <th>Description</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td><strong>V2-PRICING-MODEL.md</strong></td>
+                    <td>Complete V2 specification, formulas, rules</td>
+                    <td>Go-forward reference</td>
+                </tr>
+                <tr>
+                    <td><strong>V2_2026_Expert_bid_sheet.csv</strong></td>
+                    <td>All 31 titles × 3 regions, 2026 quotes</td>
+                    <td>Bid submission</td>
+                </tr>
+                <tr>
+                    <td><strong>V2_Rate_Trajectory_2021_2026_2029.csv</strong></td>
+                    <td>124 rows, wage-indexed escalation</td>
+                    <td>Multi-year forecasting</td>
+                </tr>
+                <tr>
+                    <td><strong>hbits.db</strong></td>
+                    <td>SQLite: 1,663 wins, 12,636 rate cards</td>
+                    <td>Data analysis & backtesting</td>
+                </tr>
+                <tr>
+                    <td><strong>SESSION-HANDOFF-KBI-ANALYSIS.md</strong></td>
+                    <td>Complete session narrative & evidence</td>
+                    <td>Technical deep-dive</td>
+                </tr>
+            </table>
+        </div>
+
+        <footer>
+            <p><strong>HBITS Pricing Suite v2.0</strong></p>
+            <p>Best Pegasus • NYS OGS Group 73012 • Award 23158 / Solicitation 23311</p>
+            <p style="margin-top: 15px; color: #999;">Last updated: June 7, 2026 • Margin-first pricing model • KBI-validated</p>
+        </footer>
+    </div>
+</body>
+</html>

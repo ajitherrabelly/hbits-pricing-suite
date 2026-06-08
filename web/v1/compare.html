@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBITS Rate Comparison — Executive View</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.5; }
+
+    /* top nav (matches analytics) */
+    .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+    .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+    .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+    .topnav a.current { background:#2a64c4; color:#fff; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#11203a 0%,#1f5a8a 100%); color:#fff; padding:30px 40px 26px; }
+    .hero h1 { font-size:27px; margin-bottom:6px; }
+    .hero p { opacity:.92; font-size:14.5px; max-width:920px; }
+
+    .wrap { max-width:1280px; margin:0 auto; padding:22px 26px 70px; }
+
+    /* segmented controls */
+    .seg-row { display:flex; flex-wrap:wrap; gap:18px; align-items:center; margin-bottom:18px; }
+    .seg { display:inline-flex; background:#dfe5ef; border-radius:10px; padding:4px; }
+    .seg button { border:none; background:transparent; padding:9px 18px; border-radius:7px; font-weight:700; font-size:13.5px; color:#44506a; cursor:pointer; transition:all .15s; }
+    .seg button.active { background:#fff; color:#11203a; box-shadow:0 1px 4px rgba(0,0,0,.12); }
+    .seg.green button.active { color:#0a5c3c; }
+    .seg-label { font-size:12px; color:#6b7688; font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-right:2px; }
+
+    .vbanner { font-size:13px; padding:11px 16px; border-radius:8px; margin-bottom:18px; }
+    .vbanner.v11 { background:#eef6f1; border-left:4px solid #0d7a4f; color:#234; }
+    .vbanner.v11 b { color:#0a5c3c; }
+    .vbanner.v1 { background:#fdf5e8; border-left:4px solid #d99a16; color:#3a2f1a; }
+    .vbanner.v1 b { color:#a4720f; }
+
+    /* cards */
+    .card { background:#fff; border-radius:12px; padding:20px 22px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-bottom:20px; }
+    .card h2 { font-size:18px; color:#11203a; margin-bottom:3px; }
+    .card .sub { font-size:12.5px; color:#6b7688; margin-bottom:14px; }
+
+    /* filters */
+    .filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; }
+    .fg { display:flex; flex-direction:column; }
+    .fg label { font-size:12px; font-weight:700; color:#44506a; margin-bottom:6px; text-transform:uppercase; letter-spacing:.3px; }
+    select, input[type=text] { padding:10px 12px; border:1px solid #cfd8e6; border-radius:8px; font-size:14px; background:#fff; }
+    select:focus, input:focus { outline:none; border-color:#2a64c4; box-shadow:0 0 0 3px rgba(42,100,196,.12); }
+    .filter-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .btn { padding:9px 16px; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; }
+    .btn-ghost { background:#eef1f6; color:#33415c; border:1px solid #d7deea; }
+    .btn-ghost:hover { background:#e2e8f2; }
+    .btn-primary { background:#2a64c4; color:#fff; } .btn-primary:hover { background:#214f9e; }
+    .btn-green { background:#0d7a4f; color:#fff; } .btn-green:hover { background:#0a5c3c; }
+
+    /* KPI strip */
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:6px; }
+    .kpi { background:#fff; border-radius:12px; padding:16px 18px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-top:4px solid #2a64c4; }
+    .kpi .n { font-size:24px; font-weight:800; color:#11203a; line-height:1.15; }
+    .kpi .l { font-size:12px; color:#5a6678; margin-top:4px; }
+    .kpi.green { border-top-color:#0d7a4f; } .kpi.amber { border-top-color:#d99a16; }
+    .kpi.red { border-top-color:#c4413a; } .kpi.navy { border-top-color:#11203a; }
+    .kpi .n.red { color:#c4413a; } .kpi .n.green { color:#0d7a4f; }
+
+    .insight { background:#11203a; color:#fff; border-radius:10px; padding:14px 18px; font-size:14px; margin-bottom:18px; }
+    .insight b { color:#9fe7c0; }
+    .insight .you { color:#ff9ea8; font-weight:800; }
+
+    /* table */
+    .tablecard { background:#fff; border-radius:12px; box-shadow:0 3px 14px rgba(0,0,0,.06); overflow:hidden; }
+    .tabletop { display:flex; justify-content:space-between; align-items:center; padding:16px 20px 10px; flex-wrap:wrap; gap:8px; }
+    .tabletop h2 { font-size:17px; color:#11203a; }
+    .tablewrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    thead { background:#11203a; color:#fff; }
+    th { padding:12px 14px; text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; cursor:pointer; user-select:none; }
+    th.sortable:hover { background:#1c3052; }
+    th .arr { opacity:.5; font-size:10px; }
+    th.sorted .arr { opacity:1; }
+    td { padding:10px 14px; border-bottom:1px solid #eef1f6; }
+    tbody tr:hover { background:#f6f9fd; }
+    .num { text-align:right; }
+    .rank-pill { display:inline-block; min-width:30px; text-align:center; padding:3px 8px; border-radius:20px; font-weight:800; font-size:12px; color:#fff; }
+    .rk-good { background:#0d7a4f; } .rk-mid { background:#d99a16; } .rk-bad { background:#c4413a; }
+    .region-badge,.skill-badge { display:inline-block; padding:3px 8px; border-radius:5px; font-size:11.5px; font-weight:700; }
+    .region-badge { background:#eef1f6; color:#33415c; } .skill-badge { background:#e4eefb; color:#1d4e8a; }
+    .bill { font-weight:800; color:#11203a; }
+    .wage { color:#5a6678; }
+    .gap-pos { color:#c4413a; font-weight:700; } .gap-zero { color:#0d7a4f; font-weight:700; }
+    /* price-position bar */
+    .bar { position:relative; width:120px; height:10px; background:#eef1f6; border-radius:6px; overflow:hidden; }
+    .bar-fill { position:absolute; left:0; top:0; bottom:0; border-radius:6px; }
+    .bf-good { background:#0d7a4f; } .bf-mid { background:#d99a16; } .bf-bad { background:#c4413a; }
+    /* Best Pegasus row */
+    tr.you td { background:#fff1f2; font-weight:700; }
+    tr.you:hover td { background:#ffe4e7; }
+    tr.you td:first-child { border-left:4px solid #c4413a; }
+    .you-badge { display:inline-block; background:#c4413a; color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
+    .no-results { text-align:center; padding:40px; color:#9aa3b2; }
+    .rowsnote { padding:10px 20px; font-size:12px; color:#8a94a6; }
+    @media (max-width:760px){ .hero{padding:24px;} table{font-size:12px;} }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="compare.html" class="current">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html">Strategy Briefing</a>
+    <a href="analytics.html">Market Analytics</a>
+    <a href="vendors.html">Vendor Detail</a>
+    <a href="formulas.html">How It Works</a>
+    <a href="factors.html">Factors &amp; Inputs</a>
+    <a href="expert.html">Expert Session</a>
+    <a href="resources.html">Resources</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.7;">NYS OGS Group 73012 · Award 23158</span>
+</div>
+
+<div class="hero">
+    <h1>HBITS Vendor Rate Comparison</h1>
+    <p>See exactly where Best Pegasus's price lands against every competitor — for any role, region, and skill level —
+    so you can decide, at a glance, whether you're priced to win.</p>
+</div>
+
+<div class="wrap">
+
+    <!-- controls -->
+    <div class="seg-row">
+        <div>
+            <span class="seg-label">Pricing formula</span><br>
+            <div class="seg green" style="margin-top:6px;">
+                <button id="ver-v1_1" class="active" onclick="switchVersion('v1.1')">v1.1 · Rank #19</button>
+                <button id="ver-v1" onclick="switchVersion('v1')">v1 · Baseline</button>
+            </div>
+        </div>
+        <div>
+            <span class="seg-label">View</span><br>
+            <div class="seg" style="margin-top:6px;">
+                <button id="tab-compare" class="active" onclick="switchTab('compare')">Rate Comparison</button>
+                <button id="tab-positions" onclick="switchTab('positions')">Best Pegasus Scorecard</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="vbanner v11" id="versionBanner"></div>
+
+    <!-- ===================== COMPARE VIEW ===================== -->
+    <div id="view-compare">
+        <div class="card">
+            <h2>Filter the market</h2>
+            <div class="sub">Pick a role to see the full ranked field. Choosing a Region, Skill Level and Job Title gives the sharpest, single-role comparison.</div>
+            <div class="filters">
+                <div class="fg"><label>Region</label>
+                    <select id="region" onchange="applyFilters()">
+                        <option value="">All Regions</option>
+                        <option value="Region 1">Region 1 — Statewide / Albany</option>
+                        <option value="Region 2">Region 2 — Mid-Hudson</option>
+                        <option value="Region 3">Region 3 — NYC Metro</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Skill Level</label>
+                    <select id="skillLevel" onchange="applyFilters()">
+                        <option value="">All Skill Levels</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Mid-Level">Mid-Level</option>
+                        <option value="Senior">Senior</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Job Title</label>
+                    <select id="jobTitle" onchange="applyFilters()"><option value="">All Job Titles</option></select>
+                </div>
+                <div class="fg"><label>Find a competitor</label>
+                    <input type="text" id="vendorSearch" placeholder="Type a vendor name…" oninput="applyFilters()" autocomplete="off">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-green" onclick="quickPick()">★ Compare a single role</button>
+                <button class="btn btn-ghost" onclick="clearFilters()">Reset filters</button>
+                <button class="btn btn-primary" onclick="exportCSV()">⤓ Export this view (CSV)</button>
+            </div>
+        </div>
+
+        <div class="kpis" id="kpis"></div>
+        <div class="insight" id="insight"></div>
+
+        <div class="tablecard">
+            <div class="tabletop">
+                <h2 id="tableTitle">All rates</h2>
+                <span style="font-size:12px;color:#6b7688;">Click any column heading to sort · <span style="color:#c4413a;font-weight:700;">red row = Best Pegasus</span></span>
+            </div>
+            <div class="tablewrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="sortable" onclick="sortBy('rank')" data-c="rank">Rank <span class="arr"></span></th>
+                            <th class="sortable" onclick="sortBy('Contractor_Name')" data-c="Contractor_Name">Contractor <span class="arr"></span></th>
+                            <th class="sortable" onclick="sortBy('Region')" data-c="Region">Region <span class="arr"></span></th>
+                            <th class="sortable" onclick="sortBy('Job_Title')" data-c="Job_Title">Job Title <span class="arr"></span></th>
+                            <th class="sortable" onclick="sortBy('Skill_Level')" data-c="Skill_Level">Skill <span class="arr"></span></th>
+                            <th class="sortable num" onclick="sortBy('Hourly_Wage_Rate')" data-c="Hourly_Wage_Rate">Wage/hr <span class="arr"></span></th>
+                            <th class="sortable num" onclick="sortBy('Hourly_Bill_Rate')" data-c="Hourly_Bill_Rate">Bill/hr <span class="arr"></span></th>
+                            <th class="sortable num" onclick="sortBy('gap')" data-c="gap">vs Lowest <span class="arr"></span></th>
+                            <th>Price position</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <div id="noResults" class="no-results" style="display:none;">No rates match your filters. Try resetting.</div>
+            </div>
+            <div class="rowsnote" id="rowsNote"></div>
+        </div>
+    </div>
+
+    <!-- ===================== POSITIONS / SCORECARD VIEW ===================== -->
+    <div id="view-positions" style="display:none;">
+        <div class="card">
+            <h2>Best Pegasus scorecard — every role</h2>
+            <div class="sub">One row per role (Title × Region × Skill) showing exactly where we rank in the field. Green = competitive, red = expensive.</div>
+            <div class="filters">
+                <div class="fg"><label>Search Job Title</label>
+                    <input type="text" id="posSearch" placeholder="Type to search…" oninput="renderPositions()" autocomplete="off">
+                </div>
+                <div class="fg"><label>Region</label>
+                    <select id="posRegion" onchange="renderPositions()">
+                        <option value="">All Regions</option><option>Region 1</option><option>Region 2</option><option>Region 3</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Skill Level</label>
+                    <select id="posSkill" onchange="renderPositions()">
+                        <option value="">All Skill Levels</option><option>Junior</option><option>Mid-Level</option><option>Senior</option><option>Expert</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Show</label>
+                    <select id="posBand" onchange="renderPositions()">
+                        <option value="">All positions</option>
+                        <option value="good">Competitive (top third)</option>
+                        <option value="mid">Mid-field</option>
+                        <option value="bad">Expensive (bottom third)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-ghost" onclick="sortPositions('rank')">Best rank first</button>
+                <button class="btn btn-ghost" onclick="sortPositions('rankDesc')">Worst rank first</button>
+                <button class="btn btn-ghost" onclick="sortPositions('title')">By title</button>
+                <button class="btn btn-primary" onclick="exportPositions()">⤓ Export scorecard (CSV)</button>
+            </div>
+        </div>
+
+        <div class="kpis" id="posKpis"></div>
+
+        <div class="tablecard">
+            <div class="tabletop"><h2>Position scorecard</h2>
+                <span style="font-size:12px;color:#6b7688;">Rank #1 = lowest (most competitive) price in the field</span></div>
+            <div class="tablewrap">
+                <table>
+                    <thead><tr>
+                        <th>Job Title</th><th>Region</th><th>Skill</th>
+                        <th class="num">Our Bill</th><th>Rank</th><th class="num">Lowest</th>
+                        <th class="num">vs Lowest</th><th>Price position</th>
+                    </tr></thead>
+                    <tbody id="posTableBody"></tbody>
+                </table>
+                <div id="posNoResults" class="no-results" style="display:none;">No roles match.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let allData = [], filteredData = [];
+    let currentSort = { col:'Hourly_Bill_Rate', dir:'asc' };
+    let currentVersion = 'v1.1';
+    const OUR = 'Best Pegasus';
+    const SKILL_ORDER = { 'Junior':0,'Mid-Level':1,'Senior':2,'Expert':3 };
+
+    const VERSION_META = {
+        'v1.1': { cls:'v11', html:'<b>Version 1.1 · Rank #19 Positioning.</b> Best Pegasus prices are tuned to the live competitor field to land at <b>rank #19 of 33</b> (18 rivals cheaper, 14 pricier) in every role — covering all 31 titles.' },
+        'v1':   { cls:'v1',  html:'<b>Version 1 · Baseline.</b> Best Pegasus prices come from the original internal estimate (Bid Year 2026). Covers <b>30 titles</b> and tends to sit in the expensive third of the field.' }
+    };
+
+    function activeData(){ return allData.filter(r => r.Is_Our_Rate==='false' || r.Formula_Version===currentVersion); }
+
+    function switchVersion(v){
+        currentVersion = v;
+        document.getElementById('ver-v1_1').classList.toggle('active', v==='v1.1');
+        document.getElementById('ver-v1').classList.toggle('active', v==='v1');
+        updateBanner(); buildPositions(); applyFilters();
+    }
+    function updateBanner(){
+        const m = VERSION_META[currentVersion];
+        const b = document.getElementById('versionBanner');
+        b.className = 'vbanner ' + m.cls; b.innerHTML = m.html;
+    }
+
+    async function loadData(){
+        try{
+            const txt = await (await fetch('vendors_rates.csv')).text();
+            parseCSV(txt); updateBanner();
+            // Land on a featured high-value role so executives see a meaningful comparison immediately.
+            // (Reset filters to browse the whole market.)
+            setFeaturedRole();
+            applyFilters(); buildPositions();
+        }catch(e){
+            document.getElementById('tableBody').innerHTML =
+              '<tr><td colspan="9" style="text-align:center;padding:30px;">Could not load vendors_rates.csv — serve this folder over a local web server.</td></tr>';
+        }
+    }
+    function parseCSV(t){
+        const rows=[]; let f='',row=[],q=false;
+        for(let i=0;i<t.length;i++){const c=t[i];
+            if(q){ if(c==='"'){ if(t[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+            else { if(c==='"')q=true; else if(c===','){row.push(f);f='';} else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';} else if(c==='\r'){} else f+=c; } }
+        if(f.length||row.length){row.push(f);rows.push(row);}
+        const h=rows[0].map(x=>x.trim());
+        for(let i=1;i<rows.length;i++){ if(rows[i].length===1&&rows[i][0]==='')continue;
+            const o={}; h.forEach((k,j)=>o[k]=(rows[i][j]||'').trim()); allData.push(o); }
+        const titles=[...new Set(allData.map(r=>r.Job_Title))].sort();
+        const sel=document.getElementById('jobTitle');
+        titles.forEach(t=>{const o=document.createElement('option');o.value=o.textContent=t;sel.appendChild(o);});
+    }
+
+    // ---- per-combo stats so rank / vs-lowest / bar are always meaningful ----
+    function annotate(rows){
+        const groups={};
+        rows.forEach(r=>{ const k=r.Job_Title+'|'+r.Region+'|'+r.Skill_Level; (groups[k]=groups[k]||[]).push(r); });
+        Object.values(groups).forEach(list=>{
+            list.sort((a,b)=>parseFloat(a.Hourly_Bill_Rate)-parseFloat(b.Hourly_Bill_Rate));
+            const bills=list.map(r=>parseFloat(r.Hourly_Bill_Rate));
+            const min=bills[0], max=bills[bills.length-1], n=list.length;
+            list.forEach((r,i)=>{ r._rank=i+1; r._total=n; r._min=min; r._max=max;
+                r._gap=parseFloat(r.Hourly_Bill_Rate)-min;
+                r._pos = max>min ? (parseFloat(r.Hourly_Bill_Rate)-min)/(max-min) : 0.5; });
+        });
+        return Object.keys(groups).length;
+    }
+    function bandClass(rank,total){ if(rank<=total/3)return 'good'; if(rank<=2*total/3)return 'mid'; return 'bad'; }
+
+    function applyFilters(){
+        const region=val('region'), skill=val('skillLevel'), title=val('jobTitle'), vend=val('vendorSearch').toLowerCase();
+        filteredData = activeData().filter(r =>
+            (!region||r.Region===region)&&(!skill||r.Skill_Level===skill)&&
+            (!title||r.Job_Title===title)&&(!vend||r.Contractor_Name.toLowerCase().includes(vend)));
+        const nCombos = annotate(filteredData);
+        sortData(); updateKPIs(nCombos); displayResults();
+    }
+    function val(id){ return document.getElementById(id).value || ''; }
+
+    function sortBy(col){
+        if(currentSort.col===col){ currentSort.dir = currentSort.dir==='asc'?'desc':'asc'; }
+        else { currentSort = { col, dir: (col==='Contractor_Name'||col==='Job_Title'||col==='Region') ? 'asc':'asc' }; }
+        sortData(); displayResults();
+    }
+    function sortData(){
+        const {col,dir}=currentSort, s=dir==='asc'?1:-1;
+        const numeric={Hourly_Bill_Rate:1,Hourly_Wage_Rate:1,rank:1,gap:1};
+        filteredData.sort((a,b)=>{
+            let av,bv;
+            if(col==='rank'){av=a._rank;bv=b._rank;}
+            else if(col==='gap'){av=a._gap;bv=b._gap;}
+            else if(col==='Skill_Level'){av=SKILL_ORDER[a.Skill_Level];bv=SKILL_ORDER[b.Skill_Level];}
+            else if(numeric[col]){av=parseFloat(a[col]);bv=parseFloat(b[col]);}
+            else {av=(a[col]||'').toLowerCase();bv=(b[col]||'').toLowerCase(); return av<bv?-s:av>bv?s:0;}
+            return (av-bv)*s;
+        });
+        document.querySelectorAll('th[data-c]').forEach(th=>{
+            const on=th.dataset.c===col; th.classList.toggle('sorted',on);
+            th.querySelector('.arr').textContent = on ? (dir==='asc'?'▲':'▼') : '';
+        });
+    }
+
+    function median(arr){ if(!arr.length)return 0; const s=[...arr].sort((a,b)=>a-b),m=Math.floor(s.length/2);
+        return s.length%2?s[m]:(s[m-1]+s[m])/2; }
+
+    function updateKPIs(nCombos){
+        const kpis=document.getElementById('kpis'), insight=document.getElementById('insight');
+        const ours=filteredData.filter(r=>r.Is_Our_Rate==='true');
+        const bills=filteredData.map(r=>parseFloat(r.Hourly_Bill_Rate));
+        document.getElementById('tableTitle').textContent =
+            nCombos===1 ? `${filteredData[0].Job_Title} · ${filteredData[0].Region} · ${filteredData[0].Skill_Level}` : 'All matching rates';
+
+        if(filteredData.length===0){ kpis.innerHTML=''; insight.style.display='none'; return; }
+        insight.style.display='block';
+
+        if(nCombos===1){
+            const n=filteredData.length, lo=Math.min(...bills), hi=Math.max(...bills), md=median(bills);
+            const me=ours[0];
+            const card=(n,l,cls='')=>`<div class="kpi ${cls}"><div class="n ${cls==='red'?'red':cls==='green'?'green':''}">${n}</div><div class="l">${l}</div></div>`;
+            let html = card(n,'Bidders in this role','navy')
+                     + card('$'+lo.toFixed(2),'Lowest bid (most competitive)','green')
+                     + card('$'+md.toFixed(2),'Median bid')
+                     + card('$'+hi.toFixed(2),'Highest bid','amber');
+            if(me){ const cls=bandClass(me._rank,me._total); const col=cls==='good'?'green':cls==='bad'?'red':'amber';
+                html += card('$'+parseFloat(me.Hourly_Bill_Rate).toFixed(2)+' · #'+me._rank, 'Best Pegasus (rank of '+me._total+')', col); }
+            kpis.innerHTML=html;
+            if(me){ const cheaper=me._rank-1, pricier=me._total-me._rank;
+                insight.innerHTML = `<span class="you">Best Pegasus</span> bids <b>$${parseFloat(me.Hourly_Bill_Rate).toFixed(2)}</b> for this role — ranked <b>#${me._rank} of ${me._total}</b>. `+
+                    `${cheaper} competitor${cheaper!==1?'s are':' is'} cheaper, ${pricier} ${pricier!==1?'are':'is'} pricier. Lowest in the field is $${Math.min(...bills).toFixed(2)}.`;
+            } else { insight.innerHTML = `Best Pegasus did not bid this role under the selected formula. Lowest competitor: $${Math.min(...bills).toFixed(2)}.`; }
+        } else {
+            const oursRanked=ours.filter(r=>r._rank);
+            const avgRank=oursRanked.length?Math.round(oursRanked.reduce((s,r)=>s+r._rank,0)/oursRanked.length):'—';
+            const cheaperHalf=oursRanked.length?Math.round(100*oursRanked.filter(r=>r._rank<=r._total/2).length/oursRanked.length):0;
+            const card=(n,l,cls='')=>`<div class="kpi ${cls}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+            kpis.innerHTML = card(nCombos,'Roles shown','navy')+card(filteredData.length.toLocaleString(),'Rate rows')
+                + card('#'+avgRank,'Best Pegasus avg rank','amber')+card(cheaperHalf+'%','Roles in the cheaper half',cheaperHalf>=50?'green':'red');
+            insight.innerHTML = `Showing <b>${nCombos} roles</b>. Pick a Region, Skill Level <i>and</i> Job Title (or hit “Compare a single role”) to drill into one role's full ranking.`;
+        }
+    }
+
+    function displayResults(){
+        const tbody=document.getElementById('tableBody'), nr=document.getElementById('noResults'), note=document.getElementById('rowsNote');
+        if(!filteredData.length){ tbody.innerHTML=''; nr.style.display='block'; note.textContent=''; return; }
+        nr.style.display='none';
+        const MAX=1500, set=filteredData.slice(0,MAX);
+        tbody.innerHTML = set.map(r=>{
+            const you=r.Is_Our_Rate==='true', band=bandClass(r._rank,r._total);
+            const rk=`<span class="rank-pill rk-${band}">${r._rank}</span>`;
+            const gap=r._gap<=0?'<span class="gap-zero">lowest</span>':`<span class="gap-pos">+$${r._gap.toFixed(2)}</span>`;
+            const bar=`<div class="bar"><div class="bar-fill bf-${band}" style="width:${Math.max(4,Math.round(r._pos*100))}%"></div></div>`;
+            return `<tr class="${you?'you':''}">
+                <td>${rk}</td>
+                <td>${r.Contractor_Name}${you?'<span class="you-badge">YOU</span>':''}</td>
+                <td><span class="region-badge">${r.Region.replace('Region ','R')}</span></td>
+                <td>${r.Job_Title}</td>
+                <td><span class="skill-badge">${r.Skill_Level}</span></td>
+                <td class="num wage">$${parseFloat(r.Hourly_Wage_Rate).toFixed(2)}</td>
+                <td class="num bill">$${parseFloat(r.Hourly_Bill_Rate).toFixed(2)}</td>
+                <td class="num">${gap}</td>
+                <td>${bar}</td></tr>`;
+        }).join('');
+        note.textContent = filteredData.length>MAX ? `Showing first ${MAX} of ${filteredData.length.toLocaleString()} rows — narrow the filters for a focused view.` : `${filteredData.length.toLocaleString()} rows.`;
+    }
+
+    function setFeaturedRole(){
+        const has=v=>[...document.getElementById('jobTitle').options].some(o=>o.value===v);
+        document.getElementById('region').value='Region 1';
+        document.getElementById('skillLevel').value='Expert';
+        document.getElementById('jobTitle').value = has('Software Architect') ? 'Software Architect' : (document.getElementById('jobTitle').options[1]||{}).value||'';
+    }
+    function quickPick(){
+        // jump to a representative single role for an instant, meaningful comparison
+        if(!val('jobTitle')) document.getElementById('jobTitle').value='Software Architect';
+        if(!val('region')) document.getElementById('region').value='Region 1';
+        if(!val('skillLevel')) document.getElementById('skillLevel').value='Expert';
+        applyFilters();
+    }
+    function clearFilters(){ ['region','skillLevel','jobTitle','vendorSearch'].forEach(id=>document.getElementById(id).value='');
+        currentSort={col:'Hourly_Bill_Rate',dir:'asc'}; applyFilters(); }
+
+    function exportCSV(){
+        const cols=['_rank','Contractor_Name','Region','Job_Title','Skill_Level','Hourly_Wage_Rate','Hourly_Bill_Rate','_gap','Is_Our_Rate'];
+        const head=['Rank','Contractor','Region','Job_Title','Skill_Level','Wage','Bill','Gap_vs_Lowest','Is_Best_Pegasus'];
+        const lines=[head.join(',')];
+        filteredData.forEach(r=>lines.push(cols.map(c=>{
+            let v=r[c]; if(c==='_gap')v=(r._gap||0).toFixed(2); if(c==='Contractor_Name'&&/[",]/.test(v))v='"'+v.replace(/"/g,'""')+'"'; return v;
+        }).join(',')));
+        download(lines.join('\n'),'hbits_rate_comparison.csv');
+    }
+    function download(text,name){ const b=new Blob([text],{type:'text/csv'}); const a=document.createElement('a');
+        a.href=URL.createObjectURL(b); a.download=name; a.click(); }
+
+    // ---------- view switching ----------
+    function switchTab(w){ const c=w==='compare';
+        document.getElementById('view-compare').style.display=c?'block':'none';
+        document.getElementById('view-positions').style.display=c?'none':'block';
+        document.getElementById('tab-compare').classList.toggle('active',c);
+        document.getElementById('tab-positions').classList.toggle('active',!c);
+    }
+
+    // ---------- scorecard (positions) ----------
+    let positionsData=[], posSort='rank';
+    function buildPositions(){
+        const groups={};
+        activeData().forEach(r=>{const k=r.Job_Title+'|'+r.Region+'|'+r.Skill_Level;(groups[k]=groups[k]||[]).push(r);});
+        const titles=[...new Set(allData.map(r=>r.Job_Title))].sort();
+        positionsData=[];
+        titles.forEach(t=>['Region 1','Region 2','Region 3'].forEach(rg=>['Junior','Mid-Level','Senior','Expert'].forEach(sk=>{
+            const list=(groups[t+'|'+rg+'|'+sk]||[]).slice(); if(!list.length)return;
+            list.sort((a,b)=>parseFloat(a.Hourly_Bill_Rate)-parseFloat(b.Hourly_Bill_Rate));
+            const lo=parseFloat(list[0].Hourly_Bill_Rate), hi=parseFloat(list[list.length-1].Hourly_Bill_Rate);
+            const idx=list.findIndex(r=>r.Is_Our_Rate==='true');
+            if(idx<0){ positionsData.push({t,rg,sk,total:list.length,bill:null,rank:null,lo,hi,gap:null,pos:null}); }
+            else { const bill=parseFloat(list[idx].Hourly_Bill_Rate);
+                positionsData.push({t,rg,sk,total:list.length,bill,rank:idx+1,lo,hi,gap:bill-lo,pos:hi>lo?(bill-lo)/(hi-lo):0.5}); }
+        })));
+        renderPositions();
+    }
+    function sortPositions(m){ posSort=m; renderPositions(); }
+    function renderPositions(){
+        const q=val('posSearch').toLowerCase(), rg=val('posRegion'), sk=val('posSkill'), band=val('posBand');
+        let rows=positionsData.filter(p=>(!q||p.t.toLowerCase().includes(q))&&(!rg||p.rg===rg)&&(!sk||p.sk===sk)
+            &&(!band||(p.rank&&bandClass(p.rank,p.total)===band)));
+        if(posSort==='rank') rows.sort((a,b)=>(a.rank===null)-(b.rank===null)||(a.rank||0)-(b.rank||0));
+        else if(posSort==='rankDesc') rows.sort((a,b)=>(a.rank===null)-(b.rank===null)||(b.rank||0)-(a.rank||0));
+        else rows.sort((a,b)=>a.t.localeCompare(b.t)||a.rg.localeCompare(b.rg)||SKILL_ORDER[a.sk]-SKILL_ORDER[b.sk]);
+
+        // KPIs
+        const bid=rows.filter(p=>p.rank);
+        const avg=bid.length?Math.round(bid.reduce((s,p)=>s+p.rank,0)/bid.length):'—';
+        const cheaperHalf=bid.length?Math.round(100*bid.filter(p=>p.rank<=p.total/2).length/bid.length):0;
+        const best=bid.length?Math.min(...bid.map(p=>p.rank)):'—';
+        const card=(n,l,cls='')=>`<div class="kpi ${cls}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+        document.getElementById('posKpis').innerHTML =
+            card(rows.length,'Roles shown','navy')+card('#'+avg,'Average rank in field','amber')
+            +card(cheaperHalf+'%','Roles in the cheaper half',cheaperHalf>=50?'green':'red')
+            +card('#'+best,'Best (lowest) rank achieved','green');
+
+        const tb=document.getElementById('posTableBody'), nr=document.getElementById('posNoResults');
+        if(!rows.length){tb.innerHTML='';nr.style.display='block';return;} nr.style.display='none';
+        tb.innerHTML=rows.map(p=>{
+            const b=p.rank?bandClass(p.rank,p.total):'na';
+            const rank=p.rank?`<span class="rank-pill rk-${b}">#${p.rank}<span style="font-weight:500;opacity:.85;"> / ${p.total}</span></span>`:'<span style="color:#9aa3b2;">not bid</span>';
+            const bill=p.bill===null?'—':'$'+p.bill.toFixed(2);
+            const gap=p.gap===null?'—':(p.gap<=0?'<span class="gap-zero">lowest</span>':'<span class="gap-pos">+$'+p.gap.toFixed(2)+'</span>');
+            const bar=p.pos===null?'':`<div class="bar"><div class="bar-fill bf-${b}" style="width:${Math.max(4,Math.round(p.pos*100))}%"></div></div>`;
+            return `<tr><td><strong>${p.t}</strong></td><td><span class="region-badge">${p.rg.replace('Region ','R')}</span></td>
+                <td><span class="skill-badge">${p.sk}</span></td><td class="num bill">${bill}</td><td>${rank}</td>
+                <td class="num wage">$${p.lo.toFixed(2)}</td><td class="num">${gap}</td><td>${bar}</td></tr>`;
+        }).join('');
+    }
+    function exportPositions(){
+        const head=['Job_Title','Region','Skill','Our_Bill','Rank','Total_Bidders','Lowest','Gap_vs_Lowest'];
+        const lines=[head.join(',')];
+        positionsData.forEach(p=>lines.push([
+            /[",]/.test(p.t)?'"'+p.t+'"':p.t,p.rg,p.sk,p.bill===null?'':p.bill.toFixed(2),
+            p.rank||'',p.total,p.lo.toFixed(2),p.gap===null?'':p.gap.toFixed(2)].join(',')));
+        download(lines.join('\n'),'best_pegasus_scorecard.csv');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>

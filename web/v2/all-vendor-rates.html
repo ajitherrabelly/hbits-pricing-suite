@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Vendor Bill Rates — HBITS Pricing Suite</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.5; }
+
+    /* shared V2 top nav */
+    .topnav { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; box-shadow:0 2px 10px rgba(0,0,0,.15); }
+    .topnav .brand { font-weight:800; font-size:15px; margin-right:10px; letter-spacing:.3px; }
+    .topnav a { color:#e7e9ff; text-decoration:none; font-weight:600; font-size:13.5px; padding:8px 13px; border-radius:6px; transition:all .15s; }
+    .topnav a:hover { background:rgba(255,255,255,.18); color:#fff; }
+    .topnav a.current { background:#fff; color:#5a3db5; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#11203a 0%,#5a3db5 100%); color:#fff; padding:30px 40px 26px; }
+    .hero h1 { font-size:27px; margin-bottom:6px; }
+    .hero p { opacity:.92; font-size:14.5px; max-width:980px; }
+
+    .wrap { max-width:1320px; margin:0 auto; padding:22px 26px 70px; }
+
+    .card { background:#fff; border-radius:12px; padding:20px 22px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-bottom:20px; }
+    .card h2 { font-size:18px; color:#11203a; margin-bottom:3px; }
+    .card .sub { font-size:12.5px; color:#6b7688; margin-bottom:14px; }
+
+    .filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; }
+    .fg { display:flex; flex-direction:column; }
+    .fg label { font-size:12px; font-weight:700; color:#44506a; margin-bottom:6px; text-transform:uppercase; letter-spacing:.3px; }
+    select, input[type=text] { padding:10px 12px; border:1px solid #cfd8e6; border-radius:8px; font-size:14px; background:#fff; }
+    select:focus, input:focus { outline:none; border-color:#5a3db5; box-shadow:0 0 0 3px rgba(102,126,234,.18); }
+    .filter-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .btn { padding:9px 16px; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; }
+    .btn-ghost { background:#eef1f6; color:#33415c; border:1px solid #d7deea; }
+    .btn-ghost:hover { background:#e2e8f2; }
+    .btn-primary { background:#5a3db5; color:#fff; } .btn-primary:hover { background:#48309a; }
+    .btn-green { background:#0d7a4f; color:#fff; } .btn-green:hover { background:#0a5c3c; }
+
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:18px; }
+    .kpi { background:#fff; border-radius:12px; padding:16px 18px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-top:4px solid #5a3db5; }
+    .kpi .n { font-size:24px; font-weight:800; color:#11203a; line-height:1.15; }
+    .kpi .l { font-size:12px; color:#5a6678; margin-top:4px; }
+    .kpi.green { border-top-color:#0d7a4f; } .kpi.amber { border-top-color:#d99a16; }
+    .kpi.red { border-top-color:#c4413a; } .kpi.navy { border-top-color:#11203a; } .kpi.purple { border-top-color:#5a3db5; }
+    .kpi .n.red { color:#c4413a; } .kpi .n.green { color:#0d7a4f; } .kpi .n.purple { color:#5a3db5; }
+
+    .tablecard { background:#fff; border-radius:12px; box-shadow:0 3px 14px rgba(0,0,0,.06); overflow:hidden; }
+    .tabletop { display:flex; justify-content:space-between; align-items:center; padding:16px 20px 10px; flex-wrap:wrap; gap:8px; }
+    .tabletop h2 { font-size:17px; color:#11203a; }
+    .tablewrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    thead { background:#11203a; color:#fff; }
+    th { padding:12px 14px; text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; cursor:pointer; user-select:none; }
+    th.sortable:hover { background:#1c3052; }
+    th .arr { opacity:.45; font-size:10px; }
+    th.sorted .arr { opacity:1; }
+    td { padding:10px 14px; border-bottom:1px solid #eef1f6; }
+    tbody tr:hover { background:#f6f4fd; }
+    .num { text-align:right; }
+    .rank-pill { display:inline-block; min-width:30px; text-align:center; padding:3px 8px; border-radius:20px; font-weight:800; font-size:12px; color:#fff; }
+    .rk-good { background:#0d7a4f; } .rk-mid { background:#d99a16; } .rk-bad { background:#c4413a; }
+    .region-badge,.skill-badge { display:inline-block; padding:3px 8px; border-radius:5px; font-size:11.5px; font-weight:700; }
+    .region-badge { background:#eef1f6; color:#33415c; } .skill-badge { background:#ece7fb; color:#5a3db5; }
+    .bill { font-weight:800; color:#11203a; }
+    .wage { color:#5a6678; }
+    .markup { color:#7a6bbf; font-weight:700; }
+    .margin-pos { color:#0d7a4f; font-weight:700; }
+    .margin-low { color:#c4413a; font-weight:700; }
+    .gap-pos { color:#c4413a; font-weight:700; } .gap-zero { color:#0d7a4f; font-weight:700; }
+    .bar { position:relative; width:120px; height:10px; background:#eef1f6; border-radius:6px; overflow:hidden; }
+    .bar-fill { position:absolute; left:0; top:0; bottom:0; border-radius:6px; }
+    .bf-good { background:#0d7a4f; } .bf-mid { background:#d99a16; } .bf-bad { background:#c4413a; }
+    tr.you td { background:#f1edfb; font-weight:700; }
+    tr.you:hover td { background:#e8e0fa; }
+    tr.you td:first-child { border-left:4px solid #5a3db5; }
+    .you-badge { display:inline-block; background:#5a3db5; color:#fff; font-size:10px; font-weight:800; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
+    .no-results { text-align:center; padding:40px; color:#9aa3b2; }
+    .rowsnote { padding:10px 20px; font-size:12px; color:#8a94a6; }
+    @media (max-width:760px){ .hero{padding:24px;} table{font-size:12px;} }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <span class="brand">🚀 V2.0</span>
+    <a href="index.html">Home</a>
+    <a href="rate-comparison.html">Rate Comparison</a>
+    <a href="all-vendor-rates.html" class="current">All Vendor Rates</a>
+    <a href="bill-rate-distribution.html">Bill-Rate Report</a>
+    <a href="net-margin-method.html">How Net Margin Works</a>
+    <a href="comparison.html">V1 vs V2</a>
+    <a href="kbi-margin-distribution.html">KBI Margin Distribution</a>
+    <a href="top-5-vendors-comparison.html">Top 5 Competitors</a>
+    <a href="expertise-margin-comparison.html">Expertise Analysis</a>
+    <a href="job-title-margin-comparison.html">Job-Title Analysis</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.8;">NYS OGS Group 73012</span>
+</div>
+
+<div class="hero">
+    <h1>All Vendor Bill Rates</h1>
+    <p>The full HBITS field — every vendor's hourly <b>bill rate</b> (and wage, markup &amp; implied net margin) for any role,
+    region and skill level, with <b>Best Pegasus V2.0</b> dropped into the ranking. Sort, search and filter the whole board.</p>
+</div>
+
+<div class="wrap">
+
+    <div class="card">
+        <h2>Filter the field</h2>
+        <div class="sub">Pick a Region, Skill Level and Job Title to get one clean ranked list of all vendors (like the screenshot). Leave blank for a wider view.</div>
+        <div class="filters">
+            <div class="fg"><label>Region</label>
+                <select id="region" onchange="applyFilters()">
+                    <option value="">All Regions</option>
+                    <option value="Region 1">Region 1 — Statewide / Albany</option>
+                    <option value="Region 2">Region 2 — Mid-Hudson</option>
+                    <option value="Region 3">Region 3 — NYC Metro</option>
+                </select>
+            </div>
+            <div class="fg"><label>Skill Level</label>
+                <select id="skillLevel" onchange="applyFilters()">
+                    <option value="">All Skill Levels</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Mid-Level">Mid-Level</option>
+                    <option value="Senior">Senior</option>
+                    <option value="Expert">Expert</option>
+                </select>
+            </div>
+            <div class="fg"><label>Job Title</label>
+                <select id="jobTitle" onchange="applyFilters()"><option value="">All Job Titles</option></select>
+            </div>
+            <div class="fg"><label>Search vendor</label>
+                <input type="text" id="vendorSearch" placeholder="Type a vendor name…" oninput="applyFilters()" autocomplete="off">
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="btn btn-green" onclick="quickPick()">★ Show one role (full field)</button>
+            <button class="btn btn-ghost" onclick="clearFilters()">Reset filters</button>
+            <button class="btn btn-primary" onclick="exportCSV()">⤓ Export this view (CSV)</button>
+        </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="tablecard">
+        <div class="tabletop">
+            <h2 id="tableTitle">All vendor rates</h2>
+            <span style="font-size:12px;color:#6b7688;">Click any column heading to sort · <span style="color:#5a3db5;font-weight:700;">purple row = Best Pegasus V2.0</span></span>
+        </div>
+        <div class="tablewrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="sortable" onclick="sortBy('rank')" data-c="rank">Rank <span class="arr"></span></th>
+                        <th class="sortable" onclick="sortBy('Contractor_Name')" data-c="Contractor_Name">Vendor <span class="arr"></span></th>
+                        <th class="sortable" onclick="sortBy('Region')" data-c="Region">Region <span class="arr"></span></th>
+                        <th class="sortable" onclick="sortBy('Job_Title')" data-c="Job_Title">Job Title <span class="arr"></span></th>
+                        <th class="sortable" onclick="sortBy('Skill_Level')" data-c="Skill_Level">Skill <span class="arr"></span></th>
+                        <th class="sortable num" onclick="sortBy('Hourly_Wage_Rate')" data-c="Hourly_Wage_Rate">Wage/hr <span class="arr"></span></th>
+                        <th class="sortable num" onclick="sortBy('Hourly_Bill_Rate')" data-c="Hourly_Bill_Rate">Bill/hr <span class="arr"></span></th>
+                        <th class="sortable num" onclick="sortBy('markup')" data-c="markup">Markup <span class="arr"></span></th>
+                        <th class="sortable num" onclick="sortBy('margin')" data-c="margin">Net Margin <span class="arr"></span></th>
+                        <th class="sortable num" onclick="sortBy('gap')" data-c="gap">vs Lowest <span class="arr"></span></th>
+                        <th>Price position</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <div id="noResults" class="no-results" style="display:none;">No rates match your filters. Try resetting.</div>
+        </div>
+        <div class="rowsnote" id="rowsNote"></div>
+    </div>
+</div>
+
+<script>
+    let allData = [], filteredData = [];
+    let currentSort = { col:'Hourly_Bill_Rate', dir:'asc' };
+    const SKILL_ORDER = { 'Junior':0,'Mid-Level':1,'Senior':2,'Expert':3 };
+
+    // Cost model — same loadings used across the suite (for implied net margin per vendor)
+    const TAX=0.135, INS=0.035, OH=0.105, OGS=0.0075;
+    function netMargin(wage, bill){ if(!bill) return 0; const cost=wage*(TAX+INS+OH)+bill*OGS; return (bill-wage-cost)/bill; }
+
+    async function loadData(){
+        try{
+            const txt = await (await fetch('vendors_rates_v2.csv')).text();
+            parseCSV(txt);
+            setFeaturedRole();
+            applyFilters();
+        }catch(e){
+            document.getElementById('tableBody').innerHTML =
+              '<tr><td colspan="11" style="text-align:center;padding:30px;">Could not load vendors_rates_v2.csv — serve this folder over a local web server (e.g. <code>python -m http.server</code>).</td></tr>';
+        }
+    }
+    function parseCSV(t){
+        const rows=[]; let f='',row=[],q=false;
+        for(let i=0;i<t.length;i++){const c=t[i];
+            if(q){ if(c==='"'){ if(t[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+            else { if(c==='"')q=true; else if(c===','){row.push(f);f='';} else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';} else if(c==='\r'){} else f+=c; } }
+        if(f.length||row.length){row.push(f);rows.push(row);}
+        const h=rows[0].map(x=>x.trim());
+        for(let i=1;i<rows.length;i++){ if(rows[i].length===1&&rows[i][0]==='')continue;
+            const o={}; h.forEach((k,j)=>o[k]=(rows[i][j]||'').trim()); allData.push(o); }
+        const titles=[...new Set(allData.map(r=>r.Job_Title))].sort();
+        const sel=document.getElementById('jobTitle');
+        titles.forEach(t=>{const o=document.createElement('option');o.value=o.textContent=t;sel.appendChild(o);});
+    }
+
+    // Rank each vendor within its (Title × Region × Skill) group by bill rate
+    function annotate(rows){
+        const groups={};
+        rows.forEach(r=>{ const k=r.Job_Title+'|'+r.Region+'|'+r.Skill_Level; (groups[k]=groups[k]||[]).push(r); });
+        Object.values(groups).forEach(list=>{
+            list.sort((a,b)=>parseFloat(a.Hourly_Bill_Rate)-parseFloat(b.Hourly_Bill_Rate));
+            const bills=list.map(r=>parseFloat(r.Hourly_Bill_Rate));
+            const min=bills[0], max=bills[bills.length-1], n=list.length;
+            list.forEach((r,i)=>{ r._rank=i+1; r._total=n; r._min=min; r._max=max;
+                r._gap=parseFloat(r.Hourly_Bill_Rate)-min;
+                r._pos = max>min ? (parseFloat(r.Hourly_Bill_Rate)-min)/(max-min) : 0.5; });
+        });
+        return Object.keys(groups).length;
+    }
+    function bandClass(rank,total){ if(rank<=total/3)return 'good'; if(rank<=2*total/3)return 'mid'; return 'bad'; }
+    function markupPct(r){ const p=parseFloat(r.Markup_Percent); if(!isNaN(p)&&p>0) return p;
+        const w=parseFloat(r.Hourly_Wage_Rate),b=parseFloat(r.Hourly_Bill_Rate); return w>0?(b/w-1)*100:0; }
+
+    function applyFilters(){
+        const region=val('region'), skill=val('skillLevel'), title=val('jobTitle'), vend=val('vendorSearch').toLowerCase();
+        filteredData = allData.filter(r =>
+            (!region||r.Region===region)&&(!skill||r.Skill_Level===skill)&&
+            (!title||r.Job_Title===title)&&(!vend||r.Contractor_Name.toLowerCase().includes(vend)));
+        const nCombos = annotate(filteredData);
+        sortData(); updateKPIs(nCombos); displayResults();
+    }
+    function val(id){ return document.getElementById(id).value || ''; }
+
+    function sortBy(col){
+        if(currentSort.col===col){ currentSort.dir = currentSort.dir==='asc'?'desc':'asc'; }
+        else { currentSort = { col, dir: (col==='rank'||col==='Hourly_Bill_Rate'||col==='Hourly_Wage_Rate'||col==='gap')?'asc':'asc' }; }
+        sortData(); displayResults();
+    }
+    function sortData(){
+        const {col,dir}=currentSort, s=dir==='asc'?1:-1;
+        const numeric={Hourly_Bill_Rate:1,Hourly_Wage_Rate:1};
+        filteredData.sort((a,b)=>{
+            let av,bv;
+            if(col==='rank'){av=a._rank;bv=b._rank;}
+            else if(col==='gap'){av=a._gap;bv=b._gap;}
+            else if(col==='markup'){av=markupPct(a);bv=markupPct(b);}
+            else if(col==='margin'){av=netMargin(parseFloat(a.Hourly_Wage_Rate),parseFloat(a.Hourly_Bill_Rate));bv=netMargin(parseFloat(b.Hourly_Wage_Rate),parseFloat(b.Hourly_Bill_Rate));}
+            else if(col==='Skill_Level'){av=SKILL_ORDER[a.Skill_Level];bv=SKILL_ORDER[b.Skill_Level];}
+            else if(numeric[col]){av=parseFloat(a[col]);bv=parseFloat(b[col]);}
+            else {av=(a[col]||'').toLowerCase();bv=(b[col]||'').toLowerCase(); return av<bv?-s:av>bv?s:0;}
+            return (av-bv)*s;
+        });
+        document.querySelectorAll('th[data-c]').forEach(th=>{
+            const on=th.dataset.c===col; th.classList.toggle('sorted',on);
+            th.querySelector('.arr').textContent = on ? (dir==='asc'?'▲':'▼') : '';
+        });
+    }
+
+    function median(arr){ if(!arr.length)return 0; const s=[...arr].sort((a,b)=>a-b),m=Math.floor(s.length/2);
+        return s.length%2?s[m]:(s[m-1]+s[m])/2; }
+
+    function updateKPIs(nCombos){
+        const kpis=document.getElementById('kpis');
+        const ours=filteredData.filter(r=>r.Is_Our_Rate==='true');
+        const bills=filteredData.map(r=>parseFloat(r.Hourly_Bill_Rate));
+        document.getElementById('tableTitle').textContent =
+            nCombos===1 ? `${filteredData[0].Job_Title} · ${filteredData[0].Region} · ${filteredData[0].Skill_Level}` : 'All matching vendor rates';
+        if(!filteredData.length){ kpis.innerHTML=''; return; }
+
+        const card=(n,l,cls='')=>`<div class="kpi ${cls}"><div class="n ${cls==='red'?'red':cls==='green'?'green':cls==='purple'?'purple':''}">${n}</div><div class="l">${l}</div></div>`;
+        if(nCombos===1){
+            const n=filteredData.length, lo=Math.min(...bills), hi=Math.max(...bills), md=median(bills);
+            const me=ours[0];
+            let html = card(n,'Vendors in this role','navy')
+                     + card('$'+lo.toFixed(2),'Lowest bill','green')
+                     + card('$'+md.toFixed(2),'Median bill')
+                     + card('$'+hi.toFixed(2),'Highest bill','amber');
+            if(me){ const bill=parseFloat(me.Hourly_Bill_Rate);
+                html += card('$'+bill.toFixed(2)+' · #'+me._rank, 'Best Pegasus V2 (of '+me._total+')', 'purple'); }
+            kpis.innerHTML=html;
+        } else {
+            kpis.innerHTML = card(nCombos,'Roles shown','navy')
+                + card(filteredData.length.toLocaleString(),'Rate rows')
+                + card('$'+Math.min(...bills).toFixed(2),'Lowest bill in view','green')
+                + card('$'+Math.max(...bills).toFixed(2),'Highest bill in view','amber');
+        }
+    }
+
+    function displayResults(){
+        const tbody=document.getElementById('tableBody'), nr=document.getElementById('noResults'), note=document.getElementById('rowsNote');
+        if(!filteredData.length){ tbody.innerHTML=''; nr.style.display='block'; note.textContent=''; return; }
+        nr.style.display='none';
+        const MAX=2000, set=filteredData.slice(0,MAX);
+        tbody.innerHTML = set.map(r=>{
+            const you=r.Is_Our_Rate==='true', band=bandClass(r._rank,r._total);
+            const rk=`<span class="rank-pill rk-${band}">${r._rank}</span>`;
+            const gap=r._gap<=0?'<span class="gap-zero">lowest</span>':`<span class="gap-pos">+$${r._gap.toFixed(2)}</span>`;
+            const bar=`<div class="bar"><div class="bar-fill bf-${band}" style="width:${Math.max(4,Math.round(r._pos*100))}%"></div></div>`;
+            const wage=parseFloat(r.Hourly_Wage_Rate), bill=parseFloat(r.Hourly_Bill_Rate);
+            const mk=markupPct(r), nm=netMargin(wage,bill)*100;
+            const nmCls = nm>=30?'margin-pos':'margin-low';
+            return `<tr class="${you?'you':''}">
+                <td>${rk}</td>
+                <td>${r.Contractor_Name}${you?'<span class="you-badge">V2.0</span>':''}</td>
+                <td><span class="region-badge">${r.Region.replace('Region ','R')}</span></td>
+                <td>${r.Job_Title}</td>
+                <td><span class="skill-badge">${r.Skill_Level}</span></td>
+                <td class="num wage">$${wage.toFixed(2)}</td>
+                <td class="num bill">$${bill.toFixed(2)}</td>
+                <td class="num markup">${mk.toFixed(0)}%</td>
+                <td class="num"><span class="${nmCls}">${nm.toFixed(1)}%</span></td>
+                <td class="num">${gap}</td>
+                <td>${bar}</td></tr>`;
+        }).join('');
+        note.textContent = filteredData.length>MAX
+            ? `Showing first ${MAX.toLocaleString()} of ${filteredData.length.toLocaleString()} rows — narrow the filters for a focused view.`
+            : `${filteredData.length.toLocaleString()} rows. Net margin uses the suite cost model (payroll 13.5% + insurance 3.5% + overhead/G&A 10.5% of wage, OGS 0.75% of bill).`;
+    }
+
+    function setFeaturedRole(){
+        const has=v=>[...document.getElementById('jobTitle').options].some(o=>o.value===v);
+        document.getElementById('region').value='Region 1';
+        document.getElementById('skillLevel').value='Expert';
+        document.getElementById('jobTitle').value = has('Programmer') ? 'Programmer'
+            : (has('Software Architect') ? 'Software Architect' : (document.getElementById('jobTitle').options[1]||{}).value||'');
+    }
+    function quickPick(){
+        if(!val('jobTitle')) document.getElementById('jobTitle').value='Programmer';
+        if(!val('region')) document.getElementById('region').value='Region 1';
+        if(!val('skillLevel')) document.getElementById('skillLevel').value='Expert';
+        currentSort={col:'Hourly_Bill_Rate',dir:'asc'};
+        applyFilters();
+    }
+    function clearFilters(){ ['region','skillLevel','jobTitle','vendorSearch'].forEach(id=>document.getElementById(id).value='');
+        currentSort={col:'Hourly_Bill_Rate',dir:'asc'}; applyFilters(); }
+
+    function exportCSV(){
+        const head=['Rank','Vendor','Region','Job_Title','Skill_Level','Wage','Bill','Markup_Pct','Net_Margin_Pct','Gap_vs_Lowest','Is_Best_Pegasus'];
+        const lines=[head.join(',')];
+        filteredData.forEach(r=>{
+            const wage=parseFloat(r.Hourly_Wage_Rate), bill=parseFloat(r.Hourly_Bill_Rate);
+            let name=r.Contractor_Name; if(/[",]/.test(name))name='"'+name.replace(/"/g,'""')+'"';
+            lines.push([r._rank,name,r.Region,r.Job_Title,r.Skill_Level,wage.toFixed(2),bill.toFixed(2),
+                markupPct(r).toFixed(0),(netMargin(wage,bill)*100).toFixed(1),(r._gap||0).toFixed(2),r.Is_Our_Rate].join(','));
+        });
+        download(lines.join('\n'),'hbits_all_vendor_bill_rates.csv');
+    }
+    function download(text,name){ const b=new Blob([text],{type:'text/csv'}); const a=document.createElement('a');
+        a.href=URL.createObjectURL(b); a.download=name; a.click(); }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>

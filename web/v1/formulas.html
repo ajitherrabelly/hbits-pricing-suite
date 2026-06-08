@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Our Pricing Works — Explained Simply</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.6; }
+    .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+    .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+    .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+    .topnav a.current { background:#2a64c4; color:#fff; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#11203a 0%,#1f5a8a 100%); color:#fff; padding:36px 40px 30px; }
+    .hero h1 { font-size:30px; margin-bottom:8px; }
+    .hero p { opacity:.93; font-size:15.5px; max-width:880px; }
+
+    .wrap { max-width:1040px; margin:0 auto; padding:26px 26px 80px; }
+    .step-label { font-size:12px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:#6b7688; margin:26px 0 10px; }
+
+    .card { background:#fff; border-radius:14px; padding:24px 26px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-bottom:18px; }
+    .card h2 { font-size:21px; color:#11203a; margin-bottom:8px; }
+    .card p { font-size:15px; color:#3a4658; margin-bottom:10px; }
+    .big-emoji { font-size:30px; }
+
+    .analogy { background:#fff7e9; border-left:5px solid #d99a16; border-radius:0 10px 10px 0; padding:14px 18px; margin:12px 0; font-size:15px; color:#5a4a25; }
+    .analogy b { color:#a4720f; }
+
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    @media (max-width:780px){ .two{grid-template-columns:1fr;} }
+    .fcard { background:#fff; border-radius:14px; padding:24px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-top:6px solid #d99a16; }
+    .fcard.f11 { border-top-color:#0d7a4f; }
+    .ftag { display:inline-block; font-size:12px; font-weight:800; padding:3px 10px; border-radius:20px; background:#fdf0d8; color:#a4720f; }
+    .fcard.f11 .ftag { background:#e3f3ea; color:#0a5c3c; }
+    .fcard h3 { font-size:19px; color:#11203a; margin:10px 0 6px; }
+    .one-liner { font-size:15px; font-weight:700; color:#11203a; margin:8px 0; }
+    .fcard ul { list-style:none; margin-top:10px; }
+    .fcard li { font-size:14px; padding:4px 0 4px 24px; position:relative; color:#3a4658; }
+    .fcard li.good:before { content:'✅'; position:absolute; left:0; }
+    .fcard li.bad:before  { content:'⚠️'; position:absolute; left:0; }
+
+    /* lineup visual */
+    .lineup { display:flex; align-items:flex-end; gap:3px; height:130px; margin:16px 0 6px; }
+    .lineup .b { flex:1; background:#c7d4ea; border-radius:3px 3px 0 0; position:relative; }
+    .lineup .b.you { background:#c4413a; }
+    .lineup .b.you:after { content:'US'; position:absolute; top:-20px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:800; color:#c4413a; }
+    .legend { font-size:13px; color:#6b7688; text-align:center; }
+    .legend .l { float:left; } .legend .r { float:right; }
+
+    table { width:100%; border-collapse:collapse; font-size:14px; margin-top:8px; }
+    th { background:#11203a; color:#fff; padding:10px 12px; text-align:left; font-size:12.5px; }
+    td { padding:10px 12px; border-bottom:1px solid #eef1f6; }
+    tbody tr:nth-child(even){ background:#f7f9fc; }
+    .us-row td { background:#fff1f2; font-weight:700; }
+    .bottom { background:#11203a; color:#fff; border-radius:14px; padding:24px 26px; margin-top:18px; }
+    .bottom h2 { font-size:20px; margin-bottom:10px; } .bottom b { color:#9fe7c0; }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="compare.html">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html">Strategy Briefing</a>
+    <a href="analytics.html">Market Analytics</a>
+    <a href="vendors.html">Vendor Detail</a>
+    <a href="formulas.html" class="current">How It Works</a>
+    <a href="factors.html">Factors &amp; Inputs</a>
+    <a href="expert.html">Expert Session</a>
+    <a href="resources.html">Resources</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.7;">Plain-English guide</span>
+</div>
+
+<div class="hero">
+    <h1>How Our Two Pricing Formulas Work</h1>
+    <p>No jargon, no math degree needed. In the next two minutes you'll understand exactly how Best Pegasus sets its
+    prices — using a simple lemonade-stand story that anyone can follow.</p>
+</div>
+
+<div class="wrap">
+
+    <div class="step-label">Step 1 · The basics in 30 seconds</div>
+    <div class="card">
+        <h2><span class="big-emoji">🍋</span> Think of a street full of lemonade stands</h2>
+        <p>New York State is the customer. It needs IT workers, and lots of companies (vendors) compete to supply them —
+        like <b>33 lemonade stands on one street</b>, all selling the same cup of lemonade.</p>
+        <p>The <b>“price” is the hourly bill rate</b> — what the State pays per hour for that worker. Every company sets its own price.
+        Out of that price, the company pays the worker a wage and keeps the rest to cover its costs and profit.</p>
+        <div class="analogy">🧠 <b>The one rule that changes everything:</b> when many companies offer a worker, the State usually
+        only looks at the <b>cheaper half</b> of the prices first. Price too high and you don't even get a look. Price too low
+        and you barely make any money. So <b>where you set your price matters enormously.</b></div>
+    </div>
+
+    <div class="step-label">Step 2 · The two ways we can pick our price</div>
+    <div class="two">
+        <div class="fcard">
+            <span class="ftag">Formula 1.0</span>
+            <h3>🧮 The “Recipe” method</h3>
+            <div class="one-liner">“Set my price from my own costs — without looking next door.”</div>
+            <p>We add up what it costs us (the worker's wage, taxes, overhead) and add a fair profit on top. That becomes our price.
+            We <b>don't look</b> at what the other stands are charging.</p>
+            <div class="analogy">🍋 Like pricing your lemonade purely on what your lemons and sugar cost you — even if the stand
+            next door is selling the same cup for much less.</div>
+            <ul>
+                <li class="good">Simple and fair to our own books</li>
+                <li class="good">Guarantees we cover our costs</li>
+                <li class="bad">We often end up the <b>most expensive</b> on the street</li>
+                <li class="bad">So the State may skip us before even tasting it</li>
+            </ul>
+        </div>
+        <div class="fcard f11">
+            <span class="ftag">Formula 1.1</span>
+            <h3>📍 The “Line-Up” method</h3>
+            <div class="one-liner">“Look at everyone's price, then pick exactly where to stand.”</div>
+            <p>We line up all the other stands from cheapest to priciest, then deliberately place our price at a chosen spot —
+            <b>the 19th cheapest out of 33</b>. Never the cheapest (we'd make too little), never the priciest (we'd be ignored).</p>
+            <div class="analogy">🍋 Like walking the whole street first, seeing every price, then setting yours so you're
+            comfortably in the pack — <b>visible to buyers but still making a healthy profit.</b></div>
+            <ul>
+                <li class="good">Always priced relative to the real competition</li>
+                <li class="good">Protects profit while staying in the game</li>
+                <li class="good">Works for every role automatically</li>
+                <li class="bad">#19 is just above the middle — for very busy roles we may aim a bit cheaper</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="step-label">Step 3 · See it with real (tiny) numbers</div>
+    <div class="card">
+        <h2>Same role, two different prices</h2>
+        <p>Say five rival stands charge these hourly prices for the same worker:
+        <b>$61, $66, $67, … up to $85</b>. Here's where each formula would put us:</p>
+        <table>
+            <thead><tr><th>Method</th><th>Our price</th><th>Where we land</th><th>What happens</th></tr></thead>
+            <tbody>
+                <tr><td><b>Formula 1.0</b> (recipe)</td><td>$74.81</td><td>26th cheapest of 33</td><td>Near the top — often skipped on busy roles</td></tr>
+                <tr class="us-row"><td><b>Formula 1.1</b> (line-up)</td><td>$71.90</td><td>19th cheapest of 33</td><td>In the pack — seen by buyers, still profitable</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top:12px;">Same worker, same market — we simply chose a smarter spot to stand. That small move from
+        “26th” to “19th” is the whole idea behind Formula 1.1.</p>
+    </div>
+
+    <div class="step-label">Step 4 · Picture the whole street</div>
+    <div class="card">
+        <h2>33 stands, cheapest on the left</h2>
+        <div class="lineup" id="lineup"></div>
+        <div class="legend"><span class="l">⬅ cheapest</span><span class="r">most expensive ➡</span><div style="clear:both"></div></div>
+        <p style="margin-top:10px;">Each bar is a competitor's price, lined up cheapest to priciest. Formula 1.1 plants
+        <b style="color:#c4413a;">our price (red)</b> at the 19th spot — a deliberate, repeatable choice we make for every single role.</p>
+    </div>
+
+    <div class="bottom">
+        <h2>The bottom line</h2>
+        <p><b>Formula 1.0</b> prices from our own recipe and can leave us looking expensive.
+        <b>Formula 1.1</b> prices by looking at the whole street and choosing our spot on purpose — so we stay competitive
+        <b>and</b> profitable. That's why <b>Formula 1.1 is the strategy we use today</b>, and you can explore it live in the
+        Bid Builder and Rate Comparison tabs.</p>
+    </div>
+</div>
+
+<script>
+    // illustrative price line-up: 33 bars rising left→right, #19 highlighted as US
+    (function(){
+        const el=document.getElementById('lineup'); let h='';
+        for(let i=1;i<=33;i++){
+            const height=22+Math.round((i-1)/32*95);     // rises with price
+            const you=i===19?' you':'';
+            h+=`<div class="b${you}" style="height:${height}px" title="${i===19?'Best Pegasus — 19th cheapest':'competitor #'+i}"></div>`;
+        }
+        el.innerHTML=h;
+    })();
+</script>
+</body>
+</html>

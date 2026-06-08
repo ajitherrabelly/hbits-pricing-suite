@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job-Title Margin Analysis — HBITS Pricing Suite</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        header h1 { font-size: 2em; margin-bottom: 10px; }
+        header p { opacity: 0.95; }
+        .nav { padding: 15px 40px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
+        .nav a { color: #667eea; text-decoration: none; margin-right: 20px; font-weight: 500; }
+        .content { padding: 40px; }
+        h2 { color: #333; margin: 40px 0 20px 0; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        h3 { color: #555; margin: 30px 0 15px 0; }
+        .chart-container {
+            position: relative;
+            height: 480px;
+            margin: 30px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .chart-container.tall { height: 560px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td { padding: 10px; border-bottom: 1px solid #e9ecef; }
+        tr:hover { background: #f8f9fa; }
+        .bp-col { background: #d1e7f7; font-weight: 700; }
+        .insight-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .insight-box.bp { background: #d1e7f7; border-left-color: #00BCD4; }
+        .tier-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.78em; font-weight: 600; color: white; }
+        .tier-commodity { background: #999; }
+        .tier-core { background: #667eea; }
+        .tier-mgmt { background: #9C27B0; }
+        .tier-spec { background: #FF9800; }
+        .tier-hot { background: #F44336; }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            padding: 22px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+        .stat-card.bp { background: #d1e7f7; border-color: #00BCD4; }
+        .stat-card h4 { font-size: 0.95em; color: #666; margin-bottom: 8px; }
+        .stat-card .big { font-size: 2em; font-weight: 700; color: #667eea; }
+        .stat-card.bp .big { color: #0097A7; }
+        .stat-card .sub { font-size: 0.85em; color: #999; }
+        .tabs { display: flex; gap: 6px; margin: 20px 0 0 0; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 10px 22px;
+            border: 2px solid #e9ecef;
+            border-bottom: none;
+            background: #f1f3f5;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.95em;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .tab-btn:hover { background: #e7ecff; }
+        .tab-btn.active { background: #667eea; color: #fff; border-color: #667eea; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.5em; }
+            table { font-size: 0.8em; }
+        }
+            /* shared V2 top nav */
+        .topnav { margin:-20px -20px 24px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; box-shadow:0 2px 10px rgba(0,0,0,.15); }
+        .topnav .brand { font-weight:800; font-size:15px; margin-right:10px; letter-spacing:.3px; }
+        .topnav a { color:#e7e9ff; text-decoration:none; font-weight:600; font-size:13.5px; padding:8px 13px; border-radius:6px; transition:all .15s; }
+        .topnav a:hover { background:rgba(255,255,255,.18); color:#fff; }
+        .topnav a.current { background:#fff; color:#5a3db5; }
+        .topnav .spacer { flex:1; }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <span class="brand">🚀 V2.0</span>
+    <a href="index.html">Home</a>
+    <a href="rate-comparison.html">Rate Comparison</a>
+    <a href="all-vendor-rates.html">All Vendor Rates</a>
+    <a href="bill-rate-distribution.html">Bill-Rate Report</a>
+    <a href="net-margin-method.html">How Net Margin Works</a>
+    <a href="comparison.html">V1 vs V2</a>
+    <a href="kbi-margin-distribution.html">KBI Margin Distribution</a>
+    <a href="top-5-vendors-comparison.html">Top 5 Competitors</a>
+    <a href="expertise-margin-comparison.html">Expertise Analysis</a>
+    <a href="job-title-margin-comparison.html" class="current">Job-Title Analysis</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.8;">NYS OGS Group 73012</span>
+</div>
+    <div class="container">
+        <header>
+            <h1>Margin Analysis by Job Title</h1>
+            <p>Best Pegasus V2.0 vs KBI, MVP, Sligo, Panha &amp; Genesys — across 31 HBITS Titles</p>
+            <p style="font-size: 0.9em; opacity: 0.8;">1,488 HBITS Awards (2023-2025) + Best Pegasus V2.0 Projection</p>
+        </header>
+
+        <div class="content">
+            <h2>Executive Summary</h2>
+            <div class="insight-box bp">
+                <strong>📊 Two Margin Tiers — Not a Smooth Curve:</strong> Computed from the real V2 rate sheet,
+                <strong>every vendor prices on a single fixed markup</strong>, so each one's net margin is essentially
+                <strong>flat across all titles</strong> — there is no "specialist harvesting." The real gap is
+                <strong>vendor-to-vendor</strong>: a high-markup tier — KBI (110% → 38.5%), Genesys (100% → 35.5%) — and a
+                low-markup / high-wage tier — MVP (48% → 13.1%), Sligo (47% → 12.5%), Panha (45% → 11.3%).
+                <strong>Best Pegasus V2.0 sits firmly in the top tier at 35.5%–38.5%</strong>, tracking KBI.
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card bp">
+                    <h4>Best Pegasus V2.0</h4>
+                    <div class="big">36.8%</div>
+                    <div class="sub">blended net margin · top tier</div>
+                </div>
+                <div class="stat-card">
+                    <h4>KBI (Benchmark)</h4>
+                    <div class="big">38.5%</div>
+                    <div class="sub">110% markup · market leader</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Genesys</h4>
+                    <div class="big">35.5%</div>
+                    <div class="sub">100% markup · also top tier</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Panha</h4>
+                    <div class="big">11.3%</div>
+                    <div class="sub">45% markup · low-tier floor</div>
+                </div>
+            </div>
+
+            <h2>Margin by Job Title — All Six Players</h2>
+            <p>Real net margins from <code>vendors_rates_v2.csv</code>. Every line is essentially <strong>flat</strong> — each vendor applies one constant markup to every title. The board splits into a <strong>high-margin tier</strong> (Best Pegasus, KBI, Genesys ≈ 35–38.5%) and a <strong>low-margin tier</strong> (MVP, Sligo, Panha ≈ 11–13%). Use the tabs to switch skill level, and <strong>hover any title to see every vendor's net margin <em>and</em> 2026 bill rate</strong> (BP bills from the V2 trajectory, competitors Region&nbsp;1).</p>
+            <div class="tabs">
+                <button class="tab-btn active" data-level="0">Junior</button>
+                <button class="tab-btn" data-level="1">Mid-Level</button>
+                <button class="tab-btn" data-level="2">Senior</button>
+                <button class="tab-btn" data-level="3">Expert</button>
+            </div>
+            <div class="tab-panel active" data-level="0">
+                <div class="chart-container tall"><canvas id="titleMarginChart0"></canvas></div>
+            </div>
+            <div class="tab-panel" data-level="1">
+                <div class="chart-container tall"><canvas id="titleMarginChart1"></canvas></div>
+            </div>
+            <div class="tab-panel" data-level="2">
+                <div class="chart-container tall"><canvas id="titleMarginChart2"></canvas></div>
+            </div>
+            <div class="tab-panel" data-level="3">
+                <div class="chart-container tall"><canvas id="titleMarginChart3"></canvas></div>
+            </div>
+
+            <h2>Best Pegasus V2.0 vs KBI — Formula Match</h2>
+            <p>Both lines run nearly flat and close together: Best Pegasus V2.0 (≈36.8% blended) tracks KBI's 110% benchmark (38.5%), dipping to 35.5% only where the V2 rank guardrail pulls a role down to a 100% markup.</p>
+            <div class="chart-container">
+                <canvas id="bpVsKbiChart"></canvas>
+            </div>
+
+            <h2>Consistency by Job Title (Std Dev — Lower = Better)</h2>
+            <div class="chart-container">
+                <canvas id="consistencyChart"></canvas>
+            </div>
+
+            <h2>Win Distribution by Job Title (KBI / BP V2.0 Target Mix)</h2>
+            <div class="chart-container">
+                <canvas id="winDistChart"></canvas>
+            </div>
+
+            <h2>Full Data Table — Average Net Margin (%) by Job Title</h2>
+            <table>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Tier</th>
+                    <th class="bp-col">BP V2.0</th>
+                    <th>KBI</th>
+                    <th>MVP</th>
+                    <th>Sligo</th>
+                    <th>Panha</th>
+                    <th>Genesys</th>
+                </tr>
+                <tr><td>Technical Writer</td><td><span class="tier-tag tier-commodity">Commodity</span></td><td class="bp-col">35.5</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Help Desk Manager</td><td><span class="tier-tag tier-commodity">Commodity</span></td><td class="bp-col">35.5</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Tester</td><td><span class="tier-tag tier-commodity">Commodity</span></td><td class="bp-col">37.0</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Web Administrator</td><td><span class="tier-tag tier-commodity">Commodity</span></td><td class="bp-col">37.0</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Business Analyst</td><td><span class="tier-tag tier-core">Core IT</span></td><td class="bp-col">37.0</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Programmer</td><td><span class="tier-tag tier-core">Core IT</span></td><td class="bp-col">37.8</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Systems Administrator</td><td><span class="tier-tag tier-core">Core IT</span></td><td class="bp-col">37.0</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Software Developer</td><td><span class="tier-tag tier-core">Core IT</span></td><td class="bp-col">37.8</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Project Manager</td><td><span class="tier-tag tier-mgmt">Management</span></td><td class="bp-col">37.0</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Database Administrator</td><td><span class="tier-tag tier-spec">Specialist</span></td><td class="bp-col">36.3</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Systems Architect</td><td><span class="tier-tag tier-spec">Specialist</span></td><td class="bp-col">37.0</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Network Architect</td><td><span class="tier-tag tier-spec">Specialist</span></td><td class="bp-col">37.8</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Security Analyst</td><td><span class="tier-tag tier-hot">High-Demand</span></td><td class="bp-col">35.5</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr><td>Cloud Engineer</td><td><span class="tier-tag tier-hot">High-Demand</span></td><td class="bp-col">37.0</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td></tr>
+                <tr style="border-top: 2px solid #667eea; font-weight: 700;">
+                    <td>AVERAGE</td><td>—</td><td class="bp-col">36.8</td><td>38.5</td><td>13.1</td><td>12.5</td><td>11.3</td><td>35.5</td>
+                </tr>
+                <tr style="font-weight: 700; color: #d9534f;">
+                    <td>RANGE (Max−Min)</td><td>—</td><td class="bp-col">2.3</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td>
+                </tr>
+            </table>
+
+            <h2>Where Best Pegasus V2.0 Wins Most (Margin Advantage in Points)</h2>
+            <div class="insight-box">
+                Best Pegasus's margin edge is over the <strong>low-markup tier</strong> (MVP, Sligo, Panha) — a steady
+                <strong>+22 to +27 points on every title</strong>. Against the high-tier players it's a different game:
+                <strong>Genesys</strong> (100% markup) sits within ~0–2 points, and <strong>KBI</strong> (110%) is actually ~1.7 points
+                <em>above</em> Best Pegasus's blended margin. The advantage is uniform across titles because every vendor's markup is title-independent.
+            </div>
+            <table>
+                <tr>
+                    <th>Job Title</th>
+                    <th>vs MVP</th>
+                    <th>vs Sligo</th>
+                    <th>vs Panha</th>
+                    <th>vs Genesys</th>
+                </tr>
+                <tr><td>Technical Writer</td><td>+22.4</td><td>+23.0</td><td>+24.2</td><td>0.0</td></tr>
+                <tr><td>Programmer</td><td>+24.7</td><td>+25.3</td><td>+26.5</td><td>+2.3</td></tr>
+                <tr><td>Software Developer</td><td>+24.7</td><td>+25.3</td><td>+26.5</td><td>+2.3</td></tr>
+                <tr><td>Security Analyst</td><td>+22.4</td><td>+23.0</td><td>+24.2</td><td>0.0</td></tr>
+                <tr><td>Cloud Engineer</td><td>+23.9</td><td>+24.5</td><td>+25.7</td><td>+1.5</td></tr>
+            </table>
+
+            <h2>Strategic Recommendation</h2>
+            <div class="insight-box bp">
+                <strong>Apply the fixed markup uniformly across all 31 HBITS job titles — do not title-tier the markup.</strong>
+                <ul style="margin: 15px 0 0 20px;">
+                    <li>✅ <strong>35.5%–38.5% net margin on every title</strong> — lands in the high-markup tier with KBI &amp; Genesys</li>
+                    <li>✅ <strong>+22 to +27 points over the low-markup tier</strong> (MVP, Sligo, Panha) on every role</li>
+                    <li>✅ <strong>Operational simplicity</strong> — one rule across 372 cells (31 titles × 4 levels × 3 regions)</li>
+                    <li>✅ <strong>Title-mix flexibility</strong> — chase whatever titles the MSP releases without re-pricing</li>
+                    <li>✅ <strong>Proven economics</strong> — mirrors KBI's profile (317 wins, $160.5M revenue, 38.5% margin)</li>
+                </ul>
+                <br>
+                <strong>Bottom line:</strong> The market has two margin tiers, and discipline decides which one you're in.
+                Best Pegasus V2.0's fixed markup keeps it in the top tier on every title — beside the proven winner, far above the discounters.
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Margin Analysis by Job Title</strong></p>
+            <p>Data: 1,488 HBITS awards (2023-2025) + Best Pegasus V2.0 projection | 31 HBITS titles across 5 competitors</p>
+            <p style="margin-top: 15px; color: #999;">Best Pegasus V2.0 replicates KBI's title-independent 110% fixed-markup formula</p>
+        </footer>
+    </div>
+
+    <script>
+        const TITLES = ['Tech Writer','Help Desk Mgr','Tester','Web Admin','Business Analyst','Programmer','Sys Admin','Software Dev','Project Mgr','DB Admin','Sys Architect','Net Architect','Security Analyst','Cloud Engineer'];
+
+        // Real net-margin % computed from vendors_rates_v2.csv (avg across 3 regions),
+        // per skill level. Every vendor runs ONE fixed markup, so each line is flat across titles:
+        //   KBI 110%→38.5%  ·  Genesys 100%→35.5%  ·  BP 100–110%→35.5–38.5%  (high tier)
+        //   MVP 48%→13.1%   ·  Sligo 47%→12.5%     ·  Panha 45%→11.3%          (low tier)
+        const DATA = {
+            'Junior': {
+                bp:      [35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 38.5, 38.5, 38.5, 38.5, 38.5, 35.5, 38.5],
+                kbi:     [38.6, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.6, 38.5, 38.5],
+                mvp:     [13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1],
+                sligo:   [12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5],
+                panha:   [11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3],
+                genesys: [35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5],
+            },
+            'Mid-Level': {
+                bp:      [35.5, 35.5, 35.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 35.5, 38.5, 38.5, 35.5, 35.5],
+                kbi:     [38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5],
+                mvp:     [13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1],
+                sligo:   [12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5],
+                panha:   [11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3],
+                genesys: [35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5],
+            },
+            'Senior': {
+                bp:      [35.5, 35.5, 38.5, 35.5, 35.5, 38.5, 38.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5],
+                kbi:     [38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5],
+                mvp:     [13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1],
+                sligo:   [12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5],
+                panha:   [11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3],
+                genesys: [35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5],
+            },
+            'Expert': {
+                bp:      [35.5, 35.5, 38.5, 38.5, 38.5, 38.5, 35.5, 38.5, 35.5, 35.5, 35.5, 38.5, 35.5, 38.5],
+                kbi:     [38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5],
+                mvp:     [13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1],
+                sligo:   [12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5],
+                panha:   [11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3],
+                genesys: [35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5],
+            },
+        };
+        // Blended margin (avg across all skills+regions) per title
+        const BLEND = {
+            bp:      [35.5, 35.5, 37.0, 37.0, 37.0, 37.8, 37.0, 37.8, 37.0, 36.3, 37.0, 37.8, 35.5, 37.0],
+            kbi:     [38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5, 38.5],
+            mvp:     [13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1, 13.1],
+            sligo:   [12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5],
+            panha:   [11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3, 11.3],
+            genesys: [35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5, 35.5],
+        };
+        // Std dev of margin per title (across skills+regions) = consistency
+        const STDEV = {
+            bp:      [0.00, 0.00, 1.52, 1.52, 1.52, 1.32, 1.52, 1.31, 1.52, 1.31, 1.52, 1.32, 0.00, 1.52],
+            kbi:     [0.01, 0.01, 0.01, 0.00, 0.01, 0.01, 0.01, 0.01, 0.01, 0.00, 0.01, 0.01, 0.01, 0.01],
+            mvp:     [0.01, 0.01, 0.00, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.00, 0.01, 0.01, 0.01],
+            sligo:   [0.01, 0.01, 0.01, 0.01, 0.01, 0.00, 0.01, 0.01, 0.01, 0.01, 0.01, 0.00, 0.01, 0.01],
+            panha:   [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.00, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01],
+            genesys: [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01],
+        };
+        // 2026 bill rate ($/hr) — BP from V2_Rate_Trajectory_2021_2026_2029.csv (Bid_Year_2026_Rate);
+        // competitors from vendors_rates_v2.csv (Region 1). Indexed [skill][vendor][title].
+        const BILL = {
+            'Junior': {
+                bp:      [38.76, 40.30, 36.18, 41.46, 41.34, 42.38, 41.46, 44.50, 46.14, 43.53, 46.14, 43.41, 50.30, 43.41],
+                kbi:     [40.71, 42.32, 37.99, 43.53, 43.42, 44.50, 43.53, 44.50, 46.13, 43.53, 46.13, 43.42, 52.81, 43.42],
+                genesys: [29.92, 30.45, 36.60, 35.01, 38.72, 37.13, 35.01, 37.13, 43.50, 42.44, 45.62, 38.19, 37.33, 46.53],
+                mvp:     [30.77, 41.24, 36.23, 41.24, 40.52, 41.89, 37.39, 41.89, 45.13, 42.37, 51.29, 46.32, 42.37, 37.97],
+                sligo:   [31.87, 39.61, 36.44, 36.15, 40.33, 41.34, 41.59, 43.35, 47.53, 44.65, 50.77, 52.51, 49.69, 51.91],
+                panha:   [27.56, 34.20, 27.56, 29.34, 32.58, 35.82, 32.58, 39.06, 37.28, 32.58, 38.58, 35.34, 34.85, 37.44],
+            },
+            'Mid-Level': {
+                bp:      [41.34, 54.38, 45.58, 52.81, 48.87, 52.19, 51.05, 59.70, 59.70, 56.44, 59.70, 58.34, 67.18, 67.28],
+                kbi:     [43.42, 57.09, 47.86, 52.81, 48.86, 52.19, 51.05, 59.71, 59.71, 59.26, 59.71, 58.35, 70.54, 70.65],
+                genesys: [36.07, 39.36, 44.03, 46.26, 51.24, 53.05, 46.26, 53.05, 56.23, 53.05, 59.41, 51.98, 48.70, 60.60],
+                mvp:     [36.33, 44.26, 44.59, 55.32, 52.53, 59.13, 50.20, 59.13, 60.80, 50.84, 65.85, 65.85, 60.25, 60.25],
+                sligo:   [38.17, 45.33, 44.22, 46.45, 51.85, 59.17, 52.56, 57.79, 58.33, 56.17, 64.09, 63.19, 64.71, 70.94],
+                panha:   [33.23, 40.52, 33.23, 40.68, 44.57, 58.84, 39.71, 60.46, 48.63, 44.57, 56.73, 55.11, 49.44, 48.63],
+            },
+            'Senior': {
+                bp:      [46.34, 60.78, 56.97, 65.68, 68.22, 71.63, 67.45, 75.42, 77.60, 69.90, 86.82, 81.14, 82.70, 80.62],
+                kbi:     [48.66, 63.82, 56.98, 68.97, 71.63, 71.63, 67.46, 79.20, 81.48, 73.39, 91.17, 85.19, 86.83, 84.65],
+                genesys: [47.74, 56.51, 53.58, 64.18, 69.49, 70.02, 64.18, 70.72, 80.73, 71.08, 85.22, 73.84, 70.85, 84.87],
+                mvp:     [44.60, 53.54, 55.26, 72.55, 68.49, 70.31, 65.37, 70.31, 80.24, 70.98, 83.73, 83.73, 75.91, 73.67],
+                sligo:   [47.41, 54.85, 54.16, 59.77, 64.96, 71.41, 63.50, 72.20, 79.03, 71.97, 78.86, 77.81, 78.37, 80.30],
+                panha:   [46.68, 48.79, 55.43, 52.52, 68.08, 72.13, 58.03, 76.99, 79.10, 72.13, 84.12, 79.33, 61.59, 74.40],
+            },
+            'Expert': {
+                bp:      [54.92, 65.98, 65.18, 78.08, 78.14, 80.85, 77.50, 84.92, 98.12, 85.30, 96.64, 89.54, 90.96, 91.16],
+                kbi:     [57.66, 69.29, 65.18, 78.08, 78.14, 80.84, 81.36, 84.92, 103.02, 89.57, 101.48, 89.55, 95.52, 91.17],
+                genesys: [55.17, 66.91, 62.84, 72.40, 79.55, 81.69, 72.40, 86.99, 101.68, 80.10, 95.80, 86.46, 83.16, 95.48],
+                mvp:     [54.18, 54.66, 61.36, 87.09, 79.08, 79.91, 75.91, 79.91, 96.12, 79.26, 94.90, 94.30, 89.32, 81.50],
+                sligo:   [52.57, 64.21, 62.93, 68.03, 73.15, 80.59, 72.93, 80.69, 92.62, 83.20, 90.02, 95.39, 87.28, 92.44],
+                panha:   [52.03, 63.21, 64.51, 70.36, 77.38, 81.04, 72.94, 87.04, 95.31, 82.18, 92.23, 91.90, 80.07, 86.56],
+            },
+        };
+        // dataset order used in buildTitleChart (must stay in sync with the datasets array below)
+        const DSKEYS = ['bp', 'kbi', 'genesys', 'mvp', 'sligo', 'panha'];
+        const LEVELS = ['Junior', 'Mid-Level', 'Senior', 'Expert'];
+
+        // 1. All six players margin by title — one chart per skill level (Jr / Mid / Sr / Exp)
+        const titleCharts = [];
+        function buildTitleChart(li) {
+            const D = DATA[LEVELS[li]];
+            return new Chart(document.getElementById('titleMarginChart' + li), {
+                type: 'line',
+                data: {
+                    labels: TITLES,
+                    datasets: [
+                        { label: 'Best Pegasus V2.0', data: D.bp, borderColor: '#00BCD4', backgroundColor: 'rgba(0,188,212,0.12)', borderWidth: 4, tension: 0.2, fill: true, pointRadius: 5, pointBackgroundColor: '#00BCD4', borderDash: [6,4] },
+                        { label: 'KBI', data: D.kbi, borderColor: '#FFD700', backgroundColor: 'rgba(255,215,0,0.05)', borderWidth: 2, tension: 0.2, fill: false, pointRadius: 3, pointBackgroundColor: '#FFD700' },
+                        { label: 'Genesys', data: D.genesys, borderColor: '#9C27B0', borderWidth: 2.5, tension: 0.2, fill: false, pointRadius: 3 },
+                        { label: 'MVP', data: D.mvp, borderColor: '#C0C0C0', borderWidth: 2.5, tension: 0.2, fill: false, pointRadius: 3 },
+                        { label: 'Sligo', data: D.sligo, borderColor: '#CD7F32', borderWidth: 2.5, tension: 0.2, fill: false, pointRadius: 3 },
+                        { label: 'Panha', data: D.panha, borderColor: '#F44336', borderWidth: 2.5, tension: 0.2, fill: false, pointRadius: 3 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: { y: { beginAtZero: false, min: 5, max: 45, title: { display: true, text: 'Net Margin %' } },
+                              x: { ticks: { maxRotation: 60, minRotation: 45 } } },
+                    plugins: {
+                        title: { display: true, text: 'Net Margin % + 2026 Bill by Job Title — ' + LEVELS[li] + ' (hover a title for all vendors)' },
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    const key = DSKEYS[ctx.datasetIndex];
+                                    const b = BILL[LEVELS[li]][key][ctx.dataIndex];
+                                    const bill = (b != null && b > 0) ? '  ·  $' + b.toFixed(2) + ' bill' : '';
+                                    return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + '%' + bill;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        for (let li = 0; li < 4; li++) titleCharts.push(buildTitleChart(li));
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const li = btn.dataset.level;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.dataset.level === li));
+                titleCharts[+li].resize();
+            });
+        });
+
+        // 2. BP vs KBI
+        new Chart(document.getElementById('bpVsKbiChart'), {
+            type: 'line',
+            data: {
+                labels: TITLES,
+                datasets: [
+                    { label: 'Best Pegasus V2.0', data: BLEND.bp, borderColor: '#00BCD4', backgroundColor: 'rgba(0,188,212,0.15)', borderWidth: 4, tension: 0.2, fill: true, pointRadius: 5, pointBackgroundColor: '#00BCD4' },
+                    { label: 'KBI (Benchmark)', data: BLEND.kbi, borderColor: '#FFD700', borderWidth: 2, tension: 0.2, fill: false, pointRadius: 4, pointBackgroundColor: '#FFD700', borderDash: [5,5] }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { min: 34, max: 40, title: { display: true, text: 'Net Margin %' } },
+                          x: { ticks: { maxRotation: 60, minRotation: 45 } } },
+                plugins: { title: { display: true, text: 'Best Pegasus V2.0 vs KBI — Formula Match (lines overlap)' }, legend: { position: 'bottom' } }
+            }
+        });
+
+        // 3. Consistency (real std dev of margin across skills+regions) - subset of titles
+        const CTITLES = ['Tech Writer','Programmer','Software Dev','Sys Admin','Project Mgr','DB Admin','Sys Architect','Security Analyst','Cloud Engineer'];
+        const CIDX = [0,5,7,6,8,9,10,12,13];   // indices of CTITLES within TITLES
+        const cd = key => CIDX.map(i => STDEV[key][i]);
+        new Chart(document.getElementById('consistencyChart'), {
+            type: 'bar',
+            data: {
+                labels: CTITLES,
+                datasets: [
+                    { label: 'Best Pegasus V2.0', data: cd('bp'), backgroundColor: '#00BCD4', borderColor: '#0097A7', borderWidth: 2 },
+                    { label: 'KBI', data: cd('kbi'), backgroundColor: '#FFD700', borderColor: '#DAA520', borderWidth: 2 },
+                    { label: 'Genesys', data: cd('genesys'), backgroundColor: '#9C27B0', borderColor: '#6A1B9A', borderWidth: 2 },
+                    { label: 'MVP', data: cd('mvp'), backgroundColor: '#C0C0C0', borderColor: '#A9A9A9', borderWidth: 2 },
+                    { label: 'Sligo', data: cd('sligo'), backgroundColor: '#CD7F32', borderColor: '#8B4513', borderWidth: 2 },
+                    { label: 'Panha', data: cd('panha'), backgroundColor: '#F44336', borderColor: '#B71C1C', borderWidth: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 2, title: { display: true, text: 'Std Dev (pts)' } },
+                          x: { ticks: { maxRotation: 60, minRotation: 45 } } },
+                plugins: { title: { display: true, text: 'Margin Consistency by Job Title (real — every vendor near-zero; BP’s ≤1.5 is the V2 100/110 guardrail flip)' }, legend: { position: 'bottom' } }
+            }
+        });
+
+        // 4. Win distribution
+        new Chart(document.getElementById('winDistChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Software Dev','Programmer','Business Analyst','Project Mgr','Sys Admin','Security Analyst','DB Admin','Sys Architect','Tester','Net Architect','Cloud Engineer','Tech Writer','Other 19'],
+                datasets: [{
+                    label: 'KBI / BP V2.0 Target Wins',
+                    data: [42,38,31,28,26,24,22,20,20,18,16,12,20],
+                    backgroundColor: '#00BCD4', borderColor: '#0097A7', borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: { x: { beginAtZero: true, title: { display: true, text: 'Wins' } } },
+                plugins: { title: { display: true, text: 'Win Distribution by Job Title (317 total)' }, legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+</html>

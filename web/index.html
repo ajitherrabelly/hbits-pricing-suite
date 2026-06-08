@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBITS Pricing Suite — Version Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        .portal {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 0.95em;
+            opacity: 0.85;
+            font-style: italic;
+        }
+        .content {
+            padding: 60px 40px;
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .intro h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        .intro p {
+            color: #666;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .version-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 50px 0;
+        }
+        .version-card {
+            padding: 40px;
+            border-radius: 12px;
+            border: 3px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .version-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+        .version-card.v1 {
+            background: linear-gradient(135deg, #fff5f0 0%, #fffbf8 100%);
+            border-color: #ffc107;
+        }
+        .version-card.v2 {
+            background: linear-gradient(135deg, #f0fef5 0%, #f8fffb 100%);
+            border-color: #28a745;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.15);
+        }
+        .version-card.v2::before {
+            content: "🚀 NEW";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .version-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .version-icon {
+            font-size: 2.5em;
+            margin-right: 15px;
+        }
+        .version-header h3 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .version-date {
+            font-size: 0.9em;
+            color: #999;
+        }
+        .version-description {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
+        .features {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .features h4 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .feature-list {
+            list-style: none;
+        }
+        .feature-list li {
+            padding: 6px 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .feature-list li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .version-card.v1 .feature-list li:before {
+            color: #ffc107;
+        }
+        .btn-container {
+            display: flex;
+            gap: 15px;
+        }
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border-color: #667eea;
+        }
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        .version-card.v1 .btn-primary {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+        .version-card.v1 .btn-primary:hover {
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
+        }
+        .version-card.v2 .btn-primary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        .version-card.v2 .btn-primary:hover {
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+        .info-box {
+            background: #e7f3ff;
+            padding: 25px;
+            border-left: 4px solid #2196F3;
+            border-radius: 8px;
+            margin: 40px 0;
+        }
+        .info-box h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+        .info-box p {
+            color: #0d47a1;
+            line-height: 1.7;
+        }
+        .comparison-table {
+            width: 100%;
+            margin: 30px 0;
+            border-collapse: collapse;
+        }
+        .comparison-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .version-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="portal">
+            <header>
+                <h1>HBITS Pricing Suite</h1>
+                <p>Comprehensive Pricing & Competitive Analysis Platform</p>
+                <p class="subtitle">Best Pegasus • NYS OGS Group 73012</p>
+            </header>
+
+            <div class="content">
+                <div class="intro">
+                    <h2>Choose Your Version</h2>
+                    <p>
+                        Select the pricing model that meets your needs. V1 represents the legacy rank-based approach,
+                        while V2.0 introduces the margin-first strategy based on KBI's proven formula.
+                    </p>
+                </div>
+
+                <div class="version-grid">
+                    <!-- V1 Card -->
+                    <div class="version-card v1">
+                        <div class="version-header">
+                            <div class="version-icon">📊</div>
+                            <div>
+                                <h3>Version 1.1</h3>
+                                <div class="version-date">Legacy Model</div>
+                            </div>
+                        </div>
+
+                        <p class="version-description">
+                            The original rank-based pricing strategy targeting market position #19.
+                            Transparent market positioning with cost-up pricing foundation.
+                        </p>
+
+                        <div class="features">
+                            <h4>Key Features</h4>
+                            <ul class="feature-list">
+                                <li>Rank-based pricing (#19 target)</li>
+                                <li>~30% markup (derived)</li>
+                                <li>Cost-up modeling approach</li>
+                                <li>31 job titles, 4 skill levels</li>
+                                <li>30 titles (Business Analyst excluded)</li>
+                                <li>Historical baseline data</li>
+                            </ul>
+                        </div>
+
+                        <div class="features">
+                            <h4>Limitations</h4>
+                            <ul class="feature-list">
+                                <li>Thin net margin (~1.2%)</li>
+                                <li>Margin erodes with volume</li>
+                                <li>Complex rank-target math</li>
+                                <li>Limited profitability</li>
+                            </ul>
+                        </div>
+
+                        <div class="btn-container">
+                            <a href="v1/index.html" class="btn btn-primary">📖 Open V1.1</a>
+                        </div>
+                    </div>
+
+                    <!-- V2 Card -->
+                    <div class="version-card v2">
+                        <div class="version-header">
+                            <div class="version-icon">🚀</div>
+                            <div>
+                                <h3>Version 2.0</h3>
+                                <div class="version-date">Margin-First Strategy (NEW)</div>
+                            </div>
+                        </div>
+
+                        <p class="version-description">
+                            Revolutionary margin-first pricing based on KBI's reverse-engineered formula.
+                            Fixed 110% markup with sourced wages delivers 30× higher profitability.
+                        </p>
+
+                        <div class="features">
+                            <h4>Key Improvements</h4>
+                            <ul class="feature-list">
+                                <li>110% fixed markup (proven by KBI)</li>
+                                <li>Sourced wage-based pricing</li>
+                                <li>35-38% net margin locked in</li>
+                                <li>Competitive rank #21 (median)</li>
+                                <li>31 titles (includes Business Analyst)</li>
+                                <li>KBI validation & backtest data</li>
+                            </ul>
+                        </div>
+
+                        <div class="features">
+                            <h4>Financial Impact</h4>
+                            <ul class="feature-list">
+                                <li>$25.50 profit/hour (vs $0.76)</li>
+                                <li>+$16.7M 3-year profit (100 FTEs)</li>
+                                <li>30× profitability improvement</li>
+                                <li>Scalable, sustainable margins</li>
+                            </ul>
+                        </div>
+
+                        <div class="btn-container">
+                            <a href="v2/index.html" class="btn btn-primary">🎯 Open V2.0</a>
+                            <a href="v2/comparison.html" class="btn btn-secondary">📊 V1 vs V2</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎯 Which Version Should I Use?</h3>
+                    <p>
+                        <strong>V2.0 is recommended for new pricing submissions.</strong> It's validated against KBI's
+                        proven strategy (317 wins, $160.5M revenue) and delivers significantly higher profitability
+                        while maintaining competitive market positioning. Use V1.1 only for historical reference or
+                        legacy bid comparison.
+                    </p>
+                </div>
+
+                <h2 style="margin: 50px 0 20px 0; color: #333;">Quick Comparison</h2>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Metric</th>
+                        <th>V1.1</th>
+                        <th>V2.0</th>
+                        <th>Improvement</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Pricing Strategy</strong></td>
+                        <td>Rank-based (#19)</td>
+                        <td>Wage-based (sourced)</td>
+                        <td>Margin-first</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Markup %</strong></td>
+                        <td>~30%</td>
+                        <td>110% (fixed)</td>
+                        <td>+80 pts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Net Margin</strong></td>
+                        <td>1.2%</td>
+                        <td><strong>38.5%</strong></td>
+                        <td><span style="color: #28a745; font-weight: bold;">+3,730 bps</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Profit/Hour</strong></td>
+                        <td>$0.76</td>
+                        <td><strong>$25.50</strong></td>
+                        <td><span style="color: #28a745; font-weight: bold;">×33.6</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bill Rank</strong></td>
+                        <td>#19 (target)</td>
+                        <td>#21 (median)</td>
+                        <td>Competitive</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3-Year Profit (100 FTEs)</strong></td>
+                        <td>$0.50M</td>
+                        <td><strong>$17.2M</strong></td>
+                        <td><span style="color: #28a745; font-weight: bold;">+$16.7M</span></td>
+                    </tr>
+                </table>
+
+                <div style="text-align: center; margin: 50px 0;">
+                    <p style="color: #666; font-size: 0.95em;">
+                        Both versions maintain backward compatibility. All historical data is preserved and accessible.
+                    </p>
+                </div>
+            </div>
+
+            <footer>
+                <p><strong>HBITS Pricing Suite</strong> • Version Portal</p>
+                <p>Best Pegasus Competitive Pricing Platform</p>
+                <p style="margin-top: 15px; color: #999;">
+                    V1.1 (Legacy) • V2.0 (Current) • Last Updated: June 7, 2026
+                </p>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

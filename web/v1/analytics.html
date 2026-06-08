@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBITS Market Analytics — Executive Dashboard</title>
+<script src="chart.umd.min.js"></script>
+<script src="analytics_data.js"></script>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; color:#1f2733; background:#eef1f6; line-height:1.5; }
+    .topnav { background:#11203a; color:#fff; padding:12px 26px; display:flex; gap:6px; align-items:center; position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+    .topnav a { color:#cdd8ee; text-decoration:none; font-weight:600; font-size:14px; padding:8px 13px; border-radius:6px; }
+    .topnav a:hover { background:rgba(255,255,255,.12); color:#fff; }
+    .topnav a.current { background:#2a64c4; color:#fff; }
+    .topnav .spacer { flex:1; }
+
+    .hero { background:linear-gradient(135deg,#0d7a4f 0%,#114e8a 100%); color:#fff; padding:34px 40px 28px; }
+    .hero h1 { font-size:28px; margin-bottom:6px; }
+    .hero p { opacity:.92; font-size:14.5px; max-width:900px; }
+
+    .wrap { max-width:1240px; margin:0 auto; padding:24px 26px 70px; }
+
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; margin-bottom:10px; }
+    .kpi { background:#fff; border-radius:12px; padding:20px; box-shadow:0 3px 14px rgba(0,0,0,.06); border-top:4px solid #0d7a4f; }
+    .kpi .n { font-size:30px; font-weight:800; color:#11203a; line-height:1.1; }
+    .kpi .l { font-size:13px; color:#5a6678; margin-top:6px; }
+    .kpi .s { font-size:12px; color:#0d7a4f; font-weight:600; margin-top:4px; }
+    .kpi.blue { border-top-color:#2a64c4; } .kpi.amber { border-top-color:#d99a16; } .kpi.purple { border-top-color:#7048c4; }
+
+    .card { background:#fff; border-radius:12px; padding:22px 24px; box-shadow:0 3px 14px rgba(0,0,0,.06); margin-top:20px; }
+    .card h2 { font-size:19px; color:#11203a; margin-bottom:3px; }
+    .card .sub { font-size:13px; color:#6b7688; margin-bottom:14px; }
+    .takeaway { background:#eef6f1; border-left:4px solid #0d7a4f; padding:11px 15px; border-radius:0 8px 8px 0; font-size:13.5px; margin-top:14px; color:#234; }
+    .takeaway b { color:#0a5c3c; }
+    .takeaway.blue { background:#eef3fc; border-left-color:#2a64c4; } .takeaway.blue b { color:#1d4 e8a; color:#1d4e8a; }
+    .takeaway.amber { background:#fdf5e8; border-left-color:#d99a16; } .takeaway.amber b { color:#a4720f; }
+
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media (max-width:880px){ .grid2 { grid-template-columns:1fr; } }
+    .chartbox { position:relative; height:340px; }
+    .chartbox.tall { height:420px; }
+
+    .yearbtns { display:flex; gap:8px; margin-bottom:6px; }
+    .yearbtns button { padding:6px 14px; border:1px solid #cbd5e6; background:#fff; border-radius:6px; font-weight:600; cursor:pointer; font-size:13px; color:#33415c; }
+    .yearbtns button.active { background:#0d7a4f; color:#fff; border-color:#0d7a4f; }
+
+    .bp { background:linear-gradient(135deg,#11203a,#1f5a8a); color:#fff; border-radius:12px; padding:24px 26px; margin-top:22px; }
+    .bp h2 { font-size:20px; margin-bottom:12px; }
+    .bp ul { margin-left:20px; } .bp li { margin-bottom:9px; font-size:14.5px; }
+    .bp b { color:#9fe7c0; }
+
+    .gallery { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:14px; }
+    .gallery figure { background:#f7f9fc; border:1px solid #e2e8f2; border-radius:10px; padding:10px; }
+    .gallery img { width:100%; border-radius:6px; display:block; }
+    .gallery figcaption { font-size:12.5px; color:#5a6678; margin-top:6px; text-align:center; }
+    .note { font-size:12px; color:#8a94a6; margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="compare.html">Rate Comparison</a>
+    <a href="positioning.html">Bid Builder</a>
+    <a href="briefing.html">Strategy Briefing</a>
+    <a href="analytics.html" class="current">Market Analytics</a>
+    <a href="vendors.html">Vendor Detail</a>
+    <a href="formulas.html">How It Works</a>
+    <a href="factors.html">Factors &amp; Inputs</a>
+    <a href="expert.html">Expert Session</a>
+    <a href="resources.html">Resources</a>
+    <span class="spacer"></span>
+    <span style="font-size:12px;opacity:.7;">NYS OGS HBITS · Jan 2023 – Dec 2025</span>
+</div>
+
+<div class="hero">
+    <h1>HBITS Market Analytics — Executive Dashboard</h1>
+    <p>Who is winning the work, who is buying it, what roles are in demand, and where the money is going —
+    a plain-English view of the New York State HBITS market over the last three years, to guide where Best Pegasus should compete.</p>
+</div>
+
+<div class="wrap">
+
+    <!-- KPI ROW -->
+    <div class="kpis" id="kpis"></div>
+    <p class="note" id="kpiNote"></p>
+
+    <!-- MARKET TREND -->
+    <div class="card">
+        <h2>Market activity by year</h2>
+        <div class="sub">Placements won (bars) and total award dollars (line) across the whole HBITS market.</div>
+        <div class="chartbox"><canvas id="trendChart"></canvas></div>
+        <div class="takeaway" id="trendTake"></div>
+    </div>
+
+    <div class="grid2">
+        <!-- TOP VENDORS -->
+        <div class="card">
+            <h2>Market leaders — placements won</h2>
+            <div class="sub">Top 10 vendors by total placements, 2023–2025.</div>
+            <div class="chartbox tall"><canvas id="vendorChart"></canvas></div>
+            <div class="takeaway" id="vendorTake"></div>
+        </div>
+        <!-- MARKET SHARE -->
+        <div class="card">
+            <h2>Market share</h2>
+            <div class="sub">Share of all placements — top vendors vs. the rest of the field.</div>
+            <div class="chartbox tall"><canvas id="shareChart"></canvas></div>
+            <div class="takeaway blue" id="shareTake"></div>
+        </div>
+    </div>
+
+    <!-- VENDOR MOMENTUM -->
+    <div class="card">
+        <h2>Who is gaining and who is fading</h2>
+        <div class="sub">Placements per year for the top vendors — momentum from 2023 → 2025.</div>
+        <div class="chartbox tall"><canvas id="momentumChart"></canvas></div>
+        <div class="takeaway amber" id="momentumTake"></div>
+    </div>
+
+    <div class="grid2">
+        <!-- DOLLARS BY VENDOR -->
+        <div class="card">
+            <h2>Where the money goes</h2>
+            <div class="sub">Top 10 vendors by total award dollars, 2023–2025.</div>
+            <div class="chartbox tall"><canvas id="dollarChart"></canvas></div>
+            <div class="takeaway" id="dollarTake"></div>
+        </div>
+        <!-- AGENCIES -->
+        <div class="card">
+            <h2>Who is buying</h2>
+            <div class="sub">Top 10 State agencies by placements awarded.</div>
+            <div class="chartbox tall"><canvas id="agencyChart"></canvas></div>
+            <div class="takeaway blue" id="agencyTake"></div>
+        </div>
+    </div>
+
+    <!-- HOT ROLES -->
+    <div class="card">
+        <h2>Hottest roles — what agencies are hiring</h2>
+        <div class="sub">Most in-demand job titles by placements. Pick a year:</div>
+        <div class="yearbtns" id="yearBtns"></div>
+        <div class="chartbox tall"><canvas id="titleChart"></canvas></div>
+        <div class="takeaway amber" id="titleTake"></div>
+    </div>
+
+    <!-- BEST PEGASUS TAKEAWAYS -->
+    <div class="bp">
+        <h2>What this means for Best Pegasus</h2>
+        <ul id="bpList"></ul>
+    </div>
+
+    <!-- SOURCE PIE IMAGES -->
+    <div class="card">
+        <h2>Source distribution charts</h2>
+        <div class="sub">Original job-title and job-type breakdowns from the market dataset.</div>
+        <div class="gallery">
+            <figure><img src="assets/JobType_PieChart.png" alt="Job type distribution"><figcaption>Job type distribution</figcaption></figure>
+            <figure><img src="assets/Company_Jobs_PieChart.png" alt="Company jobs distribution"><figcaption>Placements by company</figcaption></figure>
+            <figure><img src="assets/job_titles_pie_from_row3.png" alt="Job titles distribution"><figcaption>Job titles distribution</figcaption></figure>
+        </div>
+    </div>
+
+    <p class="note" id="srcNote"></p>
+</div>
+
+<script>
+(function(){
+    const A = window.ANALYTICS;
+    if (!A) { document.querySelector('.wrap').innerHTML = '<div class="card">Could not load analytics_data.js</div>'; return; }
+    const GREEN='#0d7a4f', BLUE='#2a64c4', AMBER='#d99a16', PURPLE='#7048c4', RED='#c4413a', GRAY='#9aa6ba';
+    const PALETTE=[GREEN,BLUE,AMBER,PURPLE,'#1f8a8a','#c4585a','#5a78c4','#8a9b2e','#c47a16','#666e8a'];
+
+    function money(n){
+        n=+n||0;
+        if(n>=1e9) return '$'+(n/1e9).toFixed(2)+'B';
+        if(n>=1e6) return '$'+(n/1e6).toFixed(1)+'M';
+        if(n>=1e3) return '$'+Math.round(n/1e3)+'K';
+        return '$'+Math.round(n);
+    }
+    function num(n){ return (+n||0).toLocaleString(); }
+
+    // ---------- KPIs ----------
+    const k=A.kpi;
+    const kpis=[
+        {n:num(k.totalClosures), l:'Placements won (3 yrs)', s:'across the whole market', cls:''},
+        {n:money(k.totalDollars), l:'Total awarded (3 yrs)', s:'contract value', cls:'blue'},
+        {n:k.activeVendors, l:'Active competing vendors', s:'awarded contracts', cls:'purple'},
+        {n:money(k.avgContract), l:'Average contract value', s:'per placement', cls:'amber'},
+    ];
+    document.getElementById('kpis').innerHTML = kpis.map(x=>
+        `<div class="kpi ${x.cls}"><div class="n">${x.n}</div><div class="l">${x.l}</div><div class="s">${x.s}</div></div>`).join('');
+    const py=k.perYear;
+    document.getElementById('kpiNote').textContent =
+        `By year — 2023: ${num(py['2023'].closures)} placements (${money(py['2023'].dollars)}) · `+
+        `2024: ${num(py['2024'].closures)} (${money(py['2024'].dollars)}) · `+
+        `2025: ${num(py['2025'].closures)} (${money(py['2025'].dollars)}).`;
+
+    Chart.defaults.font.family="'Segoe UI',Tahoma,sans-serif";
+    Chart.defaults.font.size=12;
+
+    // ---------- Trend ----------
+    const yrs=A.years.map(String);
+    new Chart(document.getElementById('trendChart'),{
+        data:{ labels:yrs, datasets:[
+            {type:'bar', label:'Placements', data:yrs.map(y=>py[y].closures), backgroundColor:GREEN, yAxisID:'y', borderRadius:6},
+            {type:'line', label:'Award $', data:yrs.map(y=>py[y].dollars), borderColor:BLUE, backgroundColor:BLUE, yAxisID:'y1', tension:.3, borderWidth:3, pointRadius:5}
+        ]},
+        options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'},
+            tooltip:{callbacks:{label:c=>c.dataset.label==='Award $'?'Award $: '+money(c.parsed.y):'Placements: '+num(c.parsed.y)}}},
+            scales:{ y:{title:{display:true,text:'Placements'},beginAtZero:true},
+                     y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Award $'},ticks:{callback:v=>money(v)}}}}
+    });
+    const dTrend = py['2025'].dollars - py['2023'].dollars;
+    document.getElementById('trendTake').innerHTML =
+        `The market is large and growing: <b>${money(py['2025'].dollars)}</b> awarded in 2025, up from ${money(py['2023'].dollars)} in 2023. `+
+        `Placement volume swings year to year, but <b>average contract value rose sharply</b> (to ${money(py['2025'].avg)} in 2025) — bigger, higher-value engagements.`;
+
+    // ---------- Top vendors (placements) ----------
+    const topV=A.vendors.slice(0,10);
+    new Chart(document.getElementById('vendorChart'),{
+        type:'bar',
+        data:{ labels:topV.map(v=>v.name), datasets:[{label:'Placements (3 yrs)', data:topV.map(v=>v.total), backgroundColor:GREEN, borderRadius:5}]},
+        options:{ indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false},
+            tooltip:{callbacks:{label:c=>num(c.parsed.x)+' placements · '+money(topV[c.dataIndex].dtotal)}}},
+            scales:{x:{beginAtZero:true,title:{display:true,text:'Placements won'}}}}
+    });
+    const leader=A.vendors[0];
+    const leaderShare=Math.round(leader.total/A.kpi.totalClosures*100);
+    document.getElementById('vendorTake').innerHTML =
+        `<b>${leader.name}</b> dominates with <b>${num(leader.total)} placements</b> (~${leaderShare}% of the market) and ${money(leader.dtotal)} in awards — `+
+        `more than double the next competitor. The top 10 vendors capture the large majority of all work.`;
+
+    // ---------- Market share pie ----------
+    const top7=A.vendors.slice(0,7);
+    const others=A.vendors.slice(7).reduce((s,v)=>s+v.total,0);
+    new Chart(document.getElementById('shareChart'),{
+        type:'doughnut',
+        data:{ labels:top7.map(v=>v.name).concat(['All other vendors']),
+            datasets:[{data:top7.map(v=>v.total).concat([others]), backgroundColor:PALETTE.slice(0,7).concat([GRAY])}]},
+        options:{ maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{boxWidth:12,font:{size:11}}},
+            tooltip:{callbacks:{label:c=>c.label+': '+num(c.parsed)+' ('+Math.round(c.parsed/A.kpi.totalClosures*100)+'%)'}}}}
+    });
+    const top7share=Math.round(top7.reduce((s,v)=>s+v.total,0)/A.kpi.totalClosures*100);
+    document.getElementById('shareTake').innerHTML =
+        `The market is <b>concentrated</b>: just 7 vendors hold about <b>${top7share}%</b> of all placements. `+
+        `Breaking in means taking share from entrenched incumbents — price and filter-positioning matter.`;
+
+    // ---------- Momentum (top 6 vendors x 3 years) ----------
+    const mV=A.vendors.slice(0,6);
+    new Chart(document.getElementById('momentumChart'),{
+        type:'bar',
+        data:{ labels:mV.map(v=>v.name), datasets:[
+            {label:'2023', data:mV.map(v=>v.c2023), backgroundColor:'#9fc4e8'},
+            {label:'2024', data:mV.map(v=>v.c2024), backgroundColor:'#4a86c8'},
+            {label:'2025', data:mV.map(v=>v.c2025), backgroundColor:'#114e8a'}]},
+        options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+            scales:{x:{title:{display:true,text:''}}, y:{beginAtZero:true,title:{display:true,text:'Placements'}}}}
+    });
+    document.getElementById('momentumTake').innerHTML =
+        `<b>${leader.name}</b> is accelerating (${leader.c2023}→${leader.c2025}). Some incumbents are sliding (e.g. Software People dropped to single digits in 2025), `+
+        `which <b>opens share</b> for a sharp new bidder.`;
+
+    // ---------- Dollars by vendor ----------
+    const topD=A.vendors.slice().sort((a,b)=>b.dtotal-a.dtotal).slice(0,10);
+    new Chart(document.getElementById('dollarChart'),{
+        type:'bar',
+        data:{ labels:topD.map(v=>v.name), datasets:[{label:'Award $ (3 yrs)', data:topD.map(v=>v.dtotal), backgroundColor:BLUE, borderRadius:5}]},
+        options:{ indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false},
+            tooltip:{callbacks:{label:c=>money(c.parsed.x)}}},
+            scales:{x:{beginAtZero:true,ticks:{callback:v=>money(v)}}}}
+    });
+    document.getElementById('dollarTake').innerHTML =
+        `Award dollars track placements closely. <b>${topD[0].name}</b> leads at <b>${money(topD[0].dtotal)}</b>. `+
+        `With an average contract near ${money(A.kpi.avgContract)}, <b>each win is six figures</b> — a handful of placements moves the needle.`;
+
+    // ---------- Agencies ----------
+    const ag=A.agencies.slice(0,10);
+    new Chart(document.getElementById('agencyChart'),{
+        type:'bar',
+        data:{ labels:ag.map(a=>a.name), datasets:[{label:'Placements', data:ag.map(a=>a.closures), backgroundColor:AMBER, borderRadius:5}]},
+        options:{ indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false},
+            tooltip:{callbacks:{label:c=>num(c.parsed.x)+' placements · '+money(ag[c.dataIndex].dollars)}}},
+            scales:{x:{beginAtZero:true}}}
+    });
+    document.getElementById('agencyTake').innerHTML =
+        `<b>${ag[0].name}</b> is by far the biggest buyer (${num(ag[0].closures)} placements). `+
+        `A few agencies drive most demand — <b>target capture efforts there first</b>.`;
+
+    // ---------- Hot roles by year ----------
+    let titleChart;
+    function drawTitles(year){
+        const rows=(A.titles[year]||[]).slice().sort((a,b)=>b[1]-a[1]).slice(0,12);
+        const labels=rows.map(r=>r[0]), data=rows.map(r=>r[1]);
+        if(titleChart) titleChart.destroy();
+        titleChart=new Chart(document.getElementById('titleChart'),{
+            type:'bar',
+            data:{labels, datasets:[{label:'Placements in '+year, data, backgroundColor:PURPLE, borderRadius:5}]},
+            options:{ indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true}}}
+        });
+        const top=rows[0];
+        document.getElementById('titleTake').innerHTML =
+            `In <b>${year}</b>, <b>${top[0]}</b> was the most in-demand role (${num(top[1])} placements). `+
+            `Expert and Senior-level roles dominate demand — <b>that's where the volume and the margin are</b>.`;
+        document.querySelectorAll('#yearBtns button').forEach(b=>b.classList.toggle('active', b.dataset.y===year));
+    }
+    document.getElementById('yearBtns').innerHTML = A.years.map((y,i)=>
+        `<button data-y="${y}" class="${i===A.years.length-1?'active':''}" onclick="window.__drawTitles('${y}')">${y}</button>`).join('');
+    window.__drawTitles=drawTitles;
+    drawTitles(String(A.years[A.years.length-1]));
+
+    // ---------- Best Pegasus takeaways ----------
+    document.getElementById('bpList').innerHTML = [
+        `The HBITS market is <b>${money(A.kpi.totalDollars)}</b> over three years and <b>growing</b> — a large, worthwhile prize.`,
+        `It is <b>concentrated</b>: the top 7 vendors hold ~${top7share}% of placements. Winning means displacing incumbents on <b>price and MSP-filter positioning</b>.`,
+        `Demand clusters in a <b>handful of roles</b> (Software Architect, Systems/Software Developer, IT Specialist, Project Manager — mostly Expert/Senior) and a <b>handful of agencies</b> (IT Services, Mental Health, Children & Family, Health). Focus capture there.`,
+        `Average contract value is <b>~${money(A.kpi.avgContract)}</b> — every placement is six figures, so even a small share gain is material revenue.`,
+        `This is exactly why the <b>rank-#19 pricing strategy</b> matters: to get past the MSP price filter on these high-volume roles, pricing must sit low enough to be forwarded for technical review (see Strategy Briefing).`,
+    ].map(t=>`<li>${t}</li>`).join('');
+
+    document.getElementById('srcNote').textContent =
+        'Source: ' + A.generated + '. Figures are placements (contract "closures") and current contract amounts from the NYS OGS HBITS award records.';
+})();
+</script>
+</body>
+</html>
